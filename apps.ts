@@ -1,7 +1,6 @@
-import { oak, config, env } from "./dps.ts";
+import { oak, config } from "./dps.ts";
 import router from "./routes/api.ts";
 import { initTable } from "./sql/index.ts";
-import { critical } from "https://deno.land/x/std/log/mod.ts";
 await initTable();
 
 const app = new oak.Application();
@@ -22,16 +21,7 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 const options = {
-    port: config.port,
-    secure: false,
-    certFile: "",
-    keyFile: ""
-};
-
-if (env["TYPE"] && env["TYPE"] == 'production') {
-    options.secure = true;
-    options.certFile = env["SSLPATH"] + "/fullchain.pem";
-    options.keyFile = env["SSLPATH"] + "/privkey.pem";
+    port: config.port
 }
 
 console.log(`web start on http://localhost:${options.port}`);
