@@ -39,6 +39,8 @@ export default class EDTCache {
         getAllEDT()
             .catch(err => console.error(err))
             .then(edtList => {
+                if (!edtList || !Array.isArray(edtList)) return;
+
                 const rqList = edtList.map((edt: any) => requestEdt(edt));
 
                 Promise.all(rqList)
