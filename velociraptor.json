@@ -1,6 +1,5 @@
 {
     "scripts": {
-        "startDev": "deno run --allow-net --allow-read=./ apps.ts",
-        "startProd": "deno run --allow-net --allow-read=./,/etc/letsencrypt/live/ apps.ts"
+        "start": "deno run --allow-net --allow-read=./ apps.ts"
     }
 }

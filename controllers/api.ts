@@ -9,8 +9,10 @@ export async function handleEDTList(context: oak.RouterContext<Record<string | n
 export async function handleEDTDetails(context: oak.RouterContext<Record<string | number, string | undefined>, Record<string, any>>) {
   const dataEDT: EDT | undefined = edtManage.getCacheEDTById(context.params.edtId);
 
-  if (!dataEDT)
+  if (!dataEDT) {
     context.response.body = {};
+    context.response.status = 404;
+  }
   else if (!context.params.format)
     context.response.body = dataEDT.getAPIData();
   else
@@ -24,6 +26,7 @@ export async function handleEDTDetails(context: oak.RouterContext<Record<string 
         break;
       default:
         context.response.body = {};
+        context.response.status = 404;
         break;
     }
 }
