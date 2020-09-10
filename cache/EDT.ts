@@ -66,12 +66,11 @@ export default class EDT {
             let eventComps: any[] = new ICAL.Component(calParse).getAllSubcomponents("vevent");
 
             let events = eventComps.map((item: any) => {
-                if (!hasValue(item) || getValue(item, 'description').split('\n').length < 5) return null;
+                if (!hasValue(item)) return null;
 
-                let description: string = getValue(item, 'description').split('\n');
                 return {
                     "title": getValue(item, 'summary'),
-                    "enseignant": getEnseignant(description),
+                    "enseignant": getEnseignant(getValue(item, 'description')),
                     "start": getValue(item, 'dtstart').toJSDate(),
                     "end": getValue(item, 'dtend').toJSDate(),
                     "location": getValue(item, 'location')
@@ -86,31 +85,25 @@ export default class EDT {
 }
 
 function getEnseignant(description: string): string {
-    const length = description.length;
-    let firstLoop = true;
-    let index = 3;
-    let maxLength = 6;
+    const descSplit = description.split(/\n/);
+    const indexSlice = 3;
+    if (descSplit.length - indexSlice < 0) return "?";
 
-    while (index < length && description[index - 1].startsWith("GRP_")) {
-        index += firstLoop ? 1 : 2;
-        maxLength += firstLoop ? 1 : 2;
-
-        firstLoop = false;
-    }
-
-    if (length != maxLength || index >= length) return '';
-
-    return description[index];
+    return descSplit[descSplit.length - indexSlice];
 }
 
 function getValue(item: any, value: string): any {
-    return item.getFirstPropertyValue(value);
+    return item.getFirstPropertyValue(value) || "?";
+}
+
+function hasProperty(item: any, value: string): any {
+    return !!item.getFirstProperty(value);
 }
 
 function hasValue(item: any): boolean {
-    return !!getValue(item, 'summary') &&
-        !!getValue(item, 'description') &&
-        !!getValue(item, 'location') &&
-        !!getValue(item, 'dtstart') &&
-        !!getValue(item, 'dtend');
+    return hasProperty(item, 'summary') &&
+        hasProperty(item, 'description') &&
+        hasProperty(item, 'location') &&
+        hasProperty(item, 'dtstart') &&
+        hasProperty(item, 'dtend');
 }

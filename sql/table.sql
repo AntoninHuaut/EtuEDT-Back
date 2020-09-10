@@ -1,4 +1,4 @@
-CREATE TABLE TP(numTP VARCHAR(6) NOT NULL, PRIMARY KEY(numTP));
+CREATE TABLE TP(numTP VARCHAR(24) NOT NULL, PRIMARY KEY(numTP));
 
 CREATE TABLE Annee(numAnnee INT, PRIMARY KEY(numAnnee));
 
@@ -10,7 +10,7 @@ CREATE TABLE Etablissement(
 );
 
 CREATE TABLE EDT(
-  numTP VARCHAR(6),
+  numTP VARCHAR(24),
   numAnnee INT,
   numEta INT,
   resources VARCHAR(16) NOT NULL,
