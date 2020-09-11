@@ -1,68 +1,75 @@
 import ICAL from '../lib/ical.js';
 
-export default class EDT {
+export default class Timetable {
 
-    private numEta: number;
-    private nomEta: string;
-    private numAnnee: number;
-    private numTP: string;
-    private nomEDT: string;
-    private edtName: string;
-    private edtId: string;
+    private numUniv: number;
+    private nameUniv: string;
+    private adeResources: number;
+    private adeProjectId: number;
+    private descTT: string;
+    private numYearTT: number;
+    private nameTT: string;
     private lastUpdate: Date;
 
-    private edtIcs: string;
-    private edtJson: [];
+    private ics: string;
+    private json: [];
 
-    constructor(edtData: any, lastUpdate: Date, edtIcs: string) {
-        this.numEta = edtData.numEta;
-        this.nomEta = edtData.nomEta;
-        this.numAnnee = edtData.numAnnee;
-        this.numTP = edtData.numTP;
-        this.nomEDT = edtData.nomEDT;
-        this.edtName = this.numAnnee + "A TP " + this.numTP;
-        this.edtId = edtData.resources;
+    constructor(ttData: any, lastUpdate: Date, ics: string) {
+        this.numUniv = ttData.numUniv;
+        this.nameUniv = ttData.nameUniv;
+        this.adeResources = ttData.adeResources;
+        this.adeProjectId = ttData.adeProjectId;
+        this.descTT = ttData.descTT;
+        this.numYearTT = ttData.numYearTT;
+        this.nameTT = this.numYearTT + "A " + this.descTT;
+
         this.lastUpdate = lastUpdate;
-        this.edtIcs = edtIcs;
-        this.edtJson = [];
+        this.ics = ics;
+        this.json = [];
 
         this.setJSON();
     }
 
-    getEdtId(): string {
-        return this.edtId;
+    getNumUniv(): number {
+        return this.numUniv;
+    }
+
+    getAdeResources(): number {
+        return this.adeResources;
     }
 
     getAPIData(): {} {
         return {
-            numEta: this.numEta,
-            nomEta: this.nomEta,
-            numAnnee: this.numAnnee,
-            numTP: this.numTP,
-            nomEDT: this.nomEDT,
-            edtName: this.edtName,
-            edtId: this.edtId,
+            numUniv: this.numUniv,
+            nameUniv: this.nameUniv,
+            nameTT: this.nameTT,
+            numYearTT: this.numYearTT,
+            descTT: this.descTT,
+            adeResources: this.adeResources,
+            adeProjectId: this.adeProjectId,
             lastUpdate: this.lastUpdate
         };
     }
 
     getICS(): string {
-        return this.edtIcs;
+        return this.ics;
     }
 
     getJSON(): [] {
-        return this.edtJson;
+        return this.json;
     }
 
     setJSON() {
-        this.edtJson = this.toJson();
+        this.json = this.toJson();
     }
 
     private toJson(): any {
         try {
-            if (!this.edtIcs || this.edtIcs.includes('HTTP ERROR')) throw new Error(this.edtId + " not available");
+            if (!this.ics || this.ics.includes('HTTP ERROR')) {
+                throw new Error(`${this.numUniv}#${this.adeResources} not available`);
+            }
 
-            const calParse: any = ICAL.parse(this.edtIcs.trim());
+            const calParse: any = ICAL.parse(this.ics.trim());
             let eventComps: any[] = new ICAL.Component(calParse).getAllSubcomponents("vevent");
 
             let events = eventComps.map((item: any) => {

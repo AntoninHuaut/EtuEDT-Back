@@ -1,22 +1,16 @@
-CREATE TABLE TP(numTP VARCHAR(24) NOT NULL, PRIMARY KEY(numTP));
-
-CREATE TABLE Annee(numAnnee INT, PRIMARY KEY(numAnnee));
-
-CREATE TABLE Etablissement(
-  numETa INT AUTO_INCREMENT,
-  nomEta VARCHAR(64) NOT NULL,
-  adeEta VARCHAR(255) NOT NULL,
-  PRIMARY KEY(numEta)
+CREATE TABLE UNIV(
+  numUniv INT AUTO_INCREMENT,
+  nameUniv VARCHAR(64) NOT NULL,
+  adeUniv VARCHAR(255) NOT NULL,
+  PRIMARY KEY(numUniv)
 );
 
-CREATE TABLE EDT(
-  numTP VARCHAR(24),
-  numAnnee INT,
-  numEta INT,
-  resources VARCHAR(16) NOT NULL,
-  projectId VARCHAR(16) NOT NULL,
-  PRIMARY KEY(numTP, numAnnee, numEta),
-  FOREIGN KEY(numTP) REFERENCES TP(numTP),
-  FOREIGN KEY(numAnnee) REFERENCES Annee(numAnnee),
-  FOREIGN KEY(numEta) REFERENCES Etablissement(numEta)
+CREATE TABLE TIMETABLE(
+  numUniv INT,
+  adeResources INT,
+  numYearTT INT NOT NULL,
+  descTT VARCHAR(64) NOT NULL,
+  adeProjectId INT NOT NULL,
+  PRIMARY KEY(numUniv, adeResources),
+  FOREIGN KEY(numUniv) REFERENCES UNIV(numUniv)
 );

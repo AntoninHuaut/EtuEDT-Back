@@ -1,10 +1,18 @@
 import { oak } from "../dps.ts";
-import { handleEDTList, handleEDTDetails } from "../controllers/api.ts";
+import { handleOldAPI } from "../controllers/oldAPI.ts";
+import v2router from "./v2.ts";
 
 const router = new oak.Router();
 
-router
-    .get('/', async (context) => await handleEDTList(context))
-    .get('/:edtId/:format?', async (context) => await handleEDTDetails(context));
+router.get('/', async (context) => {
+    context.response.body = {
+        "path": "v2"
+    }
+});
+
+v2router(router, "/v2");
+
+// old
+router.get('/:adeResources/ics', async (context) => handleOldAPI(context));
 
 export default router;
