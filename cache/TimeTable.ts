@@ -1,3 +1,4 @@
+import { moment } from '../dps.ts';
 import ICAL from '../lib/ical.js';
 
 export default class Timetable {
@@ -61,6 +62,7 @@ export default class Timetable {
 
     setJSON() {
         this.json = this.toJson();
+        this.regroupJson();
     }
 
     private toJson(): any {
@@ -88,6 +90,46 @@ export default class Timetable {
         } catch (ex) {
             return [];
         }
+    }
+
+    private regroupJson(): any {
+        this.json = this.json.sort((a: any, b: any) => {
+            return moment(a.start).diff(moment(b.start));
+        });
+
+        const output: any = [];
+
+        this.json.forEach((event: any) => {
+            const eventStart = moment(event.start);
+            const eventEnd = moment(event.end);
+
+            const existing = output.filter((check: any) => {
+                const checkStart = moment(check.start);
+                const checkEnd = moment(check.end);
+
+                return event.title === check.title
+                    && event.enseignant === check.enseignant
+                    && event.location === check.location
+                    && (eventStart.isSame(checkEnd) || eventEnd.isSame(checkStart))
+            });
+
+            if (existing.length) {
+                const existingIndex = output.indexOf(existing[0]);
+
+                if (eventStart.isBefore(moment(existing[0].end))) {
+                    event.end = existing[0].end;
+                }
+                else {
+                    event.start = existing[0].start;
+                }
+
+                output[existingIndex] = event;
+            } else {
+                output.push(event);
+            }
+        });
+
+        this.json = output;
     }
 }
 
