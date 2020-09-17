@@ -80,6 +80,7 @@ export default class Timetable {
                 return {
                     "title": getValue(item, 'summary'),
                     "enseignant": getEnseignant(getValue(item, 'description')),
+                    "description": removeExported(getValue(item, 'description')),
                     "start": getValue(item, 'dtstart').toJSDate(),
                     "end": getValue(item, 'dtend').toJSDate(),
                     "location": getValue(item, 'location')
@@ -93,9 +94,7 @@ export default class Timetable {
     }
 
     private regroupJson(): any {
-        this.json = this.json.sort((a: any, b: any) => {
-            return moment(a.start).diff(moment(b.start));
-        });
+        this.sortJson();
 
         const output: any = [];
 
@@ -130,7 +129,19 @@ export default class Timetable {
         });
 
         this.json = output;
+        this.sortJson();
     }
+
+    private sortJson() {
+        this.json = this.json.sort((a: any, b: any) => {
+            const diffDate = moment(a.start).diff(moment(b.start));
+            return diffDate !== 0 ? diffDate : a.title.localeCompare(b.title);
+        });
+    }
+}
+
+function removeExported(str: string | null) {
+    return str ? str.replace(/^\(Exported.*\n?/m, '') : str;
 }
 
 function getEnseignant(description: string): string {
