@@ -80,7 +80,7 @@ export default class Timetable {
                 return {
                     "title": getValue(item, 'summary'),
                     "enseignant": getEnseignant(getValue(item, 'description')),
-                    "description": removeExported(getValue(item, 'description')),
+                    "description": formatDescription(getValue(item, 'description')),
                     "start": getValue(item, 'dtstart').toJSDate(),
                     "end": getValue(item, 'dtend').toJSDate(),
                     "location": getValue(item, 'location')
@@ -140,11 +140,13 @@ export default class Timetable {
     }
 }
 
-function removeExported(str: string | null) {
-    return str ? str.replace(/^\(Exported.*\n?/m, '') : str;
+function formatDescription(str: string | null) {
+    return str ? str.trim().replace(/^\(Exported.*\n?/m, '') : str;
 }
 
-function getEnseignant(description: string): string {
+function getEnseignant(description: string | null): string {
+    if (!description) return "?";
+
     const descSplit = description.split(/\n/);
     const indexSlice = 3;
     if (descSplit.length - indexSlice < 0) return "?";
