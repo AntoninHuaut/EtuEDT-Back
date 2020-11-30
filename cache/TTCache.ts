@@ -98,13 +98,8 @@ export default class TTCache {
 }
 
 function requestTT(timetableSql: any): Promise<string> {
-    const startYear = moment().startOf('year');
-
-    if (moment().isAfter(startYear.clone().add('6', 'M')))
-        startYear.add('6', 'M');
-
-    const firstDate = startYear.format('YYYY-MM-DD');
-    const lastDate = startYear.add('6', 'M').format('YYYY-MM-DD');
+    const firstDate = moment().subtract('4', 'M').format('YYYY-MM-DD');
+    const lastDate = moment().add('4', 'M').format('YYYY-MM-DD');
 
     const params = new URLSearchParams({
         resources: timetableSql.adeResources,
