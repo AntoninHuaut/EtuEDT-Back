@@ -5,6 +5,10 @@ import Timetable from './TimeTable.ts';
 const TT_CACHE = new TTCache();
 const UNIV_CACHE = new UnivCache();
 
+export function refreshTT() {
+    TT_CACHE.refresh();
+}
+
 export function getUnivList(): any {
     return UNIV_CACHE.getUnivList();
 }
