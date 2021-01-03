@@ -4,6 +4,11 @@ import { getAllTT } from '../sql/timetable.ts';
 
 import checkConfig from '../config/checkConfig.ts';
 
+interface Request {
+    status: number;
+    body: string;
+}
+
 export default class TTCache {
 
     private cacheRefresh: [];
@@ -44,29 +49,30 @@ export default class TTCache {
                 const rqList = ttList.map((timetable: any) => requestTT(timetable));
 
                 Promise.all(rqList)
-                    .then((res: any) => {
-                        res = res.map((subRes: any) => convertString(subRes));
-                        this.updateTT(ttList, res);
+                    .then((res: Request[]) => {
+                        const bodyConverted: Request[] = res.map((subRes: Request) => convertBodyString(subRes));
+                        this.updateTT(ttList, bodyConverted);
                     })
                     .catch(err => console.error(now(), "[Catch]", err));
             });
     }
 
-    updateTT(ttList: any[], res: string | any[]) {
+    updateTT(ttList: any[], res: Request[]) {
         let cacheRefresh: any = this.init ? this.cacheRefresh : [];
         const date = new Date();
 
         for (let i = 0; i < res.length; i++) {
             const item = cacheRefresh.find((subItem: { numUniv: any, adeResources: any }) => subItem.numUniv == ttList[i].numUniv && subItem.adeResources == ttList[i].adeResources);
+            const response = res[i];
 
             if (!!item) {
-                if (!res[i].includes('HTTP ERROR')) {
+                if (response.status == 200) {
                     item.lastUpdate = date;
-                    item.ics = res[i];
+                    item.ics = response.body;
                     item.setJSON();
                 }
             } else
-                cacheRefresh.push(new TimeTable(ttList[i], date, res[i]));
+                cacheRefresh.push(new TimeTable(ttList[i], date, response.body));
         }
 
         console.log(now(), "Refreshed Timetables completed");
@@ -97,7 +103,7 @@ export default class TTCache {
     }
 }
 
-function requestTT(timetableSql: any): Promise<string> {
+async function requestTT(timetableSql: any): Promise<Request> {
     const firstDate = moment().subtract('4', 'M').format('YYYY-MM-DD');
     const lastDate = moment().add('4', 'M').format('YYYY-MM-DD');
 
@@ -109,14 +115,19 @@ function requestTT(timetableSql: any): Promise<string> {
         lastDate: lastDate
     });
 
-    return fetch(timetableSql.adeUniv + '?' + params).then(res => res.text());
+    const res = await fetch(timetableSql.adeUniv + '?' + params);
+    const text = await res.text();
+    return {
+        status: res.status,
+        body: text
+    };
 }
 
-function convertString(str: string): string {
-    if (!str)
-        return str;
+function convertBodyString(request: Request): Request {
+    if (!request.body)
+        return request;
 
-    const splited = str.split('\r');
+    const splited = request.body.split('\r');
 
     for (let i = 0; i < splited.length; i++) {
         splited[i] = convertStringSplit(splited, i, '_s');
@@ -124,9 +135,8 @@ function convertString(str: string): string {
         splited[i] = convertStringSplit(splited, i, '_2');
     }
 
-    str = splited.join('');
-
-    return str;
+    request.body = splited.join('');
+    return request;
 }
 
 function convertStringSplit(splited: { [x: string]: any; }, i: number, strSplit: string) {
