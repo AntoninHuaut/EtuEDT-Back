@@ -2,11 +2,11 @@ import { oak } from "../dps.ts";
 import * as cacheManager from "../cache/cacheManager.ts";
 import Timetable from "../cache/TimeTable.ts";
 
-export async function handleUnivList(context: oak.RouterContext<Record<string | number, string | undefined>, Record<string, any>>) {
+export async function handleUnivList(context: oak.RouterContext<any>) {
   context.response.body = cacheManager.getUnivList();
 }
 
-export async function handleTTList(context: oak.RouterContext<Record<string | number, string | undefined>, Record<string, any>>) {
+export async function handleTTList(context: oak.RouterContext<string, Record<string | number, string>, Record<string, any>>) {
   const univ_TTList = cacheManager.getTTListByUniv(context.params.numUniv);
 
   if (!univ_TTList) {
@@ -18,7 +18,7 @@ export async function handleTTList(context: oak.RouterContext<Record<string | nu
   }
 }
 
-export async function handleTTFormat(context: oak.RouterContext<Record<string | number, string | undefined>, Record<string, any>>) {
+export async function handleTTFormat(context: oak.RouterContext<string, Record<string | number, string>, Record<string, any>>) {
   const dataTT: Timetable | undefined = cacheManager.getTTById(context.params.numUniv, context.params.adeResources);
 
   if (!dataTT) {
