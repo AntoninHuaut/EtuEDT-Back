@@ -1,11 +1,10 @@
 import {
     BufReader,
-    config,
     mysql,
-} from '../dps.ts';
+} from '../../deps.ts';
 
 export async function initTable() {
-    const file = await Deno.open('./sql/table.sql');
+    const file = await Deno.open('./src/sql/table.sql');
     const bufReader = new BufReader(file);
     const textDecoder = new TextDecoder("utf-8");
 
@@ -30,5 +29,11 @@ export async function initTable() {
 }
 
 export async function getConnection() {
-    return await new mysql.Client().connect(config.sql);
+    return await new mysql.Client().connect({
+        hostname: Deno.env.get('MYSQL_HOST') || Deno.exit(1),
+        port: parseInt(Deno.env.get('MYSQL_PORT') ?? "") || Deno.exit(1),
+        db: Deno.env.get('MYSQL_DATABASE') || Deno.exit(1),
+        username: Deno.env.get('MYSQL_USER') || Deno.exit(1),
+        password: Deno.env.get('MYSQL_PASSWORD') || Deno.exit(1),
+    });
 };

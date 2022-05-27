@@ -1,5 +1,6 @@
-import { config, now } from '../dps.ts';
+import { now } from '../../deps.ts';
 import { getAllUniv } from '../sql/timetable.ts';
+import config from "../config/config.ts";
 
 import checkConfig from '../config/checkConfig.ts';
 

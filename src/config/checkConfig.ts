@@ -1,4 +1,6 @@
-import { config, now } from '../dps.ts';
+import { now } from '../../deps.ts';
+import config from "../config/config.ts";
+
 const minMinsRefresh = 15;
 
 export default function () {

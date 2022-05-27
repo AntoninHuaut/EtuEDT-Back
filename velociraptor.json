@@ -1,5 +1,0 @@
-{
-    "scripts": {
-        "start": "deno run --allow-net --allow-read=./ apps.ts"
-    }
-}

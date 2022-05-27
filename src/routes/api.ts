@@ -1,4 +1,4 @@
-import { oak } from "../dps.ts";
+import { oak } from "../../deps.ts";
 import v2router from "./v2.ts";
 
 const router = new oak.Router();

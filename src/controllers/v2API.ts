@@ -1,4 +1,4 @@
-import { oak } from "../dps.ts";
+import { oak } from "../../deps.ts";
 import * as cacheManager from "../cache/cacheManager.ts";
 import Timetable from "../cache/TimeTable.ts";
 

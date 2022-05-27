@@ -1,6 +1,7 @@
-import { config, moment, now } from '../dps.ts';
+import { moment, now } from '../../deps.ts';
 import TimeTable from './TimeTable.ts';
 import { getAllTT } from '../sql/timetable.ts';
+import config from "../config/config.ts";
 
 import checkConfig from '../config/checkConfig.ts';
 

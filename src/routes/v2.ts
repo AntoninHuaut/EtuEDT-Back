@@ -1,4 +1,4 @@
-import { oak } from "../dps.ts";
+import { oak } from "../../deps.ts";
 import { handleUnivList, handleTTList, handleTTFormat } from "../controllers/v2API.ts";
 
 export default function getRouter(router: oak.Router, path: string) {

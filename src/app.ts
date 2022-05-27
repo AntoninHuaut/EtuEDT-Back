@@ -1,4 +1,4 @@
-import { oak, config } from "./dps.ts";
+import { oak } from "../deps.ts";
 import router from "./routes/api.ts";
 import { initTable } from "./sql/index.ts";
 import cli from "./cli.ts";
@@ -22,7 +22,7 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 const options = {
-    port: config.port
+    port: 8080
 }
 
 console.log(`web start on http://localhost:${options.port}`);

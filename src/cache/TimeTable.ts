@@ -1,4 +1,4 @@
-import { moment } from '../dps.ts';
+import { moment } from '../../deps.ts';
 import ICAL from '../lib/ical.js';
 
 export default class Timetable {
