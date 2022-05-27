@@ -1,7 +1,6 @@
 import { oak } from "../deps.ts";
 import router from "./routes/api.ts";
 import { initTable } from "./sql/index.ts";
-import cli from "./cli.ts";
 await initTable();
 
 const app = new oak.Application();
@@ -28,4 +27,3 @@ const options = {
 console.log(`web start on http://localhost:${options.port}`);
 
 app.listen(options);
-cli();
