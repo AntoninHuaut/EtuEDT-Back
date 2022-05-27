@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  etuedt-deno:
+    build: .
+    ports:
+      - "4000:8080"
