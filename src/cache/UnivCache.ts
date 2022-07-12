@@ -1,11 +1,10 @@
-import { now } from '../../deps.ts';
-import { getAllUniv } from '../sql/timetable.ts';
-import config from "../config/config.ts";
+import { getAllUniv } from '/sql/timetable.ts';
+import config from '/config/config.ts';
 
-import checkConfig from '../config/checkConfig.ts';
+import checkConfig from '/config/checkConfig.ts';
+import { now } from '/env.ts';
 
 export default class UnivCache {
-
     private cachedUniv: any;
 
     constructor() {
@@ -22,10 +21,10 @@ export default class UnivCache {
     }
 
     refresh() {
-        console.log(now(), "Refreshing Univ...");
+        console.log(now(), 'Refreshing Univ...');
 
         getAllUniv()
-            .catch(err => console.error(err))
-            .then(univList => this.cachedUniv = univList);
+            .catch((err) => console.error(err))
+            .then((univList) => (this.cachedUniv = univList));
     }
 }

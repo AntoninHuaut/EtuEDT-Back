@@ -1,5 +1,5 @@
 import postgres from 'postgres';
-import { get } from '/config.ts';
+import { get } from '/env.ts';
 
 const DB_HOST = get('POSTGRES_HOST');
 const DB_PORT = get('POSTGRES_PORT') ?? '';

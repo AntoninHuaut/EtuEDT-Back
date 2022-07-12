@@ -1,9 +1,10 @@
-import { moment, now } from '../../deps.ts';
 import TimeTable from './TimeTable.ts';
 import { getAllTT } from '../sql/timetable.ts';
 import config from '../config/config.ts';
 
 import checkConfig from '../config/checkConfig.ts';
+import { now } from '/env.ts';
+import dayjs from 'dayjs';
 
 interface Request {
     status: number;
@@ -39,7 +40,7 @@ export default class TTCache {
     }
 
     refresh() {
-        console.log(now(), 'Refreshing Timetable...');
+        console.log(now, 'Refreshing Timetable...');
 
         getAllTT()
             .catch((err) => console.error(err))
@@ -105,8 +106,8 @@ export default class TTCache {
 }
 
 async function requestTT(timetableSql: any): Promise<Request> {
-    const firstDate = moment().subtract('4', 'M').format('YYYY-MM-DD');
-    const lastDate = moment().add('4', 'M').format('YYYY-MM-DD');
+    const firstDate = dayjs().subtract('4', 'M').format('YYYY-MM-DD');
+    const lastDate = dayjs().add('4', 'M').format('YYYY-MM-DD');
 
     const params = new URLSearchParams({
         resources: timetableSql.adeResources,

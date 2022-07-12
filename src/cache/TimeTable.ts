@@ -1,8 +1,7 @@
-import { moment } from '../../deps.ts';
-import ICAL from '../lib/ical.js';
+import dayjs from 'dayjs';
+import ICAL from '/lib/ical.js';
 
 export default class Timetable {
-
     private numUniv: number;
     private nameUniv: string;
     private adeResources: number;
@@ -22,7 +21,7 @@ export default class Timetable {
         this.adeProjectId = ttData.adeProjectId;
         this.descTT = ttData.descTT;
         this.numYearTT = ttData.numYearTT;
-        this.nameTT = this.numYearTT + "A " + this.descTT;
+        this.nameTT = this.numYearTT + 'A ' + this.descTT;
 
         this.lastUpdate = lastUpdate;
         this.ics = ics;
@@ -48,7 +47,7 @@ export default class Timetable {
             descTT: this.descTT,
             adeResources: this.adeResources,
             adeProjectId: this.adeProjectId,
-            lastUpdate: this.lastUpdate
+            lastUpdate: this.lastUpdate,
         };
     }
 
@@ -72,18 +71,18 @@ export default class Timetable {
             }
 
             const calParse: any = ICAL.parse(this.ics.trim());
-            let eventComps: any[] = new ICAL.Component(calParse).getAllSubcomponents("vevent");
+            let eventComps: any[] = new ICAL.Component(calParse).getAllSubcomponents('vevent');
 
             let events = eventComps.map((item: any) => {
                 if (!hasValue(item)) return null;
 
                 return {
-                    "title": getValue(item, 'summary'),
-                    "enseignant": getEnseignant(getValue(item, 'description')),
-                    "description": formatDescription(getValue(item, 'description')),
-                    "start": getValue(item, 'dtstart').toJSDate(),
-                    "end": getValue(item, 'dtend').toJSDate(),
-                    "location": getValue(item, 'location')
+                    title: getValue(item, 'summary'),
+                    enseignant: getEnseignant(getValue(item, 'description')),
+                    description: formatDescription(getValue(item, 'description')),
+                    start: getValue(item, 'dtstart').toJSDate(),
+                    end: getValue(item, 'dtend').toJSDate(),
+                    location: getValue(item, 'location'),
                 };
             });
 
@@ -99,26 +98,27 @@ export default class Timetable {
         const output: any = [];
 
         this.json.forEach((event: any) => {
-            const eventStart = moment(event.start);
-            const eventEnd = moment(event.end);
+            const eventStart = dayjs(event.start);
+            const eventEnd = dayjs(event.end);
 
             const existing = output.filter((check: any) => {
-                const checkStart = moment(check.start);
-                const checkEnd = moment(check.end);
+                const checkStart = dayjs(check.start);
+                const checkEnd = dayjs(check.end);
 
-                return event.title === check.title
-                    && event.enseignant === check.enseignant
-                    && event.location === check.location
-                    && (eventStart.isSame(checkEnd) || eventEnd.isSame(checkStart))
+                return (
+                    event.title === check.title &&
+                    event.enseignant === check.enseignant &&
+                    event.location === check.location &&
+                    (eventStart.isSame(checkEnd) || eventEnd.isSame(checkStart))
+                );
             });
 
             if (existing.length) {
                 const existingIndex = output.indexOf(existing[0]);
 
-                if (eventStart.isBefore(moment(existing[0].end))) {
+                if (eventStart.isBefore(dayjs(existing[0].end))) {
                     event.end = existing[0].end;
-                }
-                else {
+                } else {
                     event.start = existing[0].start;
                 }
 
@@ -134,7 +134,7 @@ export default class Timetable {
 
     private sortJson() {
         this.json = this.json.sort((a: any, b: any) => {
-            const diffDate = moment(a.start).diff(moment(b.start));
+            const diffDate = dayjs(a.start).diff(dayjs(b.start));
             return diffDate !== 0 ? diffDate : a.title.localeCompare(b.title);
         });
     }
@@ -145,17 +145,17 @@ function formatDescription(str: string | null) {
 }
 
 function getEnseignant(description: string | null): string {
-    if (!description) return "?";
+    if (!description) return '?';
 
     const descSplit = description.split(/\n/);
     const indexSlice = 3;
-    if (descSplit.length - indexSlice < 0) return "?";
+    if (descSplit.length - indexSlice < 0) return '?';
 
     return descSplit[descSplit.length - indexSlice];
 }
 
 function getValue(item: any, value: string): any {
-    return item.getFirstPropertyValue(value) || "?";
+    return item.getFirstPropertyValue(value) || '?';
 }
 
 function hasProperty(item: any, value: string): any {
@@ -163,9 +163,11 @@ function hasProperty(item: any, value: string): any {
 }
 
 function hasValue(item: any): boolean {
-    return hasProperty(item, 'summary') &&
+    return (
+        hasProperty(item, 'summary') &&
         hasProperty(item, 'description') &&
         hasProperty(item, 'location') &&
         hasProperty(item, 'dtstart') &&
-        hasProperty(item, 'dtend');
+        hasProperty(item, 'dtend')
+    );
 }
