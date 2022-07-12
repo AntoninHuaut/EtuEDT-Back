@@ -9,18 +9,43 @@ const DB_PASSWORD = get('POSTGRES_PASSWORD');
 
 if (!DB_HOST || isNaN(+DB_PORT) || !DB_DATABASE || !DB_USER || !DB_PASSWORD) {
     console.error('Invalid DB configuration');
-    Deno.exit(3);
+    Deno.exit(2);
 }
 
-const sql = postgres({
-    host: DB_HOST,
-    port: +DB_PORT,
-    database: DB_DATABASE,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    connection: {
-        timezone: 'UTC',
-    },
-});
+let sql: postgres.Sql<Record<never, never>>;
+let currentTry = 0;
+
+export async function connect() {
+    if (currentTry > 5) {
+        console.error('Failed to connect to DB');
+        Deno.exit(3);
+    }
+
+    try {
+        console.log('Try to connect to DB, try number: ' + ++currentTry);
+        sql = postgres({
+            host: DB_HOST,
+            port: +DB_PORT,
+            database: DB_DATABASE,
+            user: DB_USER,
+            password: DB_PASSWORD,
+            connection: {
+                timezone: 'UTC',
+            },
+        });
+
+        await sql`SELECT 1;`;
+    } catch (err) {
+        console.error(err);
+        console.log('Trying to reconnect to DB in 5 seconds...');
+
+        await new Promise<void>((resolve) =>
+            setTimeout(async () => {
+                await connect();
+                resolve();
+            }, 5000)
+        );
+    }
+}
 
 export { sql };
