@@ -1,8 +1,8 @@
-import TimeTable from './TimeTable.ts';
-import { getAllTT } from '../sql/timetable.ts';
-import config from '../config/config.ts';
+import TimeTable from '/cache/TimeTable.ts';
+import { getAllTT } from '/sql/timetable.ts';
+import config from '/config/config.ts';
 
-import checkConfig from '../config/checkConfig.ts';
+import checkConfig from '/config/checkConfig.ts';
 import { now } from '/env.ts';
 import dayjs from 'dayjs';
 

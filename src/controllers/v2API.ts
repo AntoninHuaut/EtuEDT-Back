@@ -1,6 +1,6 @@
 import { Context, helpers } from 'oak';
-import * as cacheManager from '../cache/cacheManager.ts';
-import Timetable from '../cache/TimeTable.ts';
+import * as cacheManager from '/cache/cacheManager.ts';
+import Timetable from '/cache/TimeTable.ts';
 
 export function handleUnivList(ctx: Context) {
     ctx.response.body = cacheManager.getUnivList();

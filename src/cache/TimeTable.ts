@@ -1,15 +1,16 @@
 import dayjs from 'dayjs';
 import ICAL from '/lib/ical.js';
+import { ITimetable } from '/model/TimeTableModel.ts';
 
-export default class Timetable {
-    private numUniv: number;
-    private nameUniv: string;
-    private adeResources: number;
-    private adeProjectId: number;
-    private descTT: string;
-    private numYearTT: number;
-    private nameTT: string;
-    private lastUpdate: Date;
+export default class Timetable implements ITimetable {
+    numUniv: number;
+    nameUniv: string;
+    adeResources: number;
+    adeProjectId: number;
+    descTT: string;
+    numYearTT: number;
+    nameTT: string;
+    lastUpdate: Date;
 
     private ics: string;
     private json: [];

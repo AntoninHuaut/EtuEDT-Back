@@ -1,9 +1,9 @@
 import { Context, Router } from 'oak';
-import v2router from './v2.ts';
+import v2router from '/routes/v2.ts';
 
 const router = new Router();
 
-router.get('/', async (context: Context) => {
+router.get('/', (context: Context) => {
     context.response.body = {
         path: 'v2',
     };

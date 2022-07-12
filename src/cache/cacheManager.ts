@@ -1,6 +1,6 @@
-import TTCache from './TTCache.ts';
-import UnivCache from './UnivCache.ts';
-import Timetable from './TimeTable.ts';
+import TTCache from '/cache/TTCache.ts';
+import UnivCache from '/cache/UnivCache.ts';
+import Timetable from '/cache/TimeTable.ts';
 
 const TT_CACHE = new TTCache();
 const UNIV_CACHE = new UnivCache();
