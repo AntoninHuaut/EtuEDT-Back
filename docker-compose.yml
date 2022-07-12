@@ -16,8 +16,6 @@ services:
     build: .
     ports:
       - "4000:8080"
-    links:
-      - db
     depends_on:
       - db
     env_file:
