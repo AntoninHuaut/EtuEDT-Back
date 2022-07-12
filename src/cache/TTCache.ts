@@ -1,7 +1,7 @@
 import { moment, now } from '../../deps.ts';
 import TimeTable from './TimeTable.ts';
 import { getAllTT } from '../sql/timetable.ts';
-import config from "../config/config.ts";
+import config from '../config/config.ts';
 
 import checkConfig from '../config/checkConfig.ts';
 
@@ -11,11 +11,10 @@ interface Request {
 }
 
 export default class TTCache {
-
     private cacheRefresh: [];
 
-    private univObj_TTList: any;
-    private univObj_TTObj: any;
+    private univObj_TTList;
+    private univObj_TTObj;
     private init: boolean;
 
     constructor() {
@@ -40,11 +39,11 @@ export default class TTCache {
     }
 
     refresh() {
-        console.log(now(), "Refreshing Timetable...");
+        console.log(now(), 'Refreshing Timetable...');
 
         getAllTT()
-            .catch(err => console.error(err))
-            .then(ttList => {
+            .catch((err) => console.error(err))
+            .then((ttList) => {
                 if (!ttList || !Array.isArray(ttList)) return;
 
                 const rqList = ttList.map((timetable: any) => requestTT(timetable));
@@ -54,29 +53,30 @@ export default class TTCache {
                         const bodyConverted: Request[] = res.map((subRes: Request) => convertBodyString(subRes));
                         this.updateTT(ttList, bodyConverted);
                     })
-                    .catch(err => console.error(now(), "[Catch]", err));
+                    .catch((err) => console.error(now(), '[Catch]', err));
             });
     }
 
     updateTT(ttList: any[], res: Request[]) {
-        let cacheRefresh: any = this.init ? this.cacheRefresh : [];
+        const cacheRefresh: any = this.init ? this.cacheRefresh : [];
         const date = new Date();
 
         for (let i = 0; i < res.length; i++) {
-            const item = cacheRefresh.find((subItem: { numUniv: any, adeResources: any }) => subItem.numUniv == ttList[i].numUniv && subItem.adeResources == ttList[i].adeResources);
+            const item = cacheRefresh.find(
+                (subItem: { numUniv: number; adeResources: number }) => subItem.numUniv == ttList[i].numUniv && subItem.adeResources == ttList[i].adeResources
+            );
             const response = res[i];
 
-            if (!!item) {
+            if (item) {
                 if (response.status == 200) {
                     item.lastUpdate = date;
                     item.ics = response.body;
                     item.setJSON();
                 }
-            } else
-                cacheRefresh.push(new TimeTable(ttList[i], date, response.body));
+            } else cacheRefresh.push(new TimeTable(ttList[i], date, response.body));
         }
 
-        console.log(now(), "Refreshed Timetables completed");
+        console.log(now(), 'Refreshed Timetables completed');
 
         this.cacheRefresh = cacheRefresh;
         const tmp_UnivObj_TTList: any = {};
@@ -113,20 +113,19 @@ async function requestTT(timetableSql: any): Promise<Request> {
         projectId: timetableSql.adeProjectId,
         calType: 'ical',
         firstDate: firstDate,
-        lastDate: lastDate
+        lastDate: lastDate,
     });
 
     const res = await fetch(timetableSql.adeUniv + '?' + params);
     const text = await res.text();
     return {
         status: res.status,
-        body: text
+        body: text,
     };
 }
 
 function convertBodyString(request: Request): Request {
-    if (!request.body)
-        return request;
+    if (!request.body) return request;
 
     const splited = request.body.split('\r');
 
@@ -140,7 +139,7 @@ function convertBodyString(request: Request): Request {
     return request;
 }
 
-function convertStringSplit(splited: { [x: string]: any; }, i: number, strSplit: string) {
+function convertStringSplit(splited: { [x: string]: any }, i: number, strSplit: string) {
     if (splited[i].startsWith('\nSUMMARY:') && splited[i].toLowerCase().includes(strSplit))
         return splited[i].substring(0, splited[i].toLowerCase().indexOf(strSplit));
 

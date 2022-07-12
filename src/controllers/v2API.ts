@@ -1,46 +1,44 @@
-import { oak } from "../../deps.ts";
-import * as cacheManager from "../cache/cacheManager.ts";
-import Timetable from "../cache/TimeTable.ts";
+import { Context, helpers } from 'oak';
+import * as cacheManager from '../cache/cacheManager.ts';
+import Timetable from '../cache/TimeTable.ts';
 
-export async function handleUnivList(context: oak.RouterContext<any>) {
-  context.response.body = cacheManager.getUnivList();
+export function handleUnivList(ctx: Context) {
+    ctx.response.body = cacheManager.getUnivList();
 }
 
-export async function handleTTList(context: oak.RouterContext<string, Record<string | number, string>, Record<string, any>>) {
-  const univ_TTList = cacheManager.getTTListByUniv(context.params.numUniv);
-
-  if (!univ_TTList) {
-    context.response.body = {};
-    context.response.status = 404;
-  }
-  else {
-    context.response.body = univ_TTList;
-  }
-}
-
-export async function handleTTFormat(context: oak.RouterContext<string, Record<string | number, string>, Record<string, any>>) {
-  const dataTT: Timetable | undefined = cacheManager.getTTById(context.params.numUniv, context.params.adeResources);
-
-  if (!dataTT) {
-    context.response.body = {};
-    context.response.status = 404;
-  }
-  else if (!context.params.format) {
-    context.response.body = dataTT.getAPIData();
-  }
-  else {
-    switch (context.params.format) {
-      case "json":
-        context.response.body = dataTT.getJSON();
-        break;
-      case "ics":
-        context.response.body = dataTT.getICS();
-        context.response.headers.set("Content-Type", "text/calendar");
-        break;
-      default:
-        context.response.body = {};
-        context.response.status = 404;
-        break;
+export function handleTTList(ctx: Context) {
+    const { numUniv } = helpers.getQuery(ctx, { mergeParams: true });
+    const univ_TTList = cacheManager.getTTListByUniv(numUniv);
+    if (!univ_TTList) {
+        ctx.response.body = {};
+        ctx.response.status = 404;
+    } else {
+        ctx.response.body = univ_TTList;
     }
-  }
+}
+
+export function handleTTFormat(ctx: Context) {
+    const { adeResources, numUniv, format } = helpers.getQuery(ctx, { mergeParams: true });
+    const dataTT: Timetable | undefined = cacheManager.getTTById(numUniv, adeResources);
+
+    if (!dataTT) {
+        ctx.response.body = {};
+        ctx.response.status = 404;
+    } else if (!format) {
+        ctx.response.body = dataTT.getAPIData();
+    } else {
+        switch (format) {
+            case 'json':
+                ctx.response.body = dataTT.getJSON();
+                break;
+            case 'ics':
+                ctx.response.body = dataTT.getICS();
+                ctx.response.headers.set('Content-Type', 'text/calendar');
+                break;
+            default:
+                ctx.response.body = {};
+                ctx.response.status = 404;
+                break;
+        }
+    }
 }

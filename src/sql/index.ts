@@ -1,39 +1,26 @@
-import {
-    BufReader,
-    mysql,
-} from '../../deps.ts';
+import postgres from 'postgres';
+import { get } from '/config.ts';
 
-export async function initTable() {
-    const file = await Deno.open('./src/sql/table.sql');
-    const bufReader = new BufReader(file);
-    const textDecoder = new TextDecoder("utf-8");
+const DB_HOST = get('POSTGRES_HOST');
+const DB_PORT = get('POSTGRES_PORT') ?? '';
+const DB_DATABASE = get('POSTGRES_DB');
+const DB_USER = get('POSTGRES_USER');
+const DB_PASSWORD = get('POSTGRES_PASSWORD');
 
-    let connection = await getConnection();
-
-    let statement: string | any;
-    let currentLine: string = "";
-
-    while ((statement = await bufReader.readLine()) != null) {
-        currentLine += textDecoder.decode(statement.line);
-
-        if (!currentLine.trim().endsWith(';')) continue;
-
-        currentLine = currentLine.replace(/(\r\n|\n|\r)/gm, '');
-
-        await connection.execute(currentLine).catch(() => { });
-        currentLine = "";
-    }
-
-    await connection.close();
-    file.close();
+if (!DB_HOST || isNaN(+DB_PORT) || !DB_DATABASE || !DB_USER || !DB_PASSWORD) {
+    console.error('Invalid DB configuration');
+    Deno.exit(3);
 }
 
-export async function getConnection() {
-    return await new mysql.Client().connect({
-        hostname: Deno.env.get('MYSQL_HOST') || Deno.exit(1),
-        port: parseInt(Deno.env.get('MYSQL_PORT') ?? "") || Deno.exit(1),
-        db: Deno.env.get('MYSQL_DATABASE') || Deno.exit(1),
-        username: Deno.env.get('MYSQL_USER') || Deno.exit(1),
-        password: Deno.env.get('MYSQL_PASSWORD') || Deno.exit(1),
-    });
-};
+const sql = postgres({
+    host: DB_HOST,
+    port: +DB_PORT,
+    database: DB_DATABASE,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    connection: {
+        timezone: 'UTC',
+    },
+});
+
+export { sql };

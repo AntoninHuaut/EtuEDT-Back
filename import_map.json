@@ -1,0 +1,9 @@
+{
+    "imports": {
+        "/": "./src/",
+        "./": "./",
+        "oak": "https://deno.land/x/oak@v10.6.0/mod.ts",
+        "dotenv": "https://deno.land/x/dotenv@v3.2.0/mod.ts",
+        "postgres": "https://deno.land/x/postgresjs@v3.2.4/mod.js"
+    }
+}

@@ -1,13 +1,9 @@
-import { getConnection } from './index.ts';
+import { sql } from './index.ts';
 
 export async function getAllTT(): Promise<any> {
-    const connection = await getConnection();
-    return await connection
-        .query(`select * from TIMETABLE join UNIV using(numUniv) order by numUniv, numYearTT, descTT`)
-        .finally(() => connection.close());
+    return await sql`SELECT * FROM "timetable" JOIN "univ" USING("numUniv") ORDER BY "numUniv", "numYearTT", "descTT"`;
 }
 
 export async function getAllUniv(): Promise<any> {
-    const connection = await getConnection();
-    return await connection.query(`select * from UNIV order by numUniv`).finally(() => connection.close());
+    return await sql`SELECT * FROM "univ" ORDER BY"numUniv"`;
 }
