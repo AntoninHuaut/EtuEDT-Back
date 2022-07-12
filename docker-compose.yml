@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: cetuedt-deno-db
+    restart: unless-stopped
+    image: postgres:14-alpine
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+      - ./init/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
+      - ./init/script.sql:/script.sql
+    env_file:
+      - docker.env
+  
+  etuedt_deno:
+    container_name: cetuedt_deno
+    restart: unless-stopped
+    build: .
+    ports:
+      - "4000:8080"
+    depends_on:
+      - db
+    env_file:
+      - docker.env

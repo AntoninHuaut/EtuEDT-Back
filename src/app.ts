@@ -1,29 +1,3 @@
-import { oak } from "../deps.ts";
-import router from "./routes/api.ts";
-import { initTable } from "./sql/index.ts";
-await initTable();
+import { connect } from '/sql/index.ts';
 
-const app = new oak.Application();
-app.use(async (ctx, next) => {
-    try {
-        await next();
-    } catch (err) {
-        ctx.response.status = 500;
-    }
-});
-
-app.use((ctx, next) => {
-    ctx.response.headers.set("Access-Control-Allow-Origin", "*");
-    next();
-});
-
-app.use(router.routes());
-app.use(router.allowedMethods());
-
-const options = {
-    port: 8080
-}
-
-console.log(`web start on http://localhost:${options.port}`);
-
-app.listen(options);
+connect().then(() => import('/server.ts'));

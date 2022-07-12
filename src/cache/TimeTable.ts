@@ -1,28 +1,30 @@
-import { moment } from '../../deps.ts';
-import ICAL from '../lib/ical.js';
+import dayjs from 'dayjs';
+import ICAL from '/lib/ical.js';
+import { ITimetable, ITimetableExtended } from '/model/TimeTableModel.ts';
+import { IUniv } from '/model/UnivModel.ts';
+import { IEvent } from '/model/EventModel.ts';
 
-export default class Timetable {
+export default class Timetable implements ITimetable {
+    numUniv: number;
+    nameUniv: string;
+    adeResources: number;
+    adeProjectId: number;
+    descTT: string;
+    numYearTT: number;
+    nameTT: string;
+    lastUpdate: Date;
 
-    private numUniv: number;
-    private nameUniv: string;
-    private adeResources: number;
-    private adeProjectId: number;
-    private descTT: string;
-    private numYearTT: number;
-    private nameTT: string;
-    private lastUpdate: Date;
+    ics: string;
+    private json: IEvent[];
 
-    private ics: string;
-    private json: [];
-
-    constructor(ttData: any, lastUpdate: Date, ics: string) {
+    constructor(ttData: ITimetable & IUniv, lastUpdate: Date, ics: string) {
         this.numUniv = ttData.numUniv;
         this.nameUniv = ttData.nameUniv;
         this.adeResources = ttData.adeResources;
         this.adeProjectId = ttData.adeProjectId;
         this.descTT = ttData.descTT;
         this.numYearTT = ttData.numYearTT;
-        this.nameTT = this.numYearTT + "A " + this.descTT;
+        this.nameTT = this.numYearTT + 'A ' + this.descTT;
 
         this.lastUpdate = lastUpdate;
         this.ics = ics;
@@ -39,7 +41,7 @@ export default class Timetable {
         return this.adeResources;
     }
 
-    getAPIData(): {} {
+    getAPIData(): ITimetableExtended {
         return {
             numUniv: this.numUniv,
             nameUniv: this.nameUniv,
@@ -48,7 +50,7 @@ export default class Timetable {
             descTT: this.descTT,
             adeResources: this.adeResources,
             adeProjectId: this.adeProjectId,
-            lastUpdate: this.lastUpdate
+            lastUpdate: this.lastUpdate,
         };
     }
 
@@ -56,7 +58,7 @@ export default class Timetable {
         return this.ics;
     }
 
-    getJSON(): [] {
+    getJSON(): IEvent[] {
         return this.json;
     }
 
@@ -65,60 +67,64 @@ export default class Timetable {
         this.regroupJson();
     }
 
-    private toJson(): any {
+    private toJson(): IEvent[] {
         try {
             if (!this.ics || this.ics.includes('HTTP ERROR')) {
                 throw new Error(`${this.numUniv}#${this.adeResources} not available`);
             }
 
+            // deno-lint-ignore no-explicit-any
             const calParse: any = ICAL.parse(this.ics.trim());
-            let eventComps: any[] = new ICAL.Component(calParse).getAllSubcomponents("vevent");
+            const eventComps = new ICAL.Component(calParse).getAllSubcomponents('vevent');
 
-            let events = eventComps.map((item: any) => {
-                if (!hasValue(item)) return null;
+            return eventComps
+                .map((item) => {
+                    if (!hasValue(item)) return null;
 
-                return {
-                    "title": getValue(item, 'summary'),
-                    "enseignant": getEnseignant(getValue(item, 'description')),
-                    "description": formatDescription(getValue(item, 'description')),
-                    "start": getValue(item, 'dtstart').toJSDate(),
-                    "end": getValue(item, 'dtend').toJSDate(),
-                    "location": getValue(item, 'location')
-                };
-            });
+                    const event: IEvent = {
+                        title: getValue(item, 'summary'),
+                        enseignant: getEnseignant(getValue(item, 'description')),
+                        description: formatDescription(getValue(item, 'description')),
+                        start: getValue(item, 'dtstart').toJSDate(),
+                        end: getValue(item, 'dtend').toJSDate(),
+                        location: getValue(item, 'location'),
+                    };
 
-            return events.filter((el: any) => el != null);
-        } catch (ex) {
+                    return event;
+                })
+                .filter((el) => el !== null && el !== undefined) as IEvent[];
+        } catch (_) {
             return [];
         }
     }
 
-    private regroupJson(): any {
+    private regroupJson() {
         this.sortJson();
 
-        const output: any = [];
+        const output: IEvent[] = [];
 
-        this.json.forEach((event: any) => {
-            const eventStart = moment(event.start);
-            const eventEnd = moment(event.end);
+        this.json.forEach((event: IEvent) => {
+            const eventStart = dayjs(event.start);
+            const eventEnd = dayjs(event.end);
 
-            const existing = output.filter((check: any) => {
-                const checkStart = moment(check.start);
-                const checkEnd = moment(check.end);
+            const existing = output.filter((check: IEvent) => {
+                const checkStart = dayjs(check.start);
+                const checkEnd = dayjs(check.end);
 
-                return event.title === check.title
-                    && event.enseignant === check.enseignant
-                    && event.location === check.location
-                    && (eventStart.isSame(checkEnd) || eventEnd.isSame(checkStart))
+                return (
+                    event.title === check.title &&
+                    event.enseignant === check.enseignant &&
+                    event.location === check.location &&
+                    (eventStart.isSame(checkEnd) || eventEnd.isSame(checkStart))
+                );
             });
 
             if (existing.length) {
                 const existingIndex = output.indexOf(existing[0]);
 
-                if (eventStart.isBefore(moment(existing[0].end))) {
+                if (eventStart.isBefore(dayjs(existing[0].end))) {
                     event.end = existing[0].end;
-                }
-                else {
+                } else {
                     event.start = existing[0].start;
                 }
 
@@ -133,39 +139,44 @@ export default class Timetable {
     }
 
     private sortJson() {
-        this.json = this.json.sort((a: any, b: any) => {
-            const diffDate = moment(a.start).diff(moment(b.start));
+        this.json = this.json.sort((a: IEvent, b: IEvent) => {
+            const diffDate = dayjs(a.start).diff(dayjs(b.start));
             return diffDate !== 0 ? diffDate : a.title.localeCompare(b.title);
         });
     }
 }
 
-function formatDescription(str: string | null) {
+function formatDescription(str: string | undefined) {
     return str ? str.trim().replace(/^\(Exported.*\n?/m, '') : str;
 }
 
 function getEnseignant(description: string | null): string {
-    if (!description) return "?";
+    if (!description) return '?';
 
     const descSplit = description.split(/\n/);
     const indexSlice = 3;
-    if (descSplit.length - indexSlice < 0) return "?";
+    if (descSplit.length - indexSlice < 0) return '?';
 
     return descSplit[descSplit.length - indexSlice];
 }
 
+// deno-lint-ignore no-explicit-any
 function getValue(item: any, value: string): any {
-    return item.getFirstPropertyValue(value) || "?";
+    return item.getFirstPropertyValue(value) || '?';
 }
 
-function hasProperty(item: any, value: string): any {
+// deno-lint-ignore no-explicit-any
+function hasProperty(item: any, value: string): boolean {
     return !!item.getFirstProperty(value);
 }
 
+// deno-lint-ignore no-explicit-any
 function hasValue(item: any): boolean {
-    return hasProperty(item, 'summary') &&
+    return (
+        hasProperty(item, 'summary') &&
         hasProperty(item, 'description') &&
         hasProperty(item, 'location') &&
         hasProperty(item, 'dtstart') &&
-        hasProperty(item, 'dtend');
+        hasProperty(item, 'dtend')
+    );
 }

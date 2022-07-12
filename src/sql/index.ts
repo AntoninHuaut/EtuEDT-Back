@@ -1,39 +1,51 @@
-import {
-    BufReader,
-    mysql,
-} from '../../deps.ts';
+import postgres from 'postgres';
+import { get } from '/env.ts';
 
-export async function initTable() {
-    const file = await Deno.open('./src/sql/table.sql');
-    const bufReader = new BufReader(file);
-    const textDecoder = new TextDecoder("utf-8");
+const DB_HOST = get('POSTGRES_HOST');
+const DB_PORT = get('POSTGRES_PORT') ?? '';
+const DB_DATABASE = get('POSTGRES_DB');
+const DB_USER = get('POSTGRES_USER');
+const DB_PASSWORD = get('POSTGRES_PASSWORD');
 
-    let connection = await getConnection();
-
-    let statement: string | any;
-    let currentLine: string = "";
-
-    while ((statement = await bufReader.readLine()) != null) {
-        currentLine += textDecoder.decode(statement.line);
-
-        if (!currentLine.trim().endsWith(';')) continue;
-
-        currentLine = currentLine.replace(/(\r\n|\n|\r)/gm, '');
-
-        await connection.execute(currentLine).catch(() => { });
-        currentLine = "";
-    }
-
-    await connection.close();
-    file.close();
+if (!DB_HOST || isNaN(+DB_PORT) || !DB_DATABASE || !DB_USER || !DB_PASSWORD) {
+    console.error('Invalid DB configuration');
+    Deno.exit(2);
 }
 
-export async function getConnection() {
-    return await new mysql.Client().connect({
-        hostname: Deno.env.get('MYSQL_HOST') || Deno.exit(1),
-        port: parseInt(Deno.env.get('MYSQL_PORT') ?? "") || Deno.exit(1),
-        db: Deno.env.get('MYSQL_DATABASE') || Deno.exit(1),
-        username: Deno.env.get('MYSQL_USER') || Deno.exit(1),
-        password: Deno.env.get('MYSQL_PASSWORD') || Deno.exit(1),
-    });
-};
+let sql: postgres.Sql<Record<never, never>>;
+let currentTry = 0;
+
+export async function connect() {
+    if (currentTry > 5) {
+        console.error('Failed to connect to DB');
+        Deno.exit(3);
+    }
+
+    try {
+        console.log('Try to connect to DB, try number: ' + ++currentTry);
+        sql = postgres({
+            host: DB_HOST,
+            port: +DB_PORT,
+            database: DB_DATABASE,
+            user: DB_USER,
+            password: DB_PASSWORD,
+            connection: {
+                timezone: 'UTC',
+            },
+        });
+
+        await sql`SELECT 1;`;
+    } catch (err) {
+        console.error(err);
+        console.log('Trying to reconnect to DB in 5 seconds...');
+
+        await new Promise<void>((resolve) =>
+            setTimeout(async () => {
+                await connect();
+                resolve();
+            }, 5000)
+        );
+    }
+}
+
+export { sql };

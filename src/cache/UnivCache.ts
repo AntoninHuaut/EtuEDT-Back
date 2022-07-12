@@ -1,12 +1,12 @@
-import { now } from '../../deps.ts';
-import { getAllUniv } from '../sql/timetable.ts';
-import config from "../config/config.ts";
+import { getAllUniv } from '/sql/timetable.ts';
+import config from '/config/config.ts';
 
-import checkConfig from '../config/checkConfig.ts';
+import checkConfig from '/config/checkConfig.ts';
+import { now } from '/env.ts';
+import { IUniv } from '/model/UnivModel.ts';
 
 export default class UnivCache {
-
-    private cachedUniv: any;
+    private cachedUniv: IUniv[];
 
     constructor() {
         checkConfig();
@@ -17,15 +17,15 @@ export default class UnivCache {
         this.refresh();
     }
 
-    getUnivList(): any {
+    getUnivList(): IUniv[] {
         return this.cachedUniv;
     }
 
     refresh() {
-        console.log(now(), "Refreshing Univ...");
+        console.log(now(), 'Refreshing Univ...');
 
         getAllUniv()
-            .catch(err => console.error(err))
-            .then(univList => this.cachedUniv = univList);
+            .then((univList) => (this.cachedUniv = univList))
+            .catch((err) => console.error(err));
     }
 }
