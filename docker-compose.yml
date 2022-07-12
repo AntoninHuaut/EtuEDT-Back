@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: etuedt-deno-db
+    container_name: cetuedt-deno-db
     restart: unless-stopped
     image: postgres:14-alpine
     volumes:
@@ -16,6 +16,8 @@ services:
     build: .
     ports:
       - "4000:8080"
+    links:
+      - db
     depends_on:
       - db
     env_file:
