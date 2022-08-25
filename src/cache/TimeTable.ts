@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import ICAL from '/lib/ical.js';
+import ICAL from 'npm:ical.js';
 import { ITimetable, ITimetableExtended } from '/model/TimeTableModel.ts';
 import { IUniv } from '/model/UnivModel.ts';
 import { IEvent } from '/model/EventModel.ts';
@@ -78,7 +78,7 @@ export default class Timetable implements ITimetable {
             const eventComps = new ICAL.Component(calParse).getAllSubcomponents('vevent');
 
             return eventComps
-                .map((item) => {
+                .map((item: any) => {
                     if (!hasValue(item)) return null;
 
                     const event: IEvent = {
@@ -92,7 +92,7 @@ export default class Timetable implements ITimetable {
 
                     return event;
                 })
-                .filter((el) => el !== null && el !== undefined) as IEvent[];
+                .filter((el: any) => el !== null && el !== undefined) as IEvent[];
         } catch (_) {
             return [];
         }

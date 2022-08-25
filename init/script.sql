@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS timetable (
     CONSTRAINT timetable_fk FOREIGN KEY("numUniv") REFERENCES univ("numUniv")
 );
 
-INSERT INTO univ ("numUniv", "nameUniv", "adeUniv") VALUES (1, 'IUT Grand Ouest Normandie', 'http://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp');
+INSERT INTO univ ("numUniv", "nameUniv", "adeUniv") VALUES (1, 'BUT Informatique - IUT Grand Ouest Normandie', 'https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp');
 
 INSERT INTO timetable ("numUniv", "adeResources", "numYearTT", "descTT", "adeProjectId") 
 VALUES  (1, 1177, 1, 'TP 1.1', 3),
