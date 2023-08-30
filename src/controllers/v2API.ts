@@ -1,4 +1,5 @@
 import { Context, helpers, httpErrors } from 'oak';
+
 import * as cacheManager from '/cache/cacheManager.ts';
 import Timetable from '/cache/TimeTable.ts';
 
@@ -13,7 +14,7 @@ export function handleTTList(ctx: Context) {
     }
 
     const univ_TTList = cacheManager.getTTListByUniv(+numUniv);
-    if (univ_TTList.length === 0) {
+    if (!univ_TTList || univ_TTList.length === 0) {
         ctx.response.body = [];
         ctx.response.status = 404;
     } else {

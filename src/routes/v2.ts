@@ -1,5 +1,6 @@
 import { Context, Router } from 'oak';
-import { handleUnivList, handleTTList, handleTTFormat } from '/controllers/v2API.ts';
+
+import { handleTTFormat, handleTTList, handleUnivList } from '/controllers/v2API.ts';
 
 export default function getRouter(router: Router, path: string) {
     router
