@@ -1,5 +1,6 @@
 import { Context, Router } from 'oak';
-import v2router from '/routes/v2.ts';
+
+import v2router from '/src/webserver/v2.ts';
 
 const router = new Router();
 

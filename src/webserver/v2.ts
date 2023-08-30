@@ -1,13 +1,21 @@
-import { Context, helpers, httpErrors } from 'oak';
+import { Context, helpers, httpErrors, Router } from 'oak';
 
-import * as cacheManager from '/cache/cacheManager.ts';
-import Timetable from '/cache/TimeTable.ts';
+import { getAllUniv } from '/src/configHelpers.ts';
+import * as cacheManager from '/src/timetables/cacheManager.ts';
+import Timetable from '/src/timetables/TimeTable.ts';
 
-export function handleUnivList(ctx: Context) {
-    ctx.response.body = cacheManager.getUnivList();
+export default function getRouter(router: Router, path: string) {
+    router
+        .get(path, (context: Context) => handleUnivList(context))
+        .get(path + '/:numUniv', (context: Context) => handleTTList(context))
+        .get(path + '/:numUniv/:adeResources/:format?', (context: Context) => handleTTWithOptFormat(context));
 }
 
-export function handleTTList(ctx: Context) {
+function handleUnivList(ctx: Context) {
+    ctx.response.body = getAllUniv();
+}
+
+function handleTTList(ctx: Context) {
     const { numUniv } = helpers.getQuery(ctx, { mergeParams: true });
     if (isNaN(+numUniv)) {
         return new httpErrors.BadRequest('Invalid query parameter');
@@ -22,7 +30,7 @@ export function handleTTList(ctx: Context) {
     }
 }
 
-export function handleTTFormat(ctx: Context) {
+function handleTTWithOptFormat(ctx: Context) {
     const { adeResources, numUniv, format } = helpers.getQuery(ctx, { mergeParams: true });
     if (isNaN(+adeResources) || isNaN(+numUniv)) {
         return new httpErrors.BadRequest('Invalid query parameter');

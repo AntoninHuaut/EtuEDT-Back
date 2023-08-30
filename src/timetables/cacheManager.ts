@@ -1,19 +1,8 @@
-import TTCache from '/cache/TTCache.ts';
-import UnivCache from '/cache/UnivCache.ts';
-import { IUniv } from '/model/UnivModel.ts';
-import { ITimetableExtended } from '/model/TimeTableModel.ts';
-import TimeTable from '/cache/TimeTable.ts';
+import { ITimetableExtended } from '/src/app.interface.ts';
+import TimeTable from '/src/timetables/TimeTable.ts';
+import TTCache from '/src/timetables/TTCache.ts';
 
 const TT_CACHE = new TTCache();
-const UNIV_CACHE = new UnivCache();
-
-export function refreshTT() {
-    TT_CACHE.refresh();
-}
-
-export function getUnivList(): IUniv[] {
-    return UNIV_CACHE.getUnivList();
-}
 
 export function getTTListByUniv(numUniv: number | undefined): ITimetableExtended[] {
     if (!numUniv) return [];

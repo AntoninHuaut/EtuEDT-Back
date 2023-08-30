@@ -1,15 +1,12 @@
 {
     "tasks": {
         "start": "ENV=prod deno run --check --allow-net --allow-env --allow-read=./ ./src/app.ts",
-        "dev": "ENV=dev deno run --check --allow-net --allow-env --allow-read=./ --watch ./src/app.ts",
-        "update": "deno run -A https://deno.land/x/udd/main.ts import_map.json"
+        "dev": "ENV=dev deno run --check --allow-net --allow-env --allow-read=./ --watch ./src/app.ts"
     },
     "imports": {
-        "/": "./src/",
+        "/": "./",
         "./": "./",
         "oak": "https://deno.land/x/oak@v12.6.1/mod.ts",
-        "dotenv": "https://deno.land/x/dotenv@v3.2.2/mod.ts",
-        "postgres": "https://deno.land/x/postgresjs@v3.3.5/mod.js",
         "dayjs": "https://cdn.skypack.dev/dayjs@v1.11.9"
     }
 }
