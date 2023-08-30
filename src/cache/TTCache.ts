@@ -1,10 +1,8 @@
-import { now } from '/env.ts';
 import dayjs from 'dayjs';
 
 import TimeTable from '/cache/TimeTable.ts';
-import { getAllTT } from '/sql/timetable.ts';
 import config from '/config/config.ts';
-import checkConfig from '/config/checkConfig.ts';
+import { checkConfig, getAllTT } from '/config/configHelpers.ts';
 import { ITimetableExtended, ITimeTableUniv } from '/model/TimeTableModel.ts';
 
 interface Request {
@@ -51,22 +49,17 @@ export default class TTCache {
     }
 
     refresh() {
-        console.log(now, 'Refreshing Timetable...');
+        console.log(new Date(), 'Refreshing Timetable...');
 
-        getAllTT()
-            .then((ttList: ITimeTableUniv[]) => {
-                if (!ttList || !Array.isArray(ttList)) return;
+        const ttList = getAllTT();
+        const rqList = ttList.map((timetable: ITimeTableUniv) => requestTT(timetable));
 
-                const rqList = ttList.map((timetable: ITimeTableUniv) => requestTT(timetable));
-
-                Promise.all(rqList)
-                    .then((res: Request[]) => {
-                        const bodyConverted: Request[] = res.map((subRes: Request) => convertBodyString(subRes));
-                        this.updateTT(ttList, bodyConverted);
-                    })
-                    .catch((err) => console.error(now(), '[Catch]', err));
+        Promise.all(rqList)
+            .then((res: Request[]) => {
+                const bodyConverted: Request[] = res.map((subRes: Request) => convertBodyString(subRes));
+                this.updateTT(ttList, bodyConverted);
             })
-            .catch((err) => console.error(err));
+            .catch((err) => console.error(new Date(), '[Catch]', err));
     }
 
     updateTT(ttList: ITimeTableUniv[], res: Request[]) {
@@ -88,7 +81,7 @@ export default class TTCache {
             } else cacheRefresh.push(new TimeTable(ttList[i], date, response.body));
         }
 
-        console.log(now(), 'Refreshed Timetables completed');
+        console.log(new Date(), 'Refreshed Timetables completed');
 
         this.cacheRefresh = cacheRefresh;
         const tmp_UnivObj_TTList: UnivTTList = {};
@@ -152,8 +145,7 @@ function convertBodyString(request: Request): Request {
 }
 
 function convertStringSplit(splited: string[], i: number, strSplit: string) {
-    if (splited[i].startsWith('\nSUMMARY:') && splited[i].toLowerCase().includes(strSplit))
-        return splited[i].substring(0, splited[i].toLowerCase().indexOf(strSplit));
+    if (splited[i].startsWith('\nSUMMARY:') && splited[i].toLowerCase().includes(strSplit)) return splited[i].substring(0, splited[i].toLowerCase().indexOf(strSplit));
 
     return splited[i];
 }

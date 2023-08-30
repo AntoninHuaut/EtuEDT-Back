@@ -2,9 +2,10 @@ import { Context, helpers, httpErrors } from 'oak';
 
 import * as cacheManager from '/cache/cacheManager.ts';
 import Timetable from '/cache/TimeTable.ts';
+import { getAllUniv } from '/config/configHelpers.ts';
 
 export function handleUnivList(ctx: Context) {
-    ctx.response.body = cacheManager.getUnivList();
+    ctx.response.body = getAllUniv();
 }
 
 export function handleTTList(ctx: Context) {
