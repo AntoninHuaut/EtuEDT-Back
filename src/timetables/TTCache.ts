@@ -5,10 +5,9 @@ import { ITimetableExtended, ITimeTableUniv } from '/src/app.interface.ts';
 import { checkConfig, getAllTT } from '/src/configHelpers.ts';
 import TimeTable from '/src/timetables/TimeTable.ts';
 
-interface Request {
-    status: number;
-    body: string;
-}
+type ResponseParsed = {
+    bodyText: string;
+} & Response;
 
 interface UnivTTList {
     [numUniv: number]: ITimetableExtended[];
@@ -25,7 +24,6 @@ export default class TTCache {
 
     private univObj_TTList: UnivTTList;
     private univObj_TTObj: UnivTTObj;
-    private init: boolean;
 
     constructor() {
         checkConfig();
@@ -35,7 +33,6 @@ export default class TTCache {
         this.cacheRefresh = [];
         this.univObj_TTList = {};
         this.univObj_TTObj = {};
-        this.init = false;
 
         this.refresh();
     }
@@ -52,22 +49,20 @@ export default class TTCache {
         console.log(new Date(), 'Refreshing Timetable...');
 
         const ttList = getAllTT();
-        const rqList = ttList.map((timetable: ITimeTableUniv) => requestTT(timetable));
+        const rqList = ttList.map((timetable) => requestTT(timetable));
 
         Promise.all(rqList)
-            .then((res: Request[]) => {
-                const bodyConverted: Request[] = res.map((subRes: Request) => convertBodyString(subRes));
-                this.updateTT(ttList, bodyConverted);
-            })
+            .then((res) => this.updateTT(ttList, res))
             .catch((err) => console.error(new Date(), '[Catch]', err));
     }
 
-    updateTT(ttList: ITimeTableUniv[], res: Request[]) {
-        const cacheRefresh: TimeTable[] = this.init ? this.cacheRefresh : [];
+    updateTT(ttList: ITimeTableUniv[], res: ResponseParsed[]) {
+        res = res.map((subRes) => convertBodyString(subRes));
+        const cacheRefreshTmp = this.cacheRefresh;
         const date = new Date();
 
         for (let i = 0; i < res.length; i++) {
-            const item = cacheRefresh.find(
+            const item = cacheRefreshTmp.find(
                 (subItem: { numUniv: number; adeResources: number }) => subItem.numUniv == ttList[i].numUniv && subItem.adeResources == ttList[i].adeResources
             );
             const response = res[i];
@@ -75,41 +70,39 @@ export default class TTCache {
             if (item) {
                 if (response.status == 200) {
                     item.lastUpdate = date;
-                    item.ics = response.body;
+                    item.ics = response.bodyText;
                     item.setJSON();
                 }
-            } else cacheRefresh.push(new TimeTable(ttList[i], date, response.body));
+            } else {
+                cacheRefreshTmp.push(new TimeTable(ttList[i], date, response.bodyText));
+            }
         }
-
+        this.cacheRefresh = cacheRefreshTmp;
         console.log(new Date(), 'Refreshed Timetables completed');
 
-        this.cacheRefresh = cacheRefresh;
-        const tmp_UnivObj_TTList: UnivTTList = {};
-        const tmp_UnivObj_TTObj: UnivTTObj = {};
-
-        cacheRefresh.forEach((item: TimeTable) => {
-            if (!tmp_UnivObj_TTList[item.getNumUniv()]) {
-                tmp_UnivObj_TTList[item.getNumUniv()] = [];
+        const univObj_TTList_Tmp: UnivTTList = {};
+        cacheRefreshTmp.forEach((item: TimeTable) => {
+            if (!univObj_TTList_Tmp[item.getNumUniv()]) {
+                univObj_TTList_Tmp[item.getNumUniv()] = [];
             }
 
-            tmp_UnivObj_TTList[item.getNumUniv()].push(item.getAPIData());
+            univObj_TTList_Tmp[item.getNumUniv()].push(item.getAPIData());
         });
-        this.univObj_TTList = tmp_UnivObj_TTList;
+        this.univObj_TTList = univObj_TTList_Tmp;
 
-        this.cacheRefresh.forEach((item: TimeTable) => {
-            if (!tmp_UnivObj_TTObj[item.getNumUniv()]) {
-                tmp_UnivObj_TTObj[item.getNumUniv()] = {};
+        const univObj_TTObj_Tmp: UnivTTObj = {};
+        cacheRefreshTmp.forEach((item: TimeTable) => {
+            if (!univObj_TTObj_Tmp[item.getNumUniv()]) {
+                univObj_TTObj_Tmp[item.getNumUniv()] = {};
             }
 
-            tmp_UnivObj_TTObj[item.getNumUniv()][item.getAdeResources()] = item;
+            univObj_TTObj_Tmp[item.getNumUniv()][item.getAdeResources()] = item;
         });
-        this.univObj_TTObj = tmp_UnivObj_TTObj;
-
-        this.init = true;
+        this.univObj_TTObj = univObj_TTObj_Tmp;
     }
 }
 
-async function requestTT(timetableSql: ITimeTableUniv): Promise<Request> {
+async function requestTT(timetableSql: ITimeTableUniv): Promise<ResponseParsed> {
     const firstDate = dayjs().subtract('4', 'M').format('YYYY-MM-DD');
     const lastDate = dayjs().add('4', 'M').format('YYYY-MM-DD');
 
@@ -124,15 +117,15 @@ async function requestTT(timetableSql: ITimeTableUniv): Promise<Request> {
     const res = await fetch(timetableSql.adeUniv + '?' + params);
     const text = await res.text();
     return {
-        status: res.status,
-        body: text,
+        ...res,
+        bodyText: text,
     };
 }
 
-function convertBodyString(request: Request): Request {
-    if (!request.body) return request;
+function convertBodyString(response: ResponseParsed): ResponseParsed {
+    if (!response.bodyText) return response;
 
-    const splited = request.body.split('\r');
+    const splited = response.bodyText.split('\r');
 
     for (let i = 0; i < splited.length; i++) {
         splited[i] = convertStringSplit(splited, i, '_s');
@@ -140,8 +133,8 @@ function convertBodyString(request: Request): Request {
         splited[i] = convertStringSplit(splited, i, '_2');
     }
 
-    request.body = splited.join('');
-    return request;
+    response.bodyText = splited.join('');
+    return response;
 }
 
 function convertStringSplit(splited: string[], i: number, strSplit: string) {
