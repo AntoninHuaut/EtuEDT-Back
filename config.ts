@@ -1,4 +1,4 @@
-const config = {
+export default {
     refreshMinuts: 540,
     univ: [
         {
@@ -81,5 +81,3 @@ const config = {
         },
     ],
 };
-
-export default config;

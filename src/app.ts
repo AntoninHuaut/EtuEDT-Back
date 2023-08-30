@@ -1,6 +1,6 @@
 import { Application, Context } from 'oak';
 
-import router from '/routes/api.ts';
+import router from '/src/webserver/api.ts';
 
 const app = new Application();
 app.use(async (ctx: Context, next) => {

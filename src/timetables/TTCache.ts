@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 
-import TimeTable from '/cache/TimeTable.ts';
-import config from '/config/config.ts';
-import { checkConfig, getAllTT } from '/config/configHelpers.ts';
-import { ITimetableExtended, ITimeTableUniv } from '/model/TimeTableModel.ts';
+import config from '/config.ts';
+import { ITimetableExtended, ITimeTableUniv } from '/src/app.interface.ts';
+import { checkConfig, getAllTT } from '/src/configHelpers.ts';
+import TimeTable from '/src/timetables/TimeTable.ts';
 
 interface Request {
     status: number;

@@ -1,8 +1,8 @@
+// deno-lint-ignore-file no-explicit-any
 import dayjs from 'dayjs';
 import ICAL from 'npm:ical.js';
-import { ITimetable, ITimetableExtended } from '/model/TimeTableModel.ts';
-import { IUniv } from '/model/UnivModel.ts';
-import { IEvent } from '/model/EventModel.ts';
+
+import { IEvent, ITimetable, ITimetableExtended, IUniv } from '/src/app.interface.ts';
 
 export default class Timetable implements ITimetable {
     numUniv: number;
@@ -73,7 +73,6 @@ export default class Timetable implements ITimetable {
                 throw new Error(`${this.numUniv}#${this.adeResources} not available`);
             }
 
-            // deno-lint-ignore no-explicit-any
             const calParse: any = ICAL.parse(this.ics.trim());
             const eventComps = new ICAL.Component(calParse).getAllSubcomponents('vevent');
 
@@ -83,7 +82,7 @@ export default class Timetable implements ITimetable {
 
                     const event: IEvent = {
                         title: getValue(item, 'summary'),
-                        enseignant: getEnseignant(getValue(item, 'description')),
+                        enseignant: getTeacher(getValue(item, 'description')),
                         description: formatDescription(getValue(item, 'description')),
                         start: getValue(item, 'dtstart').toJSDate(),
                         end: getValue(item, 'dtend').toJSDate(),
@@ -150,7 +149,7 @@ function formatDescription(str: string | undefined) {
     return str ? str.trim().replace(/^\(Exported.*\n?/m, '') : str;
 }
 
-function getEnseignant(description: string | null): string {
+function getTeacher(description: string | null): string {
     if (!description) return '?';
 
     const descSplit = description.split(/\n/);
@@ -160,23 +159,14 @@ function getEnseignant(description: string | null): string {
     return descSplit[descSplit.length - indexSlice];
 }
 
-// deno-lint-ignore no-explicit-any
 function getValue(item: any, value: string): any {
     return item.getFirstPropertyValue(value) || '?';
 }
 
-// deno-lint-ignore no-explicit-any
 function hasProperty(item: any, value: string): boolean {
     return !!item.getFirstProperty(value);
 }
 
-// deno-lint-ignore no-explicit-any
 function hasValue(item: any): boolean {
-    return (
-        hasProperty(item, 'summary') &&
-        hasProperty(item, 'description') &&
-        hasProperty(item, 'location') &&
-        hasProperty(item, 'dtstart') &&
-        hasProperty(item, 'dtend')
-    );
+    return hasProperty(item, 'summary') && hasProperty(item, 'description') && hasProperty(item, 'location') && hasProperty(item, 'dtstart') && hasProperty(item, 'dtend');
 }

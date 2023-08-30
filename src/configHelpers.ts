@@ -1,6 +1,5 @@
-import config from '/config/config.ts';
-import { ITimeTableUniv } from '/model/TimeTableModel.ts';
-import { IUniv } from '/model/UnivModel.ts';
+import config from '/config.ts';
+import { ITimeTableUniv, IUniv } from '/src/app.interface.ts';
 
 const minMinsRefresh = 15;
 
