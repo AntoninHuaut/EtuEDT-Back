@@ -1,5 +1,5 @@
 import config from '/config.ts';
-import { ITimeTableUniv, IUniv } from '/src/app.interface.ts';
+import { ITimetableUniv, IUniv } from '/src/app.interface.ts';
 
 const minMinsRefresh = 15;
 
@@ -18,8 +18,8 @@ export function getAllUniv(): IUniv[] {
     }));
 }
 
-export function getAllTT(): ITimeTableUniv[] {
-    const response: ITimeTableUniv[] = [];
+export function getAllTT(): ITimetableUniv[] {
+    const response: ITimetableUniv[] = [];
 
     config.univ.forEach((univ, index) => {
         univ.timetable.forEach((tt) => {
@@ -27,9 +27,9 @@ export function getAllTT(): ITimeTableUniv[] {
                 numUniv: index + 1,
                 nameUniv: univ.nameUniv,
                 adeUniv: univ.adeUniv,
-                adeResources: tt.adeResources,
                 numYearTT: tt.numYearTT,
                 descTT: tt.descTT,
+                adeResources: tt.adeResources,
                 adeProjectId: tt.adeProjectId,
             });
         });

@@ -15,16 +15,16 @@ export interface IUniv {
 
 export interface ITimetable {
     numUniv: number;
-    adeResources: number;
     numYearTT: number;
     descTT: string;
+    adeResources: number;
     adeProjectId: number;
 }
 
-export type ITimeTableUniv = ITimetable & IUniv;
+export type ITimetableUniv = ITimetable & IUniv;
 
-export interface ITimetableExtended extends ITimetable {
+export type ITimetableAPI = ITimetable & {
     nameTT: string;
     nameUniv: string;
     lastUpdate: Date;
-}
+};

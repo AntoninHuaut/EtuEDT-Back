@@ -2,7 +2,7 @@
 import dayjs from 'dayjs';
 import ICAL from 'npm:ical.js';
 
-import { IEvent, ITimetable, ITimetableExtended, IUniv } from '/src/app.interface.ts';
+import { IEvent, ITimetable, ITimetableAPI, ITimetableUniv } from '/src/app.interface.ts';
 
 export default class Timetable implements ITimetable {
     numUniv: number;
@@ -17,7 +17,7 @@ export default class Timetable implements ITimetable {
     ics: string;
     private json: IEvent[];
 
-    constructor(ttData: ITimetable & IUniv, lastUpdate: Date, ics: string) {
+    constructor(ttData: ITimetableUniv, lastUpdate: Date, ics: string) {
         this.numUniv = ttData.numUniv;
         this.nameUniv = ttData.nameUniv;
         this.adeResources = ttData.adeResources;
@@ -41,13 +41,13 @@ export default class Timetable implements ITimetable {
         return this.adeResources;
     }
 
-    getAPIData(): ITimetableExtended {
+    getAPIData(): ITimetableAPI {
         return {
             numUniv: this.numUniv,
             nameUniv: this.nameUniv,
             nameTT: this.nameTT,
-            numYearTT: this.numYearTT,
             descTT: this.descTT,
+            numYearTT: this.numYearTT,
             adeResources: this.adeResources,
             adeProjectId: this.adeProjectId,
             lastUpdate: this.lastUpdate,

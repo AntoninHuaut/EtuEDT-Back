@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 import config from '/config.ts';
-import { ITimetableExtended, ITimeTableUniv } from '/src/app.interface.ts';
+import { ITimetableAPI, ITimetableUniv } from '/src/app.interface.ts';
 import { checkConfig, getAllTT } from '/src/configHelpers.ts';
 import TimeTable from '/src/timetables/TimeTable.ts';
 
@@ -10,7 +10,7 @@ type ResponseParsed = {
 } & Response;
 
 interface UnivTTList {
-    [numUniv: number]: ITimetableExtended[];
+    [numUniv: number]: ITimetableAPI[];
 }
 
 interface UnivTTObj {
@@ -56,7 +56,7 @@ export default class TTCache {
             .catch((err) => console.error(new Date(), '[Catch]', err));
     }
 
-    updateTT(ttList: ITimeTableUniv[], res: ResponseParsed[]) {
+    updateTT(ttList: ITimetableUniv[], res: ResponseParsed[]) {
         res = res.map((subRes) => convertBodyString(subRes));
         const cacheRefreshTmp = this.cacheRefresh;
         const date = new Date();
@@ -102,7 +102,7 @@ export default class TTCache {
     }
 }
 
-async function requestTT(timetableSql: ITimeTableUniv): Promise<ResponseParsed> {
+async function requestTT(timetableSql: ITimetableUniv): Promise<ResponseParsed> {
     const firstDate = dayjs().subtract('4', 'M').format('YYYY-MM-DD');
     const lastDate = dayjs().add('4', 'M').format('YYYY-MM-DD');
 
