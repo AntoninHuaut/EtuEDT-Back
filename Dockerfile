@@ -4,7 +4,7 @@ EXPOSE 3000
 
 WORKDIR /app
 
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 ADD . .
