@@ -1,3 +1,3 @@
-# EtuEDT-Deno
+# EtuEDT-Back
 
 Type `docker compose up -d`

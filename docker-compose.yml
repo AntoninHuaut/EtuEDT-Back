@@ -1,7 +1,7 @@
 services:
-  etuedt_deno:
-    container_name: cetuedt_deno
+  etuedt_go:
+    container_name: cetuedt_go
     restart: unless-stopped
     build: .
     ports:
-      - "4000:8080"
+      - "4000:3000"

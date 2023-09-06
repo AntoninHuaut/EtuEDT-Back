@@ -1,11 +1,14 @@
-FROM denoland/deno:alpine-1.36.3
+FROM golang:1.21-alpine
 
-EXPOSE 8080
+EXPOSE 3000
 
 WORKDIR /app
 
+COPY go.mod ./
+RUN go mod download
+
 ADD . .
 
-RUN deno cache ./src/app.ts
+RUN go build -o /etuedt-go
 
-CMD [ "task", "start" ]
+CMD [ "/etuedt-go" ]
