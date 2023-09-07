@@ -68,7 +68,7 @@ func v2Router(router fiber.Router) {
 		format := c.Params("format")
 		if format == "json" {
 			return c.JSON(timetableCache.Json)
-		} else if format == "ical" {
+		} else if format == "ics" {
 			c.Set("Content-Type", "text/calendar")
 			return c.SendString(timetableCache.Ical)
 		} else {
