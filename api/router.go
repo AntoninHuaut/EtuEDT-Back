@@ -66,13 +66,17 @@ func v2Router(router fiber.Router) {
 		}
 
 		format := c.Params("format")
-		if format == "json" {
+		if len(format) == 0 {
+			return c.JSON(createTimetableResponse(university, timetable))
+		} else if format == "json" {
 			return c.JSON(timetableCache.Json)
 		} else if format == "ics" {
 			c.Set("Content-Type", "text/calendar")
 			return c.SendString(timetableCache.Ical)
 		} else {
-			return c.JSON(createTimetableResponse(university, timetable))
+			return c.JSON(fiber.Map{
+				"error": "invalid format",
+			})
 		}
 	})
 }
