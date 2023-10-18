@@ -1,7 +1,7 @@
 services:
   etuedt_go:
+    image: ghcr.io/antoninhuaut/etuedt-back:master
     container_name: cetuedt_go
     restart: unless-stopped
-    build: .
     ports:
       - "4000:3000"
