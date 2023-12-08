@@ -15,7 +15,8 @@ import (
 
 type JsonEvent struct {
 	Title       string    `json:"title"`
-	Teacher     string    `json:"enseignant"` // TODO v3 => teacher
+	Enseignant  string    `json:"enseignant"` // TODO temporary for compatibility with the old frontend
+	Teacher     string    `json:"teacher"`
 	Description string    `json:"description"`
 	Start       time.Time `json:"start"`
 	End         time.Time `json:"end"`

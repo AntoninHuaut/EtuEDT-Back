@@ -20,6 +20,9 @@ func StartWebApp() {
 	app.Use(recover.New())
 
 	app.Get("/metrics", monitor.New())
+	app.Get("/openapi", func(c *fiber.Ctx) error {
+		return c.SendFile("./openapi.yaml")
+	})
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"path": "v2",
