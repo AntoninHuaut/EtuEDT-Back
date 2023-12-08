@@ -1,0 +1,220 @@
+openapi: '3.0.1'
+info:
+  description: 'API of EtuEDT-Back server.'
+  version: '2.0.0'
+  title: 'EtuEDT-Back'
+servers:
+  - url: https://edtapi.antoninhuaut.fr/v2
+paths:
+  /:
+    get:
+      tags:
+        - 'timetable'
+      summary: 'Get the list of universities'
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/University'
+  /{numUniv}:
+    get:
+      tags:
+        - 'timetable'
+      summary: "Get a list of the university's timetables"
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'numUniv'
+          in: 'path'
+          description: 'Id of university'
+          required: true
+          schema:
+            type: 'integer'
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: 'array'
+                items:
+                  $ref: '#/components/schemas/Timetable'
+        '404':
+          description: 'Invalid parameters'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{numUniv}/{adeResources}:
+    get:
+      tags:
+        - 'timetable'
+      summary: 'Get timetable details by numUniv and adeResource'
+      parameters:
+        - name: 'numUniv'
+          in: 'path'
+          description: 'Id of university'
+          required: true
+          schema:
+            type: 'integer'
+        - name: 'adeResources'
+          in: 'path'
+          description: 'Id of timetable'
+          required: true
+          schema:
+            type: 'integer'
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Timetable'
+        '404':
+          description: 'Invalid parameters'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{numUniv}/{adeResources}/{format}:
+    get:
+      tags:
+        - 'timetable'
+      summary: 'Get timetable content by numUniv, adeResources and by format'
+      parameters:
+        - name: 'numUniv'
+          in: 'path'
+          description: 'Id of university'
+          required: true
+          schema:
+            type: 'integer'
+        - name: 'adeResources'
+          in: 'path'
+          description: 'Id of timetable'
+          required: true
+          schema:
+            type: 'integer'
+        - name: 'format'
+          in: 'path'
+          description: 'Format to return'
+          required: true
+          schema:
+            type: 'string'
+            enum:
+              - 'ics'
+              - 'json'
+      responses:
+        '200':
+          description: 'Successful operation'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JsonEvent'
+            text/calendar:
+              schema:
+                $ref: '#/components/schemas/IcalEvent'
+        '404':
+          description: 'Invalid parameters'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    University:
+      type: 'object'
+      properties:
+        numUniv:
+          type: 'integer'
+          example: 1
+        nameUniv:
+          type: 'string'
+          example: 'Université de Caen'
+        adeUniv:
+          type: 'string'
+          example: 'http://ade.unicaen.fr'
+    Timetable:
+      type: 'object'
+      properties:
+        numUniv:
+          type: 'integer'
+          example: 1
+        nameUniv:
+          type: 'string'
+          example: 'Université de Caen'
+        nameTT:
+          type: 'string'
+          example: '1A TP 1.1'
+        numYearTT:
+          type: 'integer'
+          example: 1
+        descTT:
+          type: 'string'
+          example: 'TP 1.1'
+        adeResources:
+          type: 'integer'
+          example: 1177
+        adeProjectId:
+          type: 'integer'
+          example: 4
+        lastUpdate:
+          type: 'string'
+          example: '2020-06-16T07:14:34.017Z'
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: 'no cache found for this timetable'
+    JsonEvent:
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Reunion de rentrée 1A'
+        enseignant:
+          type: string
+          example: 'M. Dupont'
+          deprecated: true
+        teacher:
+          type: string
+          example: 'M. Dupont'
+        description:
+          type: string
+          example: 'BUT 1A'
+        location:
+          type: string
+          example: 'Amphithéâtre'
+        start:
+          type: string
+          example: '2023-09-05T09:00:00Z'
+        end:
+          type: string
+          example: '2023-09-05T10:00:00Z'
+    IcalEvent:
+      type: string
+      example: |
+        BEGIN:VCALENDAR
+        METHOD:REQUEST
+        PRODID:-//ADE/version 6.0
+        VERSION:2.0
+        CALSCALE:GREGORIAN
+        BEGIN:VEVENT
+        DTSTAMP:20231208T153544Z
+        DTSTART:20230905T090000Z
+        DTEND:20230905T100000Z
+        SUMMARY:Reunion de rentrée 1A
+        LOCATION:Amphithéâtre
+        DESCRIPTION:\n\nBUT 1A\nM. Dupont\n(Exported :08/12/2023 16:35)\n
+        UID:ADE60323032332d323032342d3135343639352d302d30
+        CREATED:19700101T000000Z
+        LAST-MODIFIED:20231208T153544Z
+        SEQUENCE:-1960707552
+        END:VEVENT
+        END:VCALENDAR

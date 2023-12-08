@@ -91,9 +91,11 @@ func calendarToJson(calendar *ics.Calendar) []JsonEvent {
 			startAt, errStartAt := event.GetStartAt()
 			endAt, errEndAt := event.GetEndAt()
 			if errStartAt == nil && errEndAt == nil {
+				teacher := getTeacher(description.Value)
 				jsonEvents = append(jsonEvents, JsonEvent{
 					Title:       formatTitle(summary.Value),
-					Teacher:     getTeacher(description.Value),
+					Enseignant:  teacher, // TODO to be removed
+					Teacher:     teacher,
 					Description: formatDescription(description.Value),
 					Start:       startAt,
 					End:         endAt,

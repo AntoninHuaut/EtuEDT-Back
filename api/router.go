@@ -11,23 +11,6 @@ import (
 	"time"
 )
 
-type UniversityResponse struct {
-	NumUniv  int    `json:"numUniv"`
-	NameUniv string `json:"nameUniv"`
-	AdeUniv  string `json:"adeUniv"`
-}
-
-type TimetableResponse struct {
-	NumUniv      int       `json:"numUniv"`
-	NameUniv     string    `json:"nameUniv"`
-	NameTT       string    `json:"nameTT"`
-	DescTT       string    `json:"descTT"`
-	NumYearTT    int       `json:"numYearTT"`
-	AdeResources int       `json:"adeResources"`
-	AdeProjectId int       `json:"adeProjectId"`
-	LastUpdate   time.Time `json:"lastUpdate"`
-}
-
 func v2Router(router fiber.Router) {
 	router.Get("/", func(c *fiber.Ctx) error {
 		var universitiesResponse []UniversityResponse
@@ -40,7 +23,7 @@ func v2Router(router fiber.Router) {
 	router.Get("/:numUniv", func(c *fiber.Ctx) error {
 		university, statusCode, err := getUniversityFromParam(c)
 		if err != nil {
-			return c.Status(statusCode).JSON(fiber.Map{"error": err.Error()})
+			return c.Status(statusCode).JSON(ErrorResponse{Error: err.Error()})
 		}
 		var timetablesResponse []TimetableResponse
 		for _, timetable := range university.Timetables {
@@ -53,16 +36,16 @@ func v2Router(router fiber.Router) {
 	router.Get("/:numUniv/:adeResources/:format?", func(c *fiber.Ctx) error {
 		university, statusCode, err := getUniversityFromParam(c)
 		if err != nil {
-			return c.Status(statusCode).JSON(fiber.Map{"error": err.Error()})
+			return c.Status(statusCode).JSON(ErrorResponse{Error: err.Error()})
 		}
 		timetable, statusCode, err := getTimetableFromParam(c, university)
 		if err != nil {
-			return c.Status(statusCode).JSON(fiber.Map{"error": err.Error()})
+			return c.Status(statusCode).JSON(ErrorResponse{Error: err.Error()})
 		}
 
 		timetableCache, ok := cache.GetTimetableByIds(university.NumUniv, timetable.AdeResources)
 		if !ok {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "no cache found for this timetable"})
+			return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{Error: "no cache found for this timetable"})
 		}
 
 		format := c.Params("format")
@@ -74,8 +57,8 @@ func v2Router(router fiber.Router) {
 			c.Set("Content-Type", "text/calendar")
 			return c.SendString(timetableCache.Ical)
 		} else {
-			return c.JSON(fiber.Map{
-				"error": "invalid format",
+			return c.JSON(ErrorResponse{
+				Error: "invalid format",
 			})
 		}
 	})
