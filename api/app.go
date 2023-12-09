@@ -20,7 +20,7 @@ func StartWebApp() {
 	app.Use(helmet.New())
 	app.Use(recover.New())
 
-	prometheus := fiberprometheus.New("my-service-name")
+	prometheus := fiberprometheus.New("EtuEDT-Back")
 	prometheus.RegisterAt(app, "/metrics")
 	app.Use(prometheus.Middleware)
 
