@@ -1,50 +1,48 @@
-openapi: '3.0.1'
+openapi: 3.0.1
 info:
-  description: 'API of EtuEDT-Back server.'
-  version: '2.0.0'
-  title: 'EtuEDT-Back'
+  description: API of EtuEDT-Back server.
+  version: 2.0.1
+  title: EtuEDT-Back
 servers:
   - url: https://edtapi.antoninhuaut.fr/v2
 paths:
   /:
     get:
       tags:
-        - 'timetable'
-      summary: 'Get the list of universities'
+        - timetable
+      summary: Get the list of universities
       responses:
         '200':
-          description: 'Successful operation'
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: 'array'
+                type: array
                 items:
                   $ref: '#/components/schemas/University'
   /{numUniv}:
     get:
       tags:
-        - 'timetable'
-      summary: "Get a list of the university's timetables"
-      produces:
-        - 'application/json'
+        - timetable
+      summary: Get a list of the university's timetables
       parameters:
-        - name: 'numUniv'
-          in: 'path'
-          description: 'Id of university'
+        - name: numUniv
+          in: path
+          description: Id of university
           required: true
           schema:
-            type: 'integer'
+            type: integer
       responses:
         '200':
-          description: 'Successful operation'
+          description: Successful operation
           content:
             application/json:
               schema:
-                type: 'array'
+                type: array
                 items:
                   $ref: '#/components/schemas/Timetable'
         '404':
-          description: 'Invalid parameters'
+          description: Invalid parameters
           content:
             application/json:
               schema:
@@ -52,30 +50,30 @@ paths:
   /{numUniv}/{adeResources}:
     get:
       tags:
-        - 'timetable'
-      summary: 'Get timetable details by numUniv and adeResource'
+        - timetable
+      summary: Get timetable details by numUniv and adeResources
       parameters:
-        - name: 'numUniv'
-          in: 'path'
-          description: 'Id of university'
+        - name: numUniv
+          in: path
+          description: Id of university
           required: true
           schema:
-            type: 'integer'
-        - name: 'adeResources'
-          in: 'path'
-          description: 'Id of timetable'
+            type: integer
+        - name: adeResources
+          in: path
+          description: Id of timetable
           required: true
           schema:
-            type: 'integer'
+            type: integer
       responses:
         '200':
-          description: 'Successful operation'
+          description: Successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Timetable'
         '404':
-          description: 'Invalid parameters'
+          description: Invalid parameters
           content:
             application/json:
               schema:
@@ -83,33 +81,33 @@ paths:
   /{numUniv}/{adeResources}/{format}:
     get:
       tags:
-        - 'timetable'
-      summary: 'Get timetable content by numUniv, adeResources and by format'
+        - timetable
+      summary: Get timetable content by numUniv, adeResources and by format
       parameters:
-        - name: 'numUniv'
-          in: 'path'
-          description: 'Id of university'
+        - name: numUniv
+          in: path
+          description: Id of university
           required: true
           schema:
-            type: 'integer'
-        - name: 'adeResources'
-          in: 'path'
-          description: 'Id of timetable'
+            type: integer
+        - name: adeResources
+          in: path
+          description: Id of timetable
           required: true
           schema:
-            type: 'integer'
-        - name: 'format'
-          in: 'path'
-          description: 'Format to return'
+            type: integer
+        - name: format
+          in: path
+          description: Format to return
           required: true
           schema:
-            type: 'string'
+            type: string
             enum:
-              - 'ics'
-              - 'json'
+              - ics
+              - json
       responses:
         '200':
-          description: 'Successful operation'
+          description: Successful operation
           content:
             application/json:
               schema:
@@ -120,7 +118,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/IcalEvent'
         '404':
-          description: 'Invalid parameters'
+          description: Invalid parameters
           content:
             application/json:
               schema:
@@ -128,69 +126,69 @@ paths:
 components:
   schemas:
     University:
-      type: 'object'
+      type: object
       properties:
         numUniv:
-          type: 'integer'
+          type: integer
           example: 1
         nameUniv:
-          type: 'string'
-          example: 'Université de Caen'
+          type: string
+          example: Université de Caen
         adeUniv:
-          type: 'string'
-          example: 'http://ade.unicaen.fr'
+          type: string
+          example: http://ade.unicaen.fr
     Timetable:
-      type: 'object'
+      type: object
       properties:
         numUniv:
-          type: 'integer'
+          type: integer
           example: 1
         nameUniv:
-          type: 'string'
-          example: 'Université de Caen'
+          type: string
+          example: Université de Caen
         nameTT:
-          type: 'string'
-          example: '1A TP 1.1'
+          type: string
+          example: 1A TP 1.1
         numYearTT:
-          type: 'integer'
+          type: integer
           example: 1
         descTT:
-          type: 'string'
-          example: 'TP 1.1'
+          type: string
+          example: TP 1.1
         adeResources:
-          type: 'integer'
+          type: integer
           example: 1177
         adeProjectId:
-          type: 'integer'
+          type: integer
           example: 4
         lastUpdate:
-          type: 'string'
+          type: string
           example: '2020-06-16T07:14:34.017Z'
     Error:
       type: object
       properties:
         error:
           type: string
-          example: 'no cache found for this timetable'
+          example: no cache found for this timetable
     JsonEvent:
       type: object
       properties:
         title:
           type: string
-          example: 'Reunion de rentrée 1A'
+          example: Reunion de rentrée 1A
         enseignant:
           type: string
-          example: 'M. Dupont'
+          example: M. Dupont
           deprecated: true
         teacher:
           type: string
-          example: 'M. Dupont'
+          example: M. Dupont
         description:
           type: string
-          example: 'BUT 1A'
+          example: BUT 1A
         location:
           type: string
-          example: 'Amphithéâtre'
+          example: Amphithéâtre
         start:
           type: string
           example: '2023-09-05T09:00:00Z'
