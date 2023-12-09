@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -19,7 +20,11 @@ func StartWebApp() {
 	app.Use(helmet.New())
 	app.Use(recover.New())
 
-	app.Get("/metrics", monitor.New())
+	prometheus := fiberprometheus.New("my-service-name")
+	prometheus.RegisterAt(app, "/metrics")
+	app.Use(prometheus.Middleware)
+
+	app.Get("/monitor", monitor.New())
 	app.Get("/openapi", func(c *fiber.Ctx) error {
 		return c.SendFile("./openapi.yaml")
 	})
