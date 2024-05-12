@@ -2,8 +2,6 @@ package cache
 
 import (
 	"EtuEDT-Go/config"
-	"github.com/arran4/golang-ical"
-	"github.com/go-co-op/gocron"
 	"io"
 	"log"
 	"net/http"
@@ -11,6 +9,13 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	ics "github.com/arran4/golang-ical"
+	"github.com/go-co-op/gocron"
+)
+
+const (
+	httpTimeout = 30 * time.Second
 )
 
 type JsonEvent struct {
@@ -39,7 +44,7 @@ func StartScheduler() error {
 }
 
 func refreshTimetables(universities []config.UniversityConfig) {
-	client := &http.Client{Timeout: 10 * time.Second}
+	client := &http.Client{Timeout: httpTimeout}
 
 	wg := sync.WaitGroup{}
 	for _, university := range universities {
