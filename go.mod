@@ -6,7 +6,7 @@ require (
 	github.com/ansrivas/fiberprometheus/v2 v2.6.1
 	github.com/arran4/golang-ical v0.2.8
 	github.com/go-co-op/gocron v1.37.0
-	github.com/gofiber/fiber/v2 v2.52.4
+	github.com/gofiber/fiber/v2 v2.52.5
 )
 
 require (
