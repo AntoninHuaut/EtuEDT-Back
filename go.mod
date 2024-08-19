@@ -7,6 +7,7 @@ require (
 	github.com/arran4/golang-ical v0.3.1
 	github.com/go-co-op/gocron v1.37.0
 	github.com/gofiber/fiber/v2 v2.52.5
+	golang.org/x/time v0.6.0
 )
 
 require (

@@ -2,20 +2,16 @@ package cache
 
 import (
 	"EtuEDT-Go/config"
+	"golang.org/x/time/rate"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	ics "github.com/arran4/golang-ical"
 	"github.com/go-co-op/gocron"
-)
-
-const (
-	httpTimeout = 30 * time.Second
 )
 
 type JsonEvent struct {
@@ -31,8 +27,10 @@ type JsonEvent struct {
 func StartScheduler() error {
 	scheduler := gocron.NewScheduler(time.UTC)
 	_, err := scheduler.Every(config.AppConfig.RefreshMinutes).Minutes().Do(func() {
+		timeStart := time.Now()
 		log.Println("Refreshing timetables")
 		refreshTimetables(config.AppConfig.Universities)
+		log.Println("  done in " + time.Since(timeStart).String())
 	})
 	if err != nil {
 		return err
@@ -44,27 +42,22 @@ func StartScheduler() error {
 }
 
 func refreshTimetables(universities []config.UniversityConfig) {
-	client := &http.Client{Timeout: httpTimeout}
+	rl := rate.NewLimiter(rate.Every(time.Second), 2)
+	client := NewClient(rl)
 
-	wg := sync.WaitGroup{}
 	for _, university := range universities {
 		for _, timetable := range university.Timetables {
-			wg.Add(1)
-			go func(university config.UniversityConfig, timetable config.TimetableConfig) {
-				calendar, err := fetchTimetable(client, university, timetable)
-				if err != nil {
-					log.Printf("refreshTimetables: %v", err)
-				} else {
-					SetTimetableByIds(university.NumUniv, timetable.AdeResources, calendar.Serialize(), calendarToJson(calendar))
-				}
-				wg.Done()
-			}(university, timetable)
+			calendar, err := fetchTimetable(client, university, timetable)
+			if err != nil {
+				log.Printf("refreshTimetables: %v", err)
+			} else {
+				SetTimetableByIds(university.NumUniv, timetable.AdeResources, calendar.Serialize(), calendarToJson(calendar))
+			}
 		}
 	}
-	wg.Wait()
 }
 
-func fetchTimetable(client *http.Client, university config.UniversityConfig, timetable config.TimetableConfig) (*ics.Calendar, error) {
+func fetchTimetable(client *RLHTTPClient, university config.UniversityConfig, timetable config.TimetableConfig) (*ics.Calendar, error) {
 	firstDate := time.Now().AddDate(0, -4, 0).Format("2006-01-02")
 	lastDate := time.Now().AddDate(0, 4, 0).Format("2006-01-02")
 	req, err := http.NewRequest(http.MethodGet, university.AdeUniv, nil)
