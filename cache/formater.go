@@ -54,11 +54,11 @@ func calendarToJson(calendar *ics.Calendar) []JsonEvent {
 	}
 
 	removeExportedDescription := func(description string) string {
-		return regexp.MustCompile(`\(Exported.*\n?`).ReplaceAllString(description, "")
+		return regexp.MustCompile(`\n\(Export(é|ed).*\n?`).ReplaceAllString(description, "")
 	}
 
 	formatDescription := func(description string) string {
-		return strings.TrimSpace(strings.ReplaceAll(removeExportedDescription(description), "\\n", "\n"))
+		return strings.TrimSpace(removeExportedDescription(strings.ReplaceAll(description, "\\n", "\n")))
 	}
 
 	getTeacher := func(description string) string {
@@ -66,22 +66,21 @@ func calendarToJson(calendar *ics.Calendar) []JsonEvent {
 			return "?"
 		}
 
-		descSplit := strings.Split(removeExportedDescription(description), "\\n")
-		teacherIndex := 1
-		counter := 0
-		for _, line := range descSplit {
-			if len(line) == 0 {
-				continue
-			}
+		var teachers []string
+		descSplit := strings.Split(description, "\n")
+		firstTeacherIndex := 1
+		for index, line := range descSplit {
 			if strings.HasPrefix(line, "GRP") {
-				teacherIndex++
+				firstTeacherIndex++
 			}
-			if counter == teacherIndex {
-				return line
+			if index >= firstTeacherIndex {
+				teachers = append(teachers, line)
 			}
-			counter++
 		}
-		return "?"
+		if len(teachers) == 0 {
+			return "?"
+		}
+		return strings.Join(teachers, ",")
 	}
 
 	for _, event := range calendar.Events() {
@@ -92,12 +91,14 @@ func calendarToJson(calendar *ics.Calendar) []JsonEvent {
 			startAt, errStartAt := event.GetStartAt()
 			endAt, errEndAt := event.GetEndAt()
 			if errStartAt == nil && errEndAt == nil {
-				teacher := getTeacher(description.Value)
+				formattedDescription := formatDescription(description.Value)
+				teacher := getTeacher(formattedDescription)
+
 				jsonEvents = append(jsonEvents, JsonEvent{
 					Title:       formatTitle(summary.Value),
 					Enseignant:  teacher, // TODO to be removed
 					Teacher:     teacher,
-					Description: formatDescription(description.Value),
+					Description: formattedDescription,
 					Start:       startAt,
 					End:         endAt,
 					Location:    location.Value,
