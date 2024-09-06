@@ -2,8 +2,7 @@ package cache
 
 import (
 	"EtuEDT-Go/config"
-	"golang.org/x/time/rate"
-	"io"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,9 +27,9 @@ func StartScheduler() error {
 	scheduler := gocron.NewScheduler(time.UTC)
 	_, err := scheduler.Every(config.AppConfig.RefreshMinutes).Minutes().Do(func() {
 		timeStart := time.Now()
-		log.Println("Refreshing timetables")
+		log.Println("[Info] [Cron] Refreshing timetables")
 		refreshTimetables(config.AppConfig.Universities)
-		log.Println("  done in " + time.Since(timeStart).String())
+		log.Println("[Info] [Cron] Refresh done in " + time.Since(timeStart).String())
 	})
 	if err != nil {
 		return err
@@ -42,22 +41,17 @@ func StartScheduler() error {
 }
 
 func refreshTimetables(universities []config.UniversityConfig) {
-	rl := rate.NewLimiter(rate.Every(time.Second), 2)
-	client := NewClient(rl)
-
 	for _, university := range universities {
 		for _, timetable := range university.Timetables {
-			calendar, err := fetchTimetable(client, university, timetable)
-			if err != nil {
-				log.Printf("refreshTimetables: %v", err)
-			} else {
+			calendar, err := fetchTimetable(university, timetable)
+			if err == nil {
 				SetTimetableByIds(university.NumUniv, timetable.AdeResources, calendar.Serialize(), calendarToJson(calendar))
 			}
 		}
 	}
 }
 
-func fetchTimetable(client *RLHTTPClient, university config.UniversityConfig, timetable config.TimetableConfig) (*ics.Calendar, error) {
+func fetchTimetable(university config.UniversityConfig, timetable config.TimetableConfig) (*ics.Calendar, error) {
 	firstDate := time.Now().AddDate(0, -4, 0).Format("2006-01-02")
 	lastDate := time.Now().AddDate(0, 4, 0).Format("2006-01-02")
 	req, err := http.NewRequest(http.MethodGet, university.AdeUniv, nil)
@@ -72,17 +66,7 @@ func fetchTimetable(client *RLHTTPClient, university config.UniversityConfig, ti
 	q.Add("lastDate", lastDate)
 	req.URL.RawQuery = q.Encode()
 
-	response, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	var deferErr error
-	defer func(Body io.ReadCloser) {
-		deferErr = Body.Close()
-	}(response.Body)
-
-	body, err := io.ReadAll(response.Body)
+	body, err := MakeRequest(fmt.Sprintf("%d", timetable.AdeResources), req)
 	if err != nil {
 		return nil, err
 	}
@@ -92,5 +76,5 @@ func fetchTimetable(client *RLHTTPClient, university config.UniversityConfig, ti
 		return nil, err
 	}
 
-	return ical, deferErr
+	return ical, nil
 }
