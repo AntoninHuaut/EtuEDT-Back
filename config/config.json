@@ -1,108 +1,108 @@
 {
-  "refreshMinutes": 480,
-  "univ": [
-    {
-      "numUniv": 1,
-      "nameUniv": "BUT Informatique - IUT Grand Ouest Normandie",
-      "adeUniv": "https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp",
-      "timetable": [
-        {
-          "adeResources": 1177,
-          "numYearTT": 1,
-          "descTT": "TP 1.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 95403,
-          "numYearTT": 1,
-          "descTT": "TP 1.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1185,
-          "numYearTT": 1,
-          "descTT": "TP 2.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1186,
-          "numYearTT": 1,
-          "descTT": "TP 2.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1189,
-          "numYearTT": 1,
-          "descTT": "TP 3.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1191,
-          "numYearTT": 1,
-          "descTT": "TP 3.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1200,
-          "numYearTT": 2,
-          "descTT": "TP 1.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1201,
-          "numYearTT": 2,
-          "descTT": "TP 1.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1204,
-          "numYearTT": 2,
-          "descTT": "TP 2.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1205,
-          "numYearTT": 2,
-          "descTT": "TP 2.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1208,
-          "numYearTT": 2,
-          "descTT": "TP 3.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 1209,
-          "numYearTT": 2,
-          "descTT": "TP 3.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 36647,
-          "numYearTT": 3,
-          "descTT": "TP 1.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 36648,
-          "numYearTT": 3,
-          "descTT": "TP 1.2",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 36649,
-          "numYearTT": 3,
-          "descTT": "TP 2.1",
-          "adeProjectId": 1
-        },
-        {
-          "adeResources": 36650,
-          "numYearTT": 3,
-          "descTT": "TP 2.2",
-          "adeProjectId": 1
-        }
-      ]
-    }
-  ]
+	"refreshMinutes": 480,
+	"univ": [
+		{
+			"numUniv": 1,
+			"nameUniv": "BUT Informatique - IUT Grand Ouest Normandie",
+			"adeUniv": "https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp",
+			"timetable": [
+				{
+					"adeResources": 1177,
+					"numYearTT": 1,
+					"descTT": "TP 1.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 95403,
+					"numYearTT": 1,
+					"descTT": "TP 1.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1185,
+					"numYearTT": 1,
+					"descTT": "TP 2.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1186,
+					"numYearTT": 1,
+					"descTT": "TP 2.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1189,
+					"numYearTT": 1,
+					"descTT": "TP 3.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1191,
+					"numYearTT": 1,
+					"descTT": "TP 3.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1200,
+					"numYearTT": 2,
+					"descTT": "TP 1.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 6923,
+					"numYearTT": 2,
+					"descTT": "TP 1.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1204,
+					"numYearTT": 2,
+					"descTT": "TP 2.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1205,
+					"numYearTT": 2,
+					"descTT": "TP 2.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1208,
+					"numYearTT": 2,
+					"descTT": "TP 3.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 1209,
+					"numYearTT": 2,
+					"descTT": "TP 3.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 36647,
+					"numYearTT": 3,
+					"descTT": "TP 1.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 36648,
+					"numYearTT": 3,
+					"descTT": "TP 1.2",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 36649,
+					"numYearTT": 3,
+					"descTT": "TP 2.1",
+					"adeProjectId": 1
+				},
+				{
+					"adeResources": 36650,
+					"numYearTT": 3,
+					"descTT": "TP 2.2",
+					"adeProjectId": 1
+				}
+			]
+		}
+	]
 }
