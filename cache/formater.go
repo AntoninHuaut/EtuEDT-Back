@@ -50,7 +50,7 @@ func calendarToJson(calendar *ics.Calendar) []JsonEvent {
 
 	formatTitle := func(title string) string {
 		title = regexp.MustCompile(`(_s\d+)$`).ReplaceAllString(title, "")
-		return regexp.MustCompile(`(?m)^\w+.\d+ (: )?`).ReplaceAllString(title, "")
+		return regexp.MustCompile(`(?m)^\w+.\d+ (:\s?)?`).ReplaceAllString(title, "")
 	}
 
 	removeExportedDescription := func(description string) string {
