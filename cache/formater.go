@@ -84,6 +84,13 @@ func calendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 		return strings.Join(teachers, ",")
 	}
 
+	getLocation := func(location string) string {
+		if len(location) == 0 {
+			return "?"
+		}
+		return location
+	}
+
 	for _, event := range calendar.Events() {
 		summary := event.GetProperty("SUMMARY")
 		description := event.GetProperty("DESCRIPTION")
@@ -101,7 +108,7 @@ func calendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 					Description: formattedDescription,
 					Start:       startAt,
 					End:         endAt,
-					Location:    location.Value,
+					Location:    getLocation(location.Value),
 				})
 			}
 		}
