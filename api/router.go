@@ -2,7 +2,7 @@ package api
 
 import (
 	"EtuEDT-Go/cache"
-	"EtuEDT-Go/config"
+	"EtuEDT-Go/domain"
 	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
@@ -13,8 +13,8 @@ import (
 
 func v2Router(router fiber.Router) {
 	router.Get("/", func(c *fiber.Ctx) error {
-		var universitiesResponse []UniversityResponse
-		for _, university := range config.AppConfig.Universities {
+		var universitiesResponse []domain.UniversityResponse
+		for _, university := range domain.AppConfig.Universities {
 			universitiesResponse = append(universitiesResponse, createUniversityResponse(&university))
 		}
 		return c.JSON(universitiesResponse)
@@ -23,9 +23,9 @@ func v2Router(router fiber.Router) {
 	router.Get("/:numUniv", func(c *fiber.Ctx) error {
 		university, statusCode, err := getUniversityFromParam(c)
 		if err != nil {
-			return c.Status(statusCode).JSON(ErrorResponse{Error: err.Error()})
+			return c.Status(statusCode).JSON(domain.ErrorResponse{Error: err.Error()})
 		}
-		var timetablesResponse []TimetableResponse
+		var timetablesResponse []domain.TimetableResponse
 		for _, timetable := range university.Timetables {
 			timetablesResponse = append(timetablesResponse, createTimetableResponse(university, &timetable))
 		}
@@ -36,16 +36,16 @@ func v2Router(router fiber.Router) {
 	router.Get("/:numUniv/:adeResources/:format?", func(c *fiber.Ctx) error {
 		university, statusCode, err := getUniversityFromParam(c)
 		if err != nil {
-			return c.Status(statusCode).JSON(ErrorResponse{Error: err.Error()})
+			return c.Status(statusCode).JSON(domain.ErrorResponse{Error: err.Error()})
 		}
 		timetable, statusCode, err := getTimetableFromParam(c, university)
 		if err != nil {
-			return c.Status(statusCode).JSON(ErrorResponse{Error: err.Error()})
+			return c.Status(statusCode).JSON(domain.ErrorResponse{Error: err.Error()})
 		}
 
 		timetableCache, ok := cache.GetTimetableByIds(university.NumUniv, timetable.AdeResources)
 		if !ok {
-			return c.Status(fiber.StatusInternalServerError).JSON(ErrorResponse{Error: "no cache found for this timetable"})
+			return c.Status(fiber.StatusInternalServerError).JSON(domain.ErrorResponse{Error: "no cache found for this timetable"})
 		}
 
 		format := c.Params("format")
@@ -57,32 +57,32 @@ func v2Router(router fiber.Router) {
 			c.Set("Content-Type", "text/calendar")
 			return c.SendString(timetableCache.Ical)
 		} else {
-			return c.JSON(ErrorResponse{
+			return c.JSON(domain.ErrorResponse{
 				Error: "invalid format",
 			})
 		}
 	})
 }
 
-func getUniversityFromParam(c *fiber.Ctx) (*config.UniversityConfig, int, error) {
+func getUniversityFromParam(c *fiber.Ctx) (*domain.UniversityConfig, int, error) {
 	numUniv, err := strconv.Atoi(c.Params("numUniv"))
 	if err != nil {
 		return nil, fiber.StatusBadRequest, errors.New("invalid parameter")
 	}
-	universityIndex := slices.IndexFunc(config.AppConfig.Universities, func(c config.UniversityConfig) bool { return c.NumUniv == numUniv })
+	universityIndex := slices.IndexFunc(domain.AppConfig.Universities, func(c domain.UniversityConfig) bool { return c.NumUniv == numUniv })
 	if universityIndex < 0 {
 		return nil, fiber.StatusNotFound, errors.New("university not found")
 	}
-	university := config.AppConfig.Universities[universityIndex]
+	university := domain.AppConfig.Universities[universityIndex]
 	return &university, 0, nil
 }
 
-func getTimetableFromParam(c *fiber.Ctx, university *config.UniversityConfig) (*config.TimetableConfig, int, error) {
+func getTimetableFromParam(c *fiber.Ctx, university *domain.UniversityConfig) (*domain.TimetableConfig, int, error) {
 	adeResources, err := strconv.Atoi(c.Params("adeResources"))
 	if err != nil {
 		return nil, fiber.StatusBadRequest, errors.New("invalid parameter")
 	}
-	timetableIndex := slices.IndexFunc(university.Timetables, func(c config.TimetableConfig) bool { return c.AdeResources == adeResources })
+	timetableIndex := slices.IndexFunc(university.Timetables, func(c domain.TimetableConfig) bool { return c.AdeResources == adeResources })
 	if timetableIndex < 0 {
 		return nil, fiber.StatusNotFound, errors.New("timetable not found")
 	}
@@ -90,21 +90,21 @@ func getTimetableFromParam(c *fiber.Ctx, university *config.UniversityConfig) (*
 	return &timetable, 0, nil
 }
 
-func createUniversityResponse(university *config.UniversityConfig) UniversityResponse {
-	return UniversityResponse{
+func createUniversityResponse(university *domain.UniversityConfig) domain.UniversityResponse {
+	return domain.UniversityResponse{
 		NumUniv:  university.NumUniv,
 		NameUniv: university.NameUniv,
 		AdeUniv:  university.AdeUniv,
 	}
 }
 
-func createTimetableResponse(university *config.UniversityConfig, timetable *config.TimetableConfig) TimetableResponse {
+func createTimetableResponse(university *domain.UniversityConfig, timetable *domain.TimetableConfig) domain.TimetableResponse {
 	timetableCache, ok := cache.GetTimetableByIds(university.NumUniv, timetable.AdeResources)
 	lastUpdate := time.Time{}
 	if ok {
 		lastUpdate = timetableCache.LastUpdate
 	}
-	return TimetableResponse{
+	return domain.TimetableResponse{
 		NumUniv:      university.NumUniv,
 		NameUniv:     university.NameUniv,
 		NameTT:       fmt.Sprintf("%d%s%s", timetable.NumYearTT, "A ", timetable.DescTT),

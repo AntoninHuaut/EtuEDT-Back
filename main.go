@@ -3,12 +3,12 @@ package main
 import (
 	"EtuEDT-Go/api"
 	"EtuEDT-Go/cache"
-	"EtuEDT-Go/config"
+	"EtuEDT-Go/domain"
 	"log"
 )
 
 func main() {
-	if err := config.LoadConfig(); err != nil {
+	if err := domain.LoadConfig(); err != nil {
 		log.Fatal(err)
 	}
 

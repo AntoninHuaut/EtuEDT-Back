@@ -1,4 +1,4 @@
-package api
+package domain
 
 import "time"
 
@@ -25,7 +25,6 @@ type ErrorResponse struct {
 
 type JsonEvent struct {
 	Title       string    `json:"title"`
-	Enseignant  string    `json:"enseignant"` // TODO temporary for compatibility with the old frontend
 	Teacher     string    `json:"teacher"`
 	Description string    `json:"description"`
 	Start       time.Time `json:"start"`

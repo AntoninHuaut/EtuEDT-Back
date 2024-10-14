@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"EtuEDT-Go/config"
+	"EtuEDT-Go/domain"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,22 +13,12 @@ import (
 	"github.com/go-co-op/gocron"
 )
 
-type JsonEvent struct {
-	Title       string    `json:"title"`
-	Enseignant  string    `json:"enseignant"` // TODO temporary for compatibility with the old frontend
-	Teacher     string    `json:"teacher"`
-	Description string    `json:"description"`
-	Start       time.Time `json:"start"`
-	End         time.Time `json:"end"`
-	Location    string    `json:"location"`
-}
-
 func StartScheduler() error {
 	scheduler := gocron.NewScheduler(time.UTC)
-	_, err := scheduler.Every(config.AppConfig.RefreshMinutes).Minutes().Do(func() {
+	_, err := scheduler.Every(domain.AppConfig.RefreshMinutes).Minutes().Do(func() {
 		timeStart := time.Now()
 		log.Println("[Info] [Cron] Refreshing timetables")
-		refreshTimetables(config.AppConfig.Universities)
+		refreshTimetables(domain.AppConfig.Universities)
 		log.Println("[Info] [Cron] Refresh done in " + time.Since(timeStart).String())
 	})
 	if err != nil {
@@ -40,7 +30,7 @@ func StartScheduler() error {
 	return nil
 }
 
-func refreshTimetables(universities []config.UniversityConfig) {
+func refreshTimetables(universities []domain.UniversityConfig) {
 	for _, university := range universities {
 		for _, timetable := range university.Timetables {
 			calendar, err := fetchTimetable(university, timetable)
@@ -51,7 +41,7 @@ func refreshTimetables(universities []config.UniversityConfig) {
 	}
 }
 
-func fetchTimetable(university config.UniversityConfig, timetable config.TimetableConfig) (*ics.Calendar, error) {
+func fetchTimetable(university domain.UniversityConfig, timetable domain.TimetableConfig) (*ics.Calendar, error) {
 	firstDate := time.Now().AddDate(0, -4, 0).Format("2006-01-02")
 	lastDate := time.Now().AddDate(0, 4, 0).Format("2006-01-02")
 	req, err := http.NewRequest(http.MethodGet, university.AdeUniv, nil)

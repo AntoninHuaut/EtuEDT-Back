@@ -176,10 +176,6 @@ components:
         title:
           type: string
           example: Reunion de rentrée 1A
-        enseignant:
-          type: string
-          example: M. Dupont
-          deprecated: true
         teacher:
           type: string
           example: M. Dupont

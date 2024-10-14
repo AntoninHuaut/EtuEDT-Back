@@ -1,16 +1,17 @@
 package cache
 
 import (
+	"EtuEDT-Go/domain"
 	"strconv"
 	"time"
 )
 
 type TimetableCache struct {
-	NumUniv      int         `json:"numUniv"`
-	AdeResources int         `json:"adeResources"`
-	LastUpdate   time.Time   `json:"lastUpdate"`
-	Ical         string      `json:"calendar"`
-	Json         []JsonEvent `json:"json"`
+	NumUniv      int                `json:"numUniv"`
+	AdeResources int                `json:"adeResources"`
+	LastUpdate   time.Time          `json:"lastUpdate"`
+	Ical         string             `json:"calendar"`
+	Json         []domain.JsonEvent `json:"json"`
 }
 
 var cache = make(map[string]TimetableCache)
@@ -21,7 +22,7 @@ func GetTimetableByIds(numUniv int, adeResources int) (TimetableCache, bool) {
 	return timetable, ok
 }
 
-func SetTimetableByIds(numUniv int, adeResources int, ical string, json []JsonEvent) TimetableCache {
+func SetTimetableByIds(numUniv int, adeResources int, ical string, json []domain.JsonEvent) TimetableCache {
 	key := getKey(numUniv, adeResources)
 	timetable, ok := cache[key]
 	if ok {

@@ -1,19 +1,20 @@
 package cache
 
 import (
+	"EtuEDT-Go/domain"
 	ics "github.com/arran4/golang-ical"
 	"regexp"
 	"sort"
 	"strings"
 )
 
-func jsonMergeSimilarEvents(events []JsonEvent) []JsonEvent {
+func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {
 	type MergeJsonEvent struct {
-		Event       JsonEvent
+		Event       domain.JsonEvent
 		OutputIndex int
 	}
 
-	outputs := make([]JsonEvent, 0)
+	outputs := make([]domain.JsonEvent, 0)
 	for _, event := range events {
 		var existingEvents []MergeJsonEvent
 		for index, output := range outputs {
@@ -45,8 +46,8 @@ func jsonMergeSimilarEvents(events []JsonEvent) []JsonEvent {
 	return outputs
 }
 
-func calendarToJson(calendar *ics.Calendar) []JsonEvent {
-	var jsonEvents []JsonEvent
+func calendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
+	var jsonEvents []domain.JsonEvent
 
 	formatTitle := func(title string) string {
 		title = regexp.MustCompile(`(_s\d+)$`).ReplaceAllString(title, "")
@@ -94,9 +95,8 @@ func calendarToJson(calendar *ics.Calendar) []JsonEvent {
 				formattedDescription := formatDescription(description.Value)
 				teacher := getTeacher(formattedDescription)
 
-				jsonEvents = append(jsonEvents, JsonEvent{
+				jsonEvents = append(jsonEvents, domain.JsonEvent{
 					Title:       formatTitle(summary.Value),
-					Enseignant:  teacher, // TODO to be removed
 					Teacher:     teacher,
 					Description: formattedDescription,
 					Start:       startAt,
