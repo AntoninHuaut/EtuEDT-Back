@@ -11,7 +11,6 @@ type UniversityResponse struct {
 type TimetableResponse struct {
 	NumUniv      int       `json:"numUniv"`
 	NameUniv     string    `json:"nameUniv"`
-	NameTT       string    `json:"nameTT"`
 	DescTT       string    `json:"descTT"`
 	NumYearTT    int       `json:"numYearTT"`
 	AdeResources int       `json:"adeResources"`

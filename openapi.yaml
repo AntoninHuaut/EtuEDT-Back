@@ -146,9 +146,6 @@ components:
         nameUniv:
           type: string
           example: Université de Caen
-        nameTT:
-          type: string
-          example: 1A TP 1.1
         numYearTT:
           type: integer
           example: 1

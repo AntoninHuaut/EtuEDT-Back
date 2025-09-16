@@ -4,7 +4,6 @@ import (
 	"EtuEDT-Go/cache"
 	"EtuEDT-Go/domain"
 	"errors"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"slices"
 	"strconv"
@@ -104,10 +103,10 @@ func createTimetableResponse(university *domain.UniversityConfig, timetable *dom
 	if ok {
 		lastUpdate = timetableCache.LastUpdate
 	}
+
 	return domain.TimetableResponse{
 		NumUniv:      university.NumUniv,
 		NameUniv:     university.NameUniv,
-		NameTT:       fmt.Sprintf("%d%s%s", timetable.NumYearTT, "A ", timetable.DescTT),
 		DescTT:       timetable.DescTT,
 		NumYearTT:    timetable.NumYearTT,
 		AdeResources: timetable.AdeResources,
