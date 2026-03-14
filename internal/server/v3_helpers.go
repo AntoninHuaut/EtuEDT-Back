@@ -110,7 +110,7 @@ func fetchEvents(univ *config.UniversityConfig, adeResources int) ([]ade.Event, 
 
 	calendar, err := ade.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, univ.AdeProjectId)
 	if err == nil {
-		fresh := ade.SetTimetableByAdeResources(univ.ID, adeResources, calendar.Serialize(), ade.CalendarToEvents(calendar))
+		fresh := ade.SetTimetableByAdeResources(univ.ID, adeResources, ade.CalendarToEvents(calendar))
 		return fresh.Events, nil
 	}
 

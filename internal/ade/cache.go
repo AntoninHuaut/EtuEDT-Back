@@ -14,7 +14,6 @@ import (
 type TimetableCache struct {
 	AdeResources int        `json:"adeResources"`
 	LastUpdate   *time.Time `json:"lastUpdate"`
-	Ical         string     `json:"calendar"`
 	Events       []Event    `json:"events"`
 }
 
@@ -30,13 +29,12 @@ func GetTimetableByAdeResources(univID int, adeResources int) (TimetableCache, b
 	return timetable, ok
 }
 
-func SetTimetableByAdeResources(univID int, adeResources int, ical string, events []Event) TimetableCache {
+func SetTimetableByAdeResources(univID int, adeResources int, events []Event) TimetableCache {
 	key := cacheKey(univID, adeResources)
 	cacheMu.Lock()
 	timetable := TimetableCache{
 		AdeResources: adeResources,
 		LastUpdate:   new(time.Now()),
-		Ical:         ical,
 		Events:       events,
 	}
 	cacheMap[key] = timetable
