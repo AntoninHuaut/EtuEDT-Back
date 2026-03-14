@@ -1,222 +1,3134 @@
 {
-	"refreshMinutes": 480,
-	"univ": [
-		{
-			"numUniv": 1,
-			"nameUniv": "BUT Informatique - IUT Grand Ouest Normandie",
-			"adeUniv": "https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp",
-			"timetable": [
-				{
-					"adeResources": 1177,
-					"numYearTT": 1,
-					"descTT": "TP 1.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 95403,
-					"numYearTT": 1,
-					"descTT": "TP 1.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1185,
-					"numYearTT": 1,
-					"descTT": "TP 2.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1186,
-					"numYearTT": 1,
-					"descTT": "TP 2.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1189,
-					"numYearTT": 1,
-					"descTT": "TP 3.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1191,
-					"numYearTT": 1,
-					"descTT": "TP 3.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1200,
-					"numYearTT": 2,
-					"descTT": "TP 1.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 6923,
-					"numYearTT": 2,
-					"descTT": "TP 1.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1204,
-					"numYearTT": 2,
-					"descTT": "TP 2.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1205,
-					"numYearTT": 2,
-					"descTT": "TP 2.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1208,
-					"numYearTT": 2,
-					"descTT": "TP 3.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 1209,
-					"numYearTT": 2,
-					"descTT": "TP 3.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 36647,
-					"numYearTT": 3,
-					"descTT": "TP 1.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 36648,
-					"numYearTT": 3,
-					"descTT": "TP 1.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 36649,
-					"numYearTT": 3,
-					"descTT": "TP 2.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 36650,
-					"numYearTT": 3,
-					"descTT": "TP 2.2",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 34263,
-					"numYearTT": 3,
-					"descTT": "TP 3.1",
-					"adeProjectId": 2
-				},
-				{
-					"adeResources": 34262,
-					"numYearTT": 3,
-					"descTT": "TP 3.2",
-					"adeProjectId": 2
-				},
-				{
-				  "adeResources": 38541,
-				  "numYearTT": -1,
-				  "descTT": "1106",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 37355,
-				  "numYearTT": -1,
-				  "descTT": "1109",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 39548,
-				  "numYearTT": -1,
-				  "descTT": "1110",
-				  "adeProjectId": 2
-				},
+    "univs": [
+        {
+            "id": 1,
+            "name": "Université de Caen",
+            "adeUrl": "https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp",
+            "adeProjectId": 2,
+            "rooms": [
                 {
-				  "adeResources": 39568,
-				  "numYearTT": -1,
-				  "descTT": "2123 (LP)",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 38756,
-				  "numYearTT": -1,
-				  "descTT": "2124",
-				  "adeProjectId": 2
-				},
-                {
-				  "adeResources": 39646,
-				  "numYearTT": -1,
-				  "descTT": "2125 (TP réseau)",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 39491,
-				  "numYearTT": -1,
-				  "descTT": "2127",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 38113,
-				  "numYearTT": -1,
-				  "descTT": "2129",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 39052,
-				  "numYearTT": -1,
-				  "descTT": "2234",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 37590,
-				  "numYearTT": -1,
-				  "descTT": "2235",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 38484,
-				  "numYearTT": -1,
-				  "descTT": "2236",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 39005,
-				  "numYearTT": -1,
-				  "descTT": "2237",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 140414,
-				  "numYearTT": -1,
-				  "descTT": "2240",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 38713,
-				  "numYearTT": -1,
-				  "descTT": "Labo de langues",
-				  "adeProjectId": 2
-				},
-				{
-				  "adeResources": 24132,
-				  "numYearTT": -1,
-				  "descTT": "Labo multimédia",
-				  "adeProjectId": 2
-				},
-                {
-                  "adeResources": 39294,
-                  "numYearTT": -1,
-                  "descTT": "Amphithéatre",
-                  "adeProjectId": 2
+                    "adeResources": 42349,
+                    "label": "AC 007 (A)"
                 },
                 {
-                  "adeResources": 37865,
-                  "numYearTT": -1,
-                  "descTT": "Salle d'examen",
-                  "adeProjectId": 2
+                    "adeResources": 42344,
+                    "label": "AC 011 (A)"
+                },
+                {
+                    "adeResources": 39197,
+                    "label": "AC 104 (A)"
+                },
+                {
+                    "adeResources": 38357,
+                    "label": "AC 117 (A)"
+                },
+                {
+                    "adeResources": 37595,
+                    "label": "AC 119 (A)"
+                },
+                {
+                    "adeResources": 37215,
+                    "label": "AC 120 (A)"
+                },
+                {
+                    "adeResources": 39238,
+                    "label": "AC 123 (A)"
+                },
+                {
+                    "adeResources": 37983,
+                    "label": "AC 126 (A)"
+                },
+                {
+                    "adeResources": 39333,
+                    "label": "AC 129 (A)"
+                },
+                {
+                    "adeResources": 38391,
+                    "label": "AC 135 (A)"
+                },
+                {
+                    "adeResources": 63717,
+                    "label": "AC 138 (A)"
+                },
+                {
+                    "adeResources": 38856,
+                    "label": "AC 139 (A)"
+                },
+                {
+                    "adeResources": 126543,
+                    "label": "AC 143a (A)"
+                },
+                {
+                    "adeResources": 39248,
+                    "label": "AC 147 (A)"
+                },
+                {
+                    "adeResources": 206,
+                    "label": "Amphi Chimie (A)"
+                },
+                {
+                    "adeResources": 265,
+                    "label": "Amphi Frémont (A)"
+                },
+                {
+                    "adeResources": 101,
+                    "label": "Amphi Lignier (A)"
+                },
+                {
+                    "adeResources": 1021,
+                    "label": "Amphi Mathématiques (A)"
+                },
+                {
+                    "adeResources": 39240,
+                    "label": "AC S66 (A)"
+                },
+                {
+                    "adeResources": 42347,
+                    "label": "AC 010 (A)"
+                },
+                {
+                    "adeResources": 38686,
+                    "label": "Salle informatique AC 103 (A)"
+                },
+                {
+                    "adeResources": 39618,
+                    "label": "Salle informatique AC 137 (A)"
+                },
+                {
+                    "adeResources": 149097,
+                    "label": "B1-101 (B1)"
+                },
+                {
+                    "adeResources": 163681,
+                    "label": "B1-101a (B1)"
+                },
+                {
+                    "adeResources": 163679,
+                    "label": "B1-101b (B1)"
+                },
+                {
+                    "adeResources": 163682,
+                    "label": "B1-101c (B1)"
+                },
+                {
+                    "adeResources": 149126,
+                    "label": "B1-117 (B1)"
+                },
+                {
+                    "adeResources": 149120,
+                    "label": "B1-118 (B1)"
+                },
+                {
+                    "adeResources": 149114,
+                    "label": "B1-119 (B1)"
+                },
+                {
+                    "adeResources": 149124,
+                    "label": "B1-136 (B1)"
+                },
+                {
+                    "adeResources": 149104,
+                    "label": "B1-137 (B1)"
+                },
+                {
+                    "adeResources": 149116,
+                    "label": "B1-144 (B1)"
+                },
+                {
+                    "adeResources": 149110,
+                    "label": "B1-147 (B1)"
+                },
+                {
+                    "adeResources": 149109,
+                    "label": "B1-152 (B1)"
+                },
+                {
+                    "adeResources": 149100,
+                    "label": "B1-157 (B1)"
+                },
+                {
+                    "adeResources": 163683,
+                    "label": "B1-157a (B1)"
+                },
+                {
+                    "adeResources": 163678,
+                    "label": "B1-157b (B1)"
+                },
+                {
+                    "adeResources": 163680,
+                    "label": "B1-157c (B1)"
+                },
+                {
+                    "adeResources": 149105,
+                    "label": "B1-201 (B1)"
+                },
+                {
+                    "adeResources": 149122,
+                    "label": "B1-202 (B1)"
+                },
+                {
+                    "adeResources": 149112,
+                    "label": "B1-203 (B1)"
+                },
+                {
+                    "adeResources": 149111,
+                    "label": "B1-206 (B1)"
+                },
+                {
+                    "adeResources": 163372,
+                    "label": "B1-206a (B1)"
+                },
+                {
+                    "adeResources": 163375,
+                    "label": "B1-206b (B1)"
+                },
+                {
+                    "adeResources": 163374,
+                    "label": "B1-206c (B1)"
+                },
+                {
+                    "adeResources": 163370,
+                    "label": "B1-223 (B1)"
+                },
+                {
+                    "adeResources": 149092,
+                    "label": "B1-224 (B1)"
+                },
+                {
+                    "adeResources": 149096,
+                    "label": "B1-230 (B1)"
+                },
+                {
+                    "adeResources": 149123,
+                    "label": "B1-239 (B1)"
+                },
+                {
+                    "adeResources": 149118,
+                    "label": "B1-240 (B1)"
+                },
+                {
+                    "adeResources": 149115,
+                    "label": "B1-245 (B1)"
+                },
+                {
+                    "adeResources": 149125,
+                    "label": "B1-263 (B1)"
+                },
+                {
+                    "adeResources": 163376,
+                    "label": "B1-263a (B1)"
+                },
+                {
+                    "adeResources": 163373,
+                    "label": "B1-263b (B1)"
+                },
+                {
+                    "adeResources": 163371,
+                    "label": "B1-263c (B1)"
+                },
+                {
+                    "adeResources": 163367,
+                    "label": "Amphi DE BOUARD (B1-J01) (B1)"
+                },
+                {
+                    "adeResources": 163823,
+                    "label": "Amphi Daniel HUET (B1-J65) (B1)"
+                },
+                {
+                    "adeResources": 163822,
+                    "label": "Amphi Jean VIAL (B1-J64) (B1)"
+                },
+                {
+                    "adeResources": 184727,
+                    "label": "B1-401 (B1)"
+                },
+                {
+                    "adeResources": 93613,
+                    "label": "B1-442 (B1)"
+                },
+                {
+                    "adeResources": 143694,
+                    "label": "B1-J41 (B1)"
+                },
+                {
+                    "adeResources": 39871,
+                    "label": "BU 008 (C)"
+                },
+                {
+                    "adeResources": 13462,
+                    "label": "BU 009 (C)"
+                },
+                {
+                    "adeResources": 19775,
+                    "label": "BU 111 (C)"
+                },
+                {
+                    "adeResources": 19774,
+                    "label": "BU 113 (C)"
+                },
+                {
+                    "adeResources": 39526,
+                    "label": "BU 324 (C)"
+                },
+                {
+                    "adeResources": 38932,
+                    "label": "BU 326 (C)"
+                },
+                {
+                    "adeResources": 38825,
+                    "label": "BU 327 (C)"
+                },
+                {
+                    "adeResources": 38512,
+                    "label": "BU 328 (C)"
+                },
+                {
+                    "adeResources": 39147,
+                    "label": "BU 407 (C)"
+                },
+                {
+                    "adeResources": 39162,
+                    "label": "BU 411 (C)"
+                },
+                {
+                    "adeResources": 38815,
+                    "label": "BU 502 (C)"
+                },
+                {
+                    "adeResources": 39009,
+                    "label": "BU 610 (C)"
+                },
+                {
+                    "adeResources": 38599,
+                    "label": "BU 618 (C)"
+                },
+                {
+                    "adeResources": 70254,
+                    "label": "BU 803 (C)"
+                },
+                {
+                    "adeResources": 70302,
+                    "label": "BU 807 (C)"
+                },
+                {
+                    "adeResources": 144593,
+                    "label": "BU 811 (C)"
+                },
+                {
+                    "adeResources": 147369,
+                    "label": "BU 337 (C)"
+                },
+                {
+                    "adeResources": 38648,
+                    "label": "BU 413 (C)"
+                },
+                {
+                    "adeResources": 37603,
+                    "label": "BU 611 (C)"
+                },
+                {
+                    "adeResources": 38168,
+                    "label": "BU 613 (C)"
+                },
+                {
+                    "adeResources": 7489,
+                    "label": "DR S14 (D)"
+                },
+                {
+                    "adeResources": 38087,
+                    "label": "DR 101 (D)"
+                },
+                {
+                    "adeResources": 38153,
+                    "label": "DR 102 (D)"
+                },
+                {
+                    "adeResources": 38708,
+                    "label": "DR 103 (D)"
+                },
+                {
+                    "adeResources": 38855,
+                    "label": "DR 104 (D)"
+                },
+                {
+                    "adeResources": 60421,
+                    "label": "DR 106 (D)"
+                },
+                {
+                    "adeResources": 59381,
+                    "label": "DR 162 (D)"
+                },
+                {
+                    "adeResources": 39065,
+                    "label": "DR 267 (D)"
+                },
+                {
+                    "adeResources": 37767,
+                    "label": "DR 268 (D)"
+                },
+                {
+                    "adeResources": 38369,
+                    "label": "DR 269 (D)"
+                },
+                {
+                    "adeResources": 38758,
+                    "label": "DR 270 (D)"
+                },
+                {
+                    "adeResources": 38794,
+                    "label": "DR 272 (D)"
+                },
+                {
+                    "adeResources": 37495,
+                    "label": "DR 301 (D)"
+                },
+                {
+                    "adeResources": 39150,
+                    "label": "DR 302 (D)"
+                },
+                {
+                    "adeResources": 38520,
+                    "label": "DR 303 (D)"
+                },
+                {
+                    "adeResources": 38523,
+                    "label": "DR 304 (D)"
+                },
+                {
+                    "adeResources": 21576,
+                    "label": "DR 307 (D)"
+                },
+                {
+                    "adeResources": 38446,
+                    "label": "DR 308 (D)"
+                },
+                {
+                    "adeResources": 38370,
+                    "label": "DR 309 (D)"
+                },
+                {
+                    "adeResources": 39161,
+                    "label": "DR 310 (D)"
+                },
+                {
+                    "adeResources": 39454,
+                    "label": "DR 311 (D)"
+                },
+                {
+                    "adeResources": 37545,
+                    "label": "DR 370 (D)"
+                },
+                {
+                    "adeResources": 37729,
+                    "label": "DR 371 (D)"
+                },
+                {
+                    "adeResources": 39508,
+                    "label": "DR 372 (D)"
+                },
+                {
+                    "adeResources": 38418,
+                    "label": "DR 373 (D)"
+                },
+                {
+                    "adeResources": 39674,
+                    "label": "DR 404 (D)"
+                },
+                {
+                    "adeResources": 14472,
+                    "label": "DR 406 (D)"
+                },
+                {
+                    "adeResources": 21580,
+                    "label": "DR 407 (D)"
+                },
+                {
+                    "adeResources": 38939,
+                    "label": "DR S16 (D)"
+                },
+                {
+                    "adeResources": 37426,
+                    "label": "DR S17 (D)"
+                },
+                {
+                    "adeResources": 39807,
+                    "label": "DR S18 (D)"
+                },
+                {
+                    "adeResources": 25536,
+                    "label": "DR S44 (D)"
+                },
+                {
+                    "adeResources": 39082,
+                    "label": "DR S46 (D)"
+                },
+                {
+                    "adeResources": 39604,
+                    "label": "DR S48 (D)"
+                },
+                {
+                    "adeResources": 31459,
+                    "label": "DR S49 (D)"
+                },
+                {
+                    "adeResources": 37778,
+                    "label": "Salle Jo Tréhard (D)"
+                },
+                {
+                    "adeResources": 462,
+                    "label": "Amphi Demolombe (D)"
+                },
+                {
+                    "adeResources": 775,
+                    "label": "Amphi Héron (D)"
+                },
+                {
+                    "adeResources": 674,
+                    "label": "Amphi Oresme (D)"
+                },
+                {
+                    "adeResources": 39379,
+                    "label": "Salle Belvédère (D)"
+                },
+                {
+                    "adeResources": 38275,
+                    "label": "DR 306 (D)"
+                },
+                {
+                    "adeResources": 38643,
+                    "label": "DR S03 - Salle Mercure (D)"
+                },
+                {
+                    "adeResources": 38670,
+                    "label": "DR S04 - Salle Neptune (D)"
+                },
+                {
+                    "adeResources": 126,
+                    "label": "Amphi D1 (E)"
+                },
+                {
+                    "adeResources": 653,
+                    "label": "Amphi D2 (E)"
+                },
+                {
+                    "adeResources": 114,
+                    "label": "Amphi D3 (E)"
+                },
+                {
+                    "adeResources": 157,
+                    "label": "Amphi D4 (E)"
+                },
+                {
+                    "adeResources": 37938,
+                    "label": "BU 1 (G)"
+                },
+                {
+                    "adeResources": 37886,
+                    "label": "BU 2 (G)"
+                },
+                {
+                    "adeResources": 37715,
+                    "label": "BU 3 (G)"
+                },
+                {
+                    "adeResources": 141000,
+                    "label": "GV-D (GV)"
+                },
+                {
+                    "adeResources": 140999,
+                    "label": "GV-N (GV)"
+                },
+                {
+                    "adeResources": 37380,
+                    "label": "Galerie Vitrée (GV)"
+                },
+                {
+                    "adeResources": 39225,
+                    "label": "Halle des sports (H)"
+                },
+                {
+                    "adeResources": 40177,
+                    "label": "Mur d'escalade Halle des sports (H)"
+                },
+                {
+                    "adeResources": 47734,
+                    "label": "HS 001a (H)"
+                },
+                {
+                    "adeResources": 47735,
+                    "label": "HS 001b (H)"
+                },
+                {
+                    "adeResources": 43807,
+                    "label": "Piste athlétisme N°1 (H)"
+                },
+                {
+                    "adeResources": 43804,
+                    "label": "Piste athlétisme N°2 (H)"
+                },
+                {
+                    "adeResources": 43803,
+                    "label": "Terrain Beach Volley (H)"
+                },
+                {
+                    "adeResources": 43802,
+                    "label": "Terrain Synthétique Nord (H)"
+                },
+                {
+                    "adeResources": 43801,
+                    "label": "Terrain Synthétique Sud (H)"
+                },
+                {
+                    "adeResources": 136421,
+                    "label": "LI 003 (I)"
+                },
+                {
+                    "adeResources": 39282,
+                    "label": "LI 242 (I)"
+                },
+                {
+                    "adeResources": 138071,
+                    "label": "LI 245 (I)"
+                },
+                {
+                    "adeResources": 38475,
+                    "label": "LI 371 (I)"
+                },
+                {
+                    "adeResources": 39069,
+                    "label": "LI 128 (I)"
+                },
+                {
+                    "adeResources": 37667,
+                    "label": "LI 129 (I)"
+                },
+                {
+                    "adeResources": 39732,
+                    "label": "LI 130 (I)"
+                },
+                {
+                    "adeResources": 39620,
+                    "label": "LI 132 (I)"
+                },
+                {
+                    "adeResources": 39273,
+                    "label": "LI 133 (I)"
+                },
+                {
+                    "adeResources": 39493,
+                    "label": "LI 134 (I)"
+                },
+                {
+                    "adeResources": 38953,
+                    "label": "LI 157 (I)"
+                },
+                {
+                    "adeResources": 39792,
+                    "label": "LI 158 (I)"
+                },
+                {
+                    "adeResources": 38410,
+                    "label": "LI 159 (I)"
+                },
+                {
+                    "adeResources": 39520,
+                    "label": "LI 209 (I)"
+                },
+                {
+                    "adeResources": 38364,
+                    "label": "LI 210 (I)"
+                },
+                {
+                    "adeResources": 38657,
+                    "label": "LI 211 (I)"
+                },
+                {
+                    "adeResources": 38875,
+                    "label": "LI 213 (I)"
+                },
+                {
+                    "adeResources": 37894,
+                    "label": "LI 214 (I)"
+                },
+                {
+                    "adeResources": 38303,
+                    "label": "LI 218 (I)"
+                },
+                {
+                    "adeResources": 38528,
+                    "label": "LI 222 (I)"
+                },
+                {
+                    "adeResources": 38677,
+                    "label": "LI 233 (I)"
+                },
+                {
+                    "adeResources": 38911,
+                    "label": "LI 346 (I)"
+                },
+                {
+                    "adeResources": 37637,
+                    "label": "LI 347 (I)"
+                },
+                {
+                    "adeResources": 38737,
+                    "label": "LI 204 (I)"
+                },
+                {
+                    "adeResources": 37975,
+                    "label": "LI 228 (I)"
+                },
+                {
+                    "adeResources": 37866,
+                    "label": "LI 234 (I)"
+                },
+                {
+                    "adeResources": 37877,
+                    "label": "LI 238 (I)"
+                },
+                {
+                    "adeResources": 38366,
+                    "label": "LI 239 (I)"
+                },
+                {
+                    "adeResources": 37848,
+                    "label": "LI 240 (I)"
+                },
+                {
+                    "adeResources": 37694,
+                    "label": "LI 241 (I)"
+                },
+                {
+                    "adeResources": 35792,
+                    "label": "LI 109 (I)"
+                },
+                {
+                    "adeResources": 38853,
+                    "label": "LI 160 (I)"
+                },
+                {
+                    "adeResources": 39328,
+                    "label": "LI 229 (I)"
+                },
+                {
+                    "adeResources": 38010,
+                    "label": "LI 230 (I)"
+                },
+                {
+                    "adeResources": 39118,
+                    "label": "LI 232 (I)"
+                },
+                {
+                    "adeResources": 143248,
+                    "label": "A2 002 - Amphi 2000 (K)"
+                },
+                {
+                    "adeResources": 39325,
+                    "label": "ES 001 (K)"
+                },
+                {
+                    "adeResources": 37040,
+                    "label": "ES 002 (K)"
+                },
+                {
+                    "adeResources": 37216,
+                    "label": "ES 003 (K)"
+                },
+                {
+                    "adeResources": 39242,
+                    "label": "ES 101 (K)"
+                },
+                {
+                    "adeResources": 38459,
+                    "label": "ES 102 (K)"
+                },
+                {
+                    "adeResources": 38931,
+                    "label": "ES 103 (K)"
+                },
+                {
+                    "adeResources": 37596,
+                    "label": "ES 201 (K)"
+                },
+                {
+                    "adeResources": 39239,
+                    "label": "ES 202 (K)"
+                },
+                {
+                    "adeResources": 38840,
+                    "label": "ES 203 (K)"
+                },
+                {
+                    "adeResources": 39564,
+                    "label": "ES 301 (K)"
+                },
+                {
+                    "adeResources": 38239,
+                    "label": "ES 302 (K)"
+                },
+                {
+                    "adeResources": 38420,
+                    "label": "ES 303 (K)"
+                },
+                {
+                    "adeResources": 37154,
+                    "label": "ES S01 (K)"
+                },
+                {
+                    "adeResources": 37120,
+                    "label": "ES S02 (K)"
+                },
+                {
+                    "adeResources": 39262,
+                    "label": "ES S03 (K)"
+                },
+                {
+                    "adeResources": 39704,
+                    "label": "SD 030 (L)"
+                },
+                {
+                    "adeResources": 37483,
+                    "label": "SD 035 (L)"
+                },
+                {
+                    "adeResources": 38568,
+                    "label": "SD 038 (L)"
+                },
+                {
+                    "adeResources": 38977,
+                    "label": "SD 054 (L)"
+                },
+                {
+                    "adeResources": 38367,
+                    "label": "SD 064 (L)"
+                },
+                {
+                    "adeResources": 153315,
+                    "label": "SD 114 (L)"
+                },
+                {
+                    "adeResources": 37459,
+                    "label": "SD 117 - Paul Héroult (L)"
+                },
+                {
+                    "adeResources": 25468,
+                    "label": "SD 227 (L)"
+                },
+                {
+                    "adeResources": 39160,
+                    "label": "SD 230 (L)"
+                },
+                {
+                    "adeResources": 37518,
+                    "label": "SD 235 (L)"
+                },
+                {
+                    "adeResources": 37946,
+                    "label": "SD 238 (L)"
+                },
+                {
+                    "adeResources": 38826,
+                    "label": "SD 240 (L)"
+                },
+                {
+                    "adeResources": 37756,
+                    "label": "SD 254 (L)"
+                },
+                {
+                    "adeResources": 25477,
+                    "label": "SD 327 (L)"
+                },
+                {
+                    "adeResources": 39699,
+                    "label": "SD 330 (L)"
+                },
+                {
+                    "adeResources": 38186,
+                    "label": "SD 430 (L)"
+                },
+                {
+                    "adeResources": 38830,
+                    "label": "SD S55 (L)"
+                },
+                {
+                    "adeResources": 128655,
+                    "label": "SD S62 (L)"
+                },
+                {
+                    "adeResources": 38590,
+                    "label": "SD S64 (L)"
+                },
+                {
+                    "adeResources": 1023,
+                    "label": "Amphi Grignard (L)"
+                },
+                {
+                    "adeResources": 1012,
+                    "label": "Amphi Laplace (L)"
+                },
+                {
+                    "adeResources": 39735,
+                    "label": "SD 014 (L)"
+                },
+                {
+                    "adeResources": 38088,
+                    "label": "SD 016 (L)"
+                },
+                {
+                    "adeResources": 37208,
+                    "label": "SD 017 (L)"
+                },
+                {
+                    "adeResources": 37180,
+                    "label": "SD 130 (L)"
+                },
+                {
+                    "adeResources": 37173,
+                    "label": "SD 138 (L)"
+                },
+                {
+                    "adeResources": 211,
+                    "label": "SD 143 (L)"
+                },
+                {
+                    "adeResources": 38965,
+                    "label": "SD 154 (L)"
+                },
+                {
+                    "adeResources": 218,
+                    "label": "SD 162 (L)"
+                },
+                {
+                    "adeResources": 38404,
+                    "label": "SD 335 (L)"
+                },
+                {
+                    "adeResources": 38242,
+                    "label": "SD 338 (L)"
+                },
+                {
+                    "adeResources": 39833,
+                    "label": "SD 354 (L)"
+                },
+                {
+                    "adeResources": 39324,
+                    "label": "SD 362 (L)"
+                },
+                {
+                    "adeResources": 37816,
+                    "label": "SD 435 (L)"
+                },
+                {
+                    "adeResources": 222,
+                    "label": "SD 454 (L)"
+                },
+                {
+                    "adeResources": 38257,
+                    "label": "SD 462 (L)"
+                },
+                {
+                    "adeResources": 39525,
+                    "label": "SE 013 (L)"
+                },
+                {
+                    "adeResources": 38959,
+                    "label": "SE 203 (L)"
+                },
+                {
+                    "adeResources": 28066,
+                    "label": "SE 210 (L)"
+                },
+                {
+                    "adeResources": 38147,
+                    "label": "SE 303 (L)"
+                },
+                {
+                    "adeResources": 39300,
+                    "label": "SE 307 (L)"
+                },
+                {
+                    "adeResources": 38608,
+                    "label": "SE 309 (L)"
+                },
+                {
+                    "adeResources": 39255,
+                    "label": "SE 310 (L)"
+                },
+                {
+                    "adeResources": 37464,
+                    "label": "SE 407 (L)"
+                },
+                {
+                    "adeResources": 38310,
+                    "label": "SE 504 (L)"
+                },
+                {
+                    "adeResources": 37976,
+                    "label": "SE 508 (L)"
+                },
+                {
+                    "adeResources": 39605,
+                    "label": "SE 609 (L)"
+                },
+                {
+                    "adeResources": 39528,
+                    "label": "SE S19 (L)"
+                },
+                {
+                    "adeResources": 37043,
+                    "label": "SE S20 (L)"
+                },
+                {
+                    "adeResources": 344,
+                    "label": "Amphi Jacquet (L)"
+                },
+                {
+                    "adeResources": 937,
+                    "label": "SE 003 (L)"
+                },
+                {
+                    "adeResources": 14405,
+                    "label": "SE 005 (L)"
+                },
+                {
+                    "adeResources": 37808,
+                    "label": "SE 605 (L)"
+                },
+                {
+                    "adeResources": 38053,
+                    "label": "SE 204 (formation des personnels) (L)"
+                },
+                {
+                    "adeResources": 220,
+                    "label": "SE 211 (L)"
+                },
+                {
+                    "adeResources": 216,
+                    "label": "SE 212 (formation des personnels) (L)"
+                },
+                {
+                    "adeResources": 38122,
+                    "label": "SE 514 (L)"
+                },
+                {
+                    "adeResources": 39777,
+                    "label": "SC S02 (M)"
+                },
+                {
+                    "adeResources": 37794,
+                    "label": "SC S06 (M)"
+                },
+                {
+                    "adeResources": 38540,
+                    "label": "SC S07 (M)"
+                },
+                {
+                    "adeResources": 38372,
+                    "label": "SC S36 - Salle Vénus (M)"
+                },
+                {
+                    "adeResources": 39404,
+                    "label": "SC S37 - Salle Jupiter (M)"
+                },
+                {
+                    "adeResources": 94884,
+                    "label": "ET 026 (ME)"
+                },
+                {
+                    "adeResources": 37206,
+                    "label": "SA 016 (N)"
+                },
+                {
+                    "adeResources": 37712,
+                    "label": "SA 117 (N)"
+                },
+                {
+                    "adeResources": 1010,
+                    "label": "Amphi Dumont d'Urville (N)"
+                },
+                {
+                    "adeResources": 258,
+                    "label": "Amphi Fresnel (N)"
+                },
+                {
+                    "adeResources": 650,
+                    "label": "Amphi Poincaré (N)"
+                },
+                {
+                    "adeResources": 391,
+                    "label": "Amphi Rouelle (N)"
+                },
+                {
+                    "adeResources": 326,
+                    "label": "Amphi Vauquelin (N)"
+                },
+                {
+                    "adeResources": 37463,
+                    "label": "SA 011 (N)"
+                },
+                {
+                    "adeResources": 38952,
+                    "label": "SA 115a (N)"
+                },
+                {
+                    "adeResources": 38208,
+                    "label": "SA 008 (N)"
+                },
+                {
+                    "adeResources": 37285,
+                    "label": "SB 004 (N)"
+                },
+                {
+                    "adeResources": 38675,
+                    "label": "SB 005 (N)"
+                },
+                {
+                    "adeResources": 39285,
+                    "label": "SB 007 (N)"
+                },
+                {
+                    "adeResources": 82982,
+                    "label": "SB 012 (N)"
+                },
+                {
+                    "adeResources": 82983,
+                    "label": "SB 013 (N)"
+                },
+                {
+                    "adeResources": 82985,
+                    "label": "SB 023 (N)"
+                },
+                {
+                    "adeResources": 37369,
+                    "label": "SB 222 (N)"
+                },
+                {
+                    "adeResources": 39417,
+                    "label": "SB S24 (N)"
+                },
+                {
+                    "adeResources": 39084,
+                    "label": "SB S26 (N)"
+                },
+                {
+                    "adeResources": 39310,
+                    "label": "SB S27 (N)"
+                },
+                {
+                    "adeResources": 39634,
+                    "label": "Salle Yves Modéran (N)"
+                },
+                {
+                    "adeResources": 38005,
+                    "label": "SB 203 (N)"
+                },
+                {
+                    "adeResources": 38415,
+                    "label": "SB 204 (N)"
+                },
+                {
+                    "adeResources": 39676,
+                    "label": "SB 206 (N)"
+                },
+                {
+                    "adeResources": 39366,
+                    "label": "SB 232 (N)"
+                },
+                {
+                    "adeResources": 37516,
+                    "label": "SB 207 (N)"
+                },
+                {
+                    "adeResources": 37156,
+                    "label": "Amphi Pierre Daure (P)"
+                },
+                {
+                    "adeResources": 40123,
+                    "label": "Aula Magna (P)"
+                },
+                {
+                    "adeResources": 132137,
+                    "label": "Espace forme - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 39565,
+                    "label": "Grand gymnase - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 3581,
+                    "label": "Piscine Grand bassin - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 39081,
+                    "label": "Piscine Petit bassin - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 38775,
+                    "label": "Salle Horizon - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 37325,
+                    "label": "Salle de combat - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 38858,
+                    "label": "Salle de danse - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 37192,
+                    "label": "Salle de tir - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 37964,
+                    "label": "Salle polyvalente - SUAPS (SUAPS)"
+                },
+                {
+                    "adeResources": 963,
+                    "label": "Amphi Tocqueville (T)"
+                },
+                {
+                    "adeResources": 295,
+                    "label": "Amphi Marie de Clèves (VISSO)"
+                },
+                {
+                    "adeResources": 680,
+                    "label": "Amphi Varignon"
+                },
+                {
+                    "adeResources": 135146,
+                    "label": "BS 002"
+                },
+                {
+                    "adeResources": 115337,
+                    "label": "BS 007"
+                },
+                {
+                    "adeResources": 116664,
+                    "label": "BS 204"
+                },
+                {
+                    "adeResources": 11421,
+                    "label": "BS 216"
+                },
+                {
+                    "adeResources": 6560,
+                    "label": "BS 217"
+                },
+                {
+                    "adeResources": 1257,
+                    "label": "BS 310"
+                },
+                {
+                    "adeResources": 11422,
+                    "label": "BS 311"
+                },
+                {
+                    "adeResources": 116676,
+                    "label": "BS 109"
+                },
+                {
+                    "adeResources": 116677,
+                    "label": "BS 110"
+                },
+                {
+                    "adeResources": 116669,
+                    "label": "BS 111"
+                },
+                {
+                    "adeResources": 116670,
+                    "label": "BS 129"
+                },
+                {
+                    "adeResources": 116678,
+                    "label": "BS 130"
+                },
+                {
+                    "adeResources": 116661,
+                    "label": "BS 131"
+                },
+                {
+                    "adeResources": 116665,
+                    "label": "BS 132"
+                },
+                {
+                    "adeResources": 116666,
+                    "label": "BS 133"
+                },
+                {
+                    "adeResources": 116671,
+                    "label": "BS 134"
+                },
+                {
+                    "adeResources": 37513,
+                    "label": "BS 212"
+                },
+                {
+                    "adeResources": 39094,
+                    "label": "BS 307"
+                },
+                {
+                    "adeResources": 37795,
+                    "label": "BS 308"
+                },
+                {
+                    "adeResources": 38321,
+                    "label": "BS 309"
+                },
+                {
+                    "adeResources": 38613,
+                    "label": "BS 313"
+                },
+                {
+                    "adeResources": 38886,
+                    "label": "Salle de formation 3ème BU Sciences"
+                },
+                {
+                    "adeResources": 38538,
+                    "label": "Danse UFR - Campus 2 (GY)"
+                },
+                {
+                    "adeResources": 38621,
+                    "label": "Dojo UFR - Campus 2 (GY)"
+                },
+                {
+                    "adeResources": 39482,
+                    "label": "Gymnase - UFR1 - Campus 2 (GY)"
+                },
+                {
+                    "adeResources": 37533,
+                    "label": "Gymnase - UFR2 - Campus 2 (GY)"
+                },
+                {
+                    "adeResources": 38849,
+                    "label": "Musculation UFR - Campus 2 (GY)"
+                },
+                {
+                    "adeResources": 1102,
+                    "label": "Mezzanine - Campus 2 (GY 101a) (GY)"
+                },
+                {
+                    "adeResources": 37414,
+                    "label": "Salle de cours du gymnase (GY)"
+                },
+                {
+                    "adeResources": 40001,
+                    "label": "AMPHI CHARPAK"
+                },
+                {
+                    "adeResources": 40002,
+                    "label": "AMPHI JOSETTE TRAVERT"
+                },
+                {
+                    "adeResources": 39967,
+                    "label": "EN 004 (ENS-009)"
+                },
+                {
+                    "adeResources": 39940,
+                    "label": "EN 011 (ENS-010)"
+                },
+                {
+                    "adeResources": 39919,
+                    "label": "EN 012 (ENS-006)"
+                },
+                {
+                    "adeResources": 39980,
+                    "label": "EN 013 (ENS-004)"
+                },
+                {
+                    "adeResources": 39936,
+                    "label": "EN 014 (ENS-002)"
+                },
+                {
+                    "adeResources": 39993,
+                    "label": "EN 102 (ENS-101)"
+                },
+                {
+                    "adeResources": 39965,
+                    "label": "EN 103 (ENS-103)"
+                },
+                {
+                    "adeResources": 39928,
+                    "label": "EN 104 (ENS-107)"
+                },
+                {
+                    "adeResources": 39953,
+                    "label": "EN 112 (ENS-102)"
+                },
+                {
+                    "adeResources": 39981,
+                    "label": "EN 204 (ENS-205)"
+                },
+                {
+                    "adeResources": 39935,
+                    "label": "EN 205 (ENS-209)"
+                },
+                {
+                    "adeResources": 39970,
+                    "label": "EN 206 (ENS-213)"
+                },
+                {
+                    "adeResources": 39988,
+                    "label": "EN 212 (ENS-202)"
+                },
+                {
+                    "adeResources": 1213,
+                    "label": "Espace forum entreprise"
+                },
+                {
+                    "adeResources": 13507,
+                    "label": "Salle annexe salle du conseil"
+                },
+                {
+                    "adeResources": 13506,
+                    "label": "Salle du conseil"
+                },
+                {
+                    "adeResources": 13505,
+                    "label": "Salle visioconférence"
+                },
+                {
+                    "adeResources": 39946,
+                    "label": "EN 006 (ENS-013)"
+                },
+                {
+                    "adeResources": 39973,
+                    "label": "EN 106 (ENS-111)"
+                },
+                {
+                    "adeResources": 39959,
+                    "label": "EN 208 (ENS-219)"
+                },
+                {
+                    "adeResources": 3528,
+                    "label": "ETC 005"
+                },
+                {
+                    "adeResources": 3523,
+                    "label": "ETC 006"
+                },
+                {
+                    "adeResources": 3546,
+                    "label": "ETC 007 (AN 007)"
+                },
+                {
+                    "adeResources": 3525,
+                    "label": "ETC 008"
+                },
+                {
+                    "adeResources": 3540,
+                    "label": "ETC 009"
+                },
+                {
+                    "adeResources": 3544,
+                    "label": "ETC 010"
+                },
+                {
+                    "adeResources": 3547,
+                    "label": "ETC 011"
+                },
+                {
+                    "adeResources": 21741,
+                    "label": "GB005 (GB127)"
+                },
+                {
+                    "adeResources": 69007,
+                    "label": "GB006 (GB123)"
+                },
+                {
+                    "adeResources": 118293,
+                    "label": "GB008 (GB119)"
+                },
+                {
+                    "adeResources": 69006,
+                    "label": "GB013 (GB109)"
+                },
+                {
+                    "adeResources": 69022,
+                    "label": "GB021 (GB102)"
+                },
+                {
+                    "adeResources": 68985,
+                    "label": "GB024 (GB110)"
+                },
+                {
+                    "adeResources": 68994,
+                    "label": "GB034 (GB124)"
+                },
+                {
+                    "adeResources": 69151,
+                    "label": "GB107 (GB217)"
+                },
+                {
+                    "adeResources": 69157,
+                    "label": "GB109 (GB213)"
+                },
+                {
+                    "adeResources": 69203,
+                    "label": "GB114 (GB207)"
+                },
+                {
+                    "adeResources": 69202,
+                    "label": "GB115 (GB205)"
+                },
+                {
+                    "adeResources": 69052,
+                    "label": "GB117 (GB201)"
+                },
+                {
+                    "adeResources": 69197,
+                    "label": "GB126 (GB212)"
+                },
+                {
+                    "adeResources": 31670,
+                    "label": "GB133 (GB218)"
+                },
+                {
+                    "adeResources": 69168,
+                    "label": "GB135 (GB220)"
+                },
+                {
+                    "adeResources": 69152,
+                    "label": "GB204 (GB319)"
+                },
+                {
+                    "adeResources": 36816,
+                    "label": "GB205 (GB317)"
+                },
+                {
+                    "adeResources": 69196,
+                    "label": "GB206 (GB315)"
+                },
+                {
+                    "adeResources": 69143,
+                    "label": "GB210 (GB307)"
+                },
+                {
+                    "adeResources": 69158,
+                    "label": "GB211 (GB305)"
+                },
+                {
+                    "adeResources": 69201,
+                    "label": "GB212 (GB303)"
+                },
+                {
+                    "adeResources": 69214,
+                    "label": "GB213 (GB301)"
+                },
+                {
+                    "adeResources": 118294,
+                    "label": "GB216 (GB302)"
+                },
+                {
+                    "adeResources": 69182,
+                    "label": "GB218 (GB306)"
+                },
+                {
+                    "adeResources": 31682,
+                    "label": "GB219 (GB218a)"
+                },
+                {
+                    "adeResources": 26676,
+                    "label": "GB220 (GB310)"
+                },
+                {
+                    "adeResources": 69215,
+                    "label": "GB225 (GB316)"
+                },
+                {
+                    "adeResources": 69145,
+                    "label": "GB226 (GB318)"
+                },
+                {
+                    "adeResources": 69173,
+                    "label": "GB227 (GB320)"
+                },
+                {
+                    "adeResources": 3208,
+                    "label": "GB306A (GB220a)"
+                },
+                {
+                    "adeResources": 21739,
+                    "label": "GBS05 (GB11)"
+                },
+                {
+                    "adeResources": 13064,
+                    "label": "ETC 012"
+                },
+                {
+                    "adeResources": 11733,
+                    "label": "ETC 013"
+                },
+                {
+                    "adeResources": 87930,
+                    "label": "GB035 (GB126)"
+                },
+                {
+                    "adeResources": 21737,
+                    "label": "HA 001"
+                },
+                {
+                    "adeResources": 21736,
+                    "label": "HA 002"
+                },
+                {
+                    "adeResources": 36820,
+                    "label": "HA 004"
+                },
+                {
+                    "adeResources": 36819,
+                    "label": "SER-001"
+                },
+                {
+                    "adeResources": 21806,
+                    "label": "Salle 114 - GB029"
+                },
+                {
+                    "adeResources": 140992,
+                    "label": "G-CH-223"
+                },
+                {
+                    "adeResources": 140985,
+                    "label": "G-CH-002"
+                },
+                {
+                    "adeResources": 32449,
+                    "label": "G-CH-013"
+                },
+                {
+                    "adeResources": 33146,
+                    "label": "G-CH-017"
+                },
+                {
+                    "adeResources": 33143,
+                    "label": "G-CH-023"
+                },
+                {
+                    "adeResources": 33144,
+                    "label": "G-CH-115"
+                },
+                {
+                    "adeResources": 33142,
+                    "label": "G-CH-117"
+                },
+                {
+                    "adeResources": 33141,
+                    "label": "G-CH-118"
+                },
+                {
+                    "adeResources": 115343,
+                    "label": "G-CH-124"
+                },
+                {
+                    "adeResources": 32447,
+                    "label": "G-CH-128"
+                },
+                {
+                    "adeResources": 32448,
+                    "label": "G-CH-135"
+                },
+                {
+                    "adeResources": 32450,
+                    "label": "G-CH-138"
+                },
+                {
+                    "adeResources": 28503,
+                    "label": "G-CH-141"
+                },
+                {
+                    "adeResources": 40018,
+                    "label": "G-CH-203"
+                },
+                {
+                    "adeResources": 28520,
+                    "label": "G-CH-204"
+                },
+                {
+                    "adeResources": 28553,
+                    "label": "G-CH-205"
+                },
+                {
+                    "adeResources": 28566,
+                    "label": "G-CH-206"
+                },
+                {
+                    "adeResources": 28567,
+                    "label": "G-CH-207"
+                },
+                {
+                    "adeResources": 28541,
+                    "label": "G-CH-211"
+                },
+                {
+                    "adeResources": 33148,
+                    "label": "GC 115a"
+                },
+                {
+                    "adeResources": 33149,
+                    "label": "GC 115b"
+                },
+                {
+                    "adeResources": 40007,
+                    "label": "G-CH-106"
+                },
+                {
+                    "adeResources": 140987,
+                    "label": "G-CH-016"
+                },
+                {
+                    "adeResources": 28522,
+                    "label": "G-CH-219"
+                },
+                {
+                    "adeResources": 140988,
+                    "label": "G-CH-222"
+                },
+                {
+                    "adeResources": 140989,
+                    "label": "G-CH-224"
+                },
+                {
+                    "adeResources": 140990,
+                    "label": "G-CH-225"
+                },
+                {
+                    "adeResources": 140993,
+                    "label": "G-CH-226"
+                },
+                {
+                    "adeResources": 140994,
+                    "label": "G-CH-227"
+                },
+                {
+                    "adeResources": 140983,
+                    "label": "G-CH-004"
+                },
+                {
+                    "adeResources": 115342,
+                    "label": "G-CH-111"
+                },
+                {
+                    "adeResources": 119296,
+                    "label": "G-CH-112"
+                },
+                {
+                    "adeResources": 33145,
+                    "label": "G-CH-129"
+                },
+                {
+                    "adeResources": 118296,
+                    "label": "AT002"
+                },
+                {
+                    "adeResources": 69220,
+                    "label": "AT003"
+                },
+                {
+                    "adeResources": 69235,
+                    "label": "AT008"
+                },
+                {
+                    "adeResources": 6513,
+                    "label": "AT009"
+                },
+                {
+                    "adeResources": 140998,
+                    "label": "AT009a"
+                },
+                {
+                    "adeResources": 8272,
+                    "label": "AT011"
+                },
+                {
+                    "adeResources": 118297,
+                    "label": "AT013"
+                },
+                {
+                    "adeResources": 39907,
+                    "label": "CH001"
+                },
+                {
+                    "adeResources": 140981,
+                    "label": "CH002"
+                },
+                {
+                    "adeResources": 39906,
+                    "label": "CH003"
+                },
+                {
+                    "adeResources": 39908,
+                    "label": "CH004"
+                },
+                {
+                    "adeResources": 28187,
+                    "label": "CH007"
+                },
+                {
+                    "adeResources": 28168,
+                    "label": "CH008"
+                },
+                {
+                    "adeResources": 28203,
+                    "label": "CH010"
+                },
+                {
+                    "adeResources": 28196,
+                    "label": "CH013"
+                },
+                {
+                    "adeResources": 28183,
+                    "label": "CH014"
+                },
+                {
+                    "adeResources": 28202,
+                    "label": "CH015"
+                },
+                {
+                    "adeResources": 28297,
+                    "label": "MP004"
+                },
+                {
+                    "adeResources": 28303,
+                    "label": "MP010"
+                },
+                {
+                    "adeResources": 28294,
+                    "label": "MP017"
+                },
+                {
+                    "adeResources": 31391,
+                    "label": "MP102"
+                },
+                {
+                    "adeResources": 31395,
+                    "label": "MP103"
+                },
+                {
+                    "adeResources": 31390,
+                    "label": "MP104"
+                },
+                {
+                    "adeResources": 31394,
+                    "label": "MP105"
+                },
+                {
+                    "adeResources": 31389,
+                    "label": "MP107"
+                },
+                {
+                    "adeResources": 31393,
+                    "label": "MP110"
+                },
+                {
+                    "adeResources": 31392,
+                    "label": "MP111"
+                },
+                {
+                    "adeResources": 31388,
+                    "label": "MP113"
+                },
+                {
+                    "adeResources": 39976,
+                    "label": "MP202"
+                },
+                {
+                    "adeResources": 4780,
+                    "label": "MP203"
+                },
+                {
+                    "adeResources": 4790,
+                    "label": "MP204"
+                },
+                {
+                    "adeResources": 39991,
+                    "label": "MP206"
+                },
+                {
+                    "adeResources": 39963,
+                    "label": "MP209"
+                },
+                {
+                    "adeResources": 4775,
+                    "label": "MP212"
+                },
+                {
+                    "adeResources": 6511,
+                    "label": "MP213"
+                },
+                {
+                    "adeResources": 12084,
+                    "label": "GEA-015"
+                },
+                {
+                    "adeResources": 114388,
+                    "label": "TE004 (Centre de documentation)"
+                },
+                {
+                    "adeResources": 114394,
+                    "label": "TE014 (GEA-011)"
+                },
+                {
+                    "adeResources": 39737,
+                    "label": "TE023 (GEA-023)"
+                },
+                {
+                    "adeResources": 39925,
+                    "label": "TE024 (GEA-027)"
+                },
+                {
+                    "adeResources": 114379,
+                    "label": "TE030 (TC-028)"
+                },
+                {
+                    "adeResources": 39984,
+                    "label": "TE031 (TC-024)"
+                },
+                {
+                    "adeResources": 39955,
+                    "label": "TE103 (TC-114)"
+                },
+                {
+                    "adeResources": 39927,
+                    "label": "TE104 (TC-110)"
+                },
+                {
+                    "adeResources": 39975,
+                    "label": "TE105 (TC-106)"
+                },
+                {
+                    "adeResources": 114393,
+                    "label": "TE106 (TC-102)"
+                },
+                {
+                    "adeResources": 39939,
+                    "label": "TE108 (GEA-103)"
+                },
+                {
+                    "adeResources": 39960,
+                    "label": "TE109 (GEA-107)"
+                },
+                {
+                    "adeResources": 39983,
+                    "label": "TE111 (GEA-111)"
+                },
+                {
+                    "adeResources": 114382,
+                    "label": "TE112 (GEA-115)"
+                },
+                {
+                    "adeResources": 114389,
+                    "label": "TE115 (GEA-119)"
+                },
+                {
+                    "adeResources": 114384,
+                    "label": "TE119 (GEA-127)"
+                },
+                {
+                    "adeResources": 114381,
+                    "label": "TE124 (TC-130)"
+                },
+                {
+                    "adeResources": 114378,
+                    "label": "TE125 (TC-128)"
+                },
+                {
+                    "adeResources": 39917,
+                    "label": "TE212 (TC-204)"
+                },
+                {
+                    "adeResources": 39931,
+                    "label": "TE214 (GEA-203)"
+                },
+                {
+                    "adeResources": 39949,
+                    "label": "TE216 (GEA-207)"
+                },
+                {
+                    "adeResources": 39961,
+                    "label": "TE217 (GEA-217)"
+                },
+                {
+                    "adeResources": 39966,
+                    "label": "TE223 (GEA-221)"
+                },
+                {
+                    "adeResources": 39997,
+                    "label": "TE229 (GEA-237)"
+                },
+                {
+                    "adeResources": 39998,
+                    "label": "TE233 (TC-240)"
+                },
+                {
+                    "adeResources": 114391,
+                    "label": "TE003"
+                },
+                {
+                    "adeResources": 38949,
+                    "label": "S1 010"
+                },
+                {
+                    "adeResources": 38013,
+                    "label": "S1 011"
+                },
+                {
+                    "adeResources": 38059,
+                    "label": "S1 014"
+                },
+                {
+                    "adeResources": 37874,
+                    "label": "S1 016"
+                },
+                {
+                    "adeResources": 39269,
+                    "label": "S1 017"
+                },
+                {
+                    "adeResources": 38510,
+                    "label": "S1 026"
+                },
+                {
+                    "adeResources": 38793,
+                    "label": "S1 031"
+                },
+                {
+                    "adeResources": 39550,
+                    "label": "S1 032"
+                },
+                {
+                    "adeResources": 37405,
+                    "label": "S1 033"
+                },
+                {
+                    "adeResources": 39499,
+                    "label": "S1 036"
+                },
+                {
+                    "adeResources": 38343,
+                    "label": "S1 037"
+                },
+                {
+                    "adeResources": 39391,
+                    "label": "S1 108"
+                },
+                {
+                    "adeResources": 38292,
+                    "label": "S1 110"
+                },
+                {
+                    "adeResources": 38444,
+                    "label": "S1 112"
+                },
+                {
+                    "adeResources": 38398,
+                    "label": "S1 113"
+                },
+                {
+                    "adeResources": 37702,
+                    "label": "S1 207"
+                },
+                {
+                    "adeResources": 39466,
+                    "label": "S1 209"
+                },
+                {
+                    "adeResources": 39512,
+                    "label": "S1 218"
+                },
+                {
+                    "adeResources": 3192,
+                    "label": "S1 224"
+                },
+                {
+                    "adeResources": 37619,
+                    "label": "S1 225"
+                },
+                {
+                    "adeResources": 68939,
+                    "label": "Amphi Cauchy"
+                },
+                {
+                    "adeResources": 37258,
+                    "label": "Amphi Conté"
+                },
+                {
+                    "adeResources": 38836,
+                    "label": "Amphi Le Verrier"
+                },
+                {
+                    "adeResources": 132167,
+                    "label": "S1 129"
+                },
+                {
+                    "adeResources": 38326,
+                    "label": "S1 130"
+                },
+                {
+                    "adeResources": 38071,
+                    "label": "S1 131"
+                },
+                {
+                    "adeResources": 38281,
+                    "label": "S1 132"
+                },
+                {
+                    "adeResources": 81328,
+                    "label": "S1 134"
+                },
+                {
+                    "adeResources": 80265,
+                    "label": "S1 135"
+                },
+                {
+                    "adeResources": 37945,
+                    "label": "S1 205 (labo de langues)"
+                },
+                {
+                    "adeResources": 38685,
+                    "label": "S1 219"
+                },
+                {
+                    "adeResources": 38176,
+                    "label": "S1 226"
+                },
+                {
+                    "adeResources": 38873,
+                    "label": "S1 228"
+                },
+                {
+                    "adeResources": 37538,
+                    "label": "S1 231"
+                },
+                {
+                    "adeResources": 38866,
+                    "label": "S1 233"
+                },
+                {
+                    "adeResources": 38365,
+                    "label": "S1 122"
+                },
+                {
+                    "adeResources": 37696,
+                    "label": "S1 124"
+                },
+                {
+                    "adeResources": 38432,
+                    "label": "S1 126"
+                },
+                {
+                    "adeResources": 38318,
+                    "label": "S1 127"
+                },
+                {
+                    "adeResources": 39010,
+                    "label": "S1 128"
+                },
+                {
+                    "adeResources": 38250,
+                    "label": "S1 210"
+                },
+                {
+                    "adeResources": 16259,
+                    "label": "S2 303"
+                },
+                {
+                    "adeResources": 1599,
+                    "label": "S2 310"
+                },
+                {
+                    "adeResources": 39580,
+                    "label": "S2 405"
+                },
+                {
+                    "adeResources": 19194,
+                    "label": "S2 004"
+                },
+                {
+                    "adeResources": 37842,
+                    "label": "S2 006"
+                },
+                {
+                    "adeResources": 28534,
+                    "label": "S2 008"
+                },
+                {
+                    "adeResources": 38304,
+                    "label": "S2 009"
+                },
+                {
+                    "adeResources": 38127,
+                    "label": "S2 010"
+                },
+                {
+                    "adeResources": 39663,
+                    "label": "S2 011"
+                },
+                {
+                    "adeResources": 103957,
+                    "label": "S2 103"
+                },
+                {
+                    "adeResources": 37219,
+                    "label": "S2 104"
+                },
+                {
+                    "adeResources": 39414,
+                    "label": "S2 108"
+                },
+                {
+                    "adeResources": 39295,
+                    "label": "S2 110"
+                },
+                {
+                    "adeResources": 38641,
+                    "label": "S2 112"
+                },
+                {
+                    "adeResources": 37973,
+                    "label": "S2 116"
+                },
+                {
+                    "adeResources": 37531,
+                    "label": "S2 121"
+                },
+                {
+                    "adeResources": 37978,
+                    "label": "S2 127"
+                },
+                {
+                    "adeResources": 38928,
+                    "label": "S2 130"
+                },
+                {
+                    "adeResources": 38248,
+                    "label": "S2 132"
+                },
+                {
+                    "adeResources": 121416,
+                    "label": "S2 134"
+                },
+                {
+                    "adeResources": 39811,
+                    "label": "S2 226"
+                },
+                {
+                    "adeResources": 7732,
+                    "label": "S2 229"
+                },
+                {
+                    "adeResources": 39567,
+                    "label": "S2 304"
+                },
+                {
+                    "adeResources": 37416,
+                    "label": "S2 305"
+                },
+                {
+                    "adeResources": 39048,
+                    "label": "S2 306"
+                },
+                {
+                    "adeResources": 37295,
+                    "label": "S2 307"
+                },
+                {
+                    "adeResources": 39385,
+                    "label": "S2 309"
+                },
+                {
+                    "adeResources": 37895,
+                    "label": "S2 313"
+                },
+                {
+                    "adeResources": 39805,
+                    "label": "S2 315"
+                },
+                {
+                    "adeResources": 37439,
+                    "label": "S2 401"
+                },
+                {
+                    "adeResources": 39588,
+                    "label": "S2 410"
+                },
+                {
+                    "adeResources": 39547,
+                    "label": "S2 411"
+                },
+                {
+                    "adeResources": 37698,
+                    "label": "S2 106"
+                },
+                {
+                    "adeResources": 117954,
+                    "label": "S3 103"
+                },
+                {
+                    "adeResources": 111862,
+                    "label": "S3 016"
+                },
+                {
+                    "adeResources": 37887,
+                    "label": "S3 020"
+                },
+                {
+                    "adeResources": 114619,
+                    "label": "S3 022"
+                },
+                {
+                    "adeResources": 59933,
+                    "label": "S3 023"
+                },
+                {
+                    "adeResources": 37164,
+                    "label": "S3 029"
+                },
+                {
+                    "adeResources": 38566,
+                    "label": "S3 030"
+                },
+                {
+                    "adeResources": 39038,
+                    "label": "S3 031"
+                },
+                {
+                    "adeResources": 5695,
+                    "label": "S3 032"
+                },
+                {
+                    "adeResources": 38195,
+                    "label": "S3 122"
+                },
+                {
+                    "adeResources": 37805,
+                    "label": "S3 123"
+                },
+                {
+                    "adeResources": 39795,
+                    "label": "S3 124"
+                },
+                {
+                    "adeResources": 37829,
+                    "label": "S3 136"
+                },
+                {
+                    "adeResources": 38606,
+                    "label": "S3 137"
+                },
+                {
+                    "adeResources": 39194,
+                    "label": "S3 161"
+                },
+                {
+                    "adeResources": 39098,
+                    "label": "S3 162"
+                },
+                {
+                    "adeResources": 39492,
+                    "label": "S3 254"
+                },
+                {
+                    "adeResources": 38076,
+                    "label": "S3 255"
+                },
+                {
+                    "adeResources": 37494,
+                    "label": "S3 256"
+                },
+                {
+                    "adeResources": 38546,
+                    "label": "S3 259"
+                },
+                {
+                    "adeResources": 37278,
+                    "label": "S3 260"
+                },
+                {
+                    "adeResources": 37825,
+                    "label": "S3 263"
+                },
+                {
+                    "adeResources": 39819,
+                    "label": "S3 271"
+                },
+                {
+                    "adeResources": 39350,
+                    "label": "S3 272"
+                },
+                {
+                    "adeResources": 39601,
+                    "label": "S3 273"
+                },
+                {
+                    "adeResources": 39020,
+                    "label": "S3 274"
+                },
+                {
+                    "adeResources": 39174,
+                    "label": "S3 275"
+                },
+                {
+                    "adeResources": 37574,
+                    "label": "S3 276"
+                },
+                {
+                    "adeResources": 39682,
+                    "label": "S3 277"
+                },
+                {
+                    "adeResources": 39690,
+                    "label": "S3 278"
+                },
+                {
+                    "adeResources": 39235,
+                    "label": "S3 279"
+                },
+                {
+                    "adeResources": 38413,
+                    "label": "Amphi 500"
+                },
+                {
+                    "adeResources": 37067,
+                    "label": "Amphi S3 043"
+                },
+                {
+                    "adeResources": 38073,
+                    "label": "Amphi S3 044"
+                },
+                {
+                    "adeResources": 37368,
+                    "label": "Amphi S3 045"
+                },
+                {
+                    "adeResources": 17768,
+                    "label": "Amphi S3 049"
+                },
+                {
+                    "adeResources": 17766,
+                    "label": "Amphi S3 057"
+                },
+                {
+                    "adeResources": 39546,
+                    "label": "Salle des thèses et de visioconférence"
+                },
+                {
+                    "adeResources": 38315,
+                    "label": "S3 037 (salle d'examens)"
+                },
+                {
+                    "adeResources": 44566,
+                    "label": "S3 138"
+                },
+                {
+                    "adeResources": 37845,
+                    "label": "S3 159"
+                },
+                {
+                    "adeResources": 39232,
+                    "label": "S3 160"
+                },
+                {
+                    "adeResources": 37670,
+                    "label": "S3 335"
+                },
+                {
+                    "adeResources": 38524,
+                    "label": "S3 401"
+                },
+                {
+                    "adeResources": 37564,
+                    "label": "S3 403"
+                },
+                {
+                    "adeResources": 28533,
+                    "label": "S3 406"
+                },
+                {
+                    "adeResources": 37901,
+                    "label": "S3 409"
+                },
+                {
+                    "adeResources": 38788,
+                    "label": "S3 415"
+                },
+                {
+                    "adeResources": 38288,
+                    "label": "S3 416"
+                },
+                {
+                    "adeResources": 39614,
+                    "label": "S3 417"
+                },
+                {
+                    "adeResources": 37865,
+                    "label": "Salle d'examen"
+                },
+                {
+                    "adeResources": 22991,
+                    "label": "0280"
+                },
+                {
+                    "adeResources": 22969,
+                    "label": "0281"
+                },
+                {
+                    "adeResources": 38870,
+                    "label": "0287"
+                },
+                {
+                    "adeResources": 38571,
+                    "label": "1100"
+                },
+                {
+                    "adeResources": 25526,
+                    "label": "1101"
+                },
+                {
+                    "adeResources": 38892,
+                    "label": "1102"
+                },
+                {
+                    "adeResources": 37872,
+                    "label": "1103"
+                },
+                {
+                    "adeResources": 39064,
+                    "label": "1105"
+                },
+                {
+                    "adeResources": 38541,
+                    "label": "1106"
+                },
+                {
+                    "adeResources": 37355,
+                    "label": "1109"
+                },
+                {
+                    "adeResources": 39548,
+                    "label": "1110"
+                },
+                {
+                    "adeResources": 39608,
+                    "label": "1205"
+                },
+                {
+                    "adeResources": 37948,
+                    "label": "1206"
+                },
+                {
+                    "adeResources": 39090,
+                    "label": "1207"
+                },
+                {
+                    "adeResources": 39343,
+                    "label": "1208"
+                },
+                {
+                    "adeResources": 39455,
+                    "label": "1211"
+                },
+                {
+                    "adeResources": 38843,
+                    "label": "2122"
+                },
+                {
+                    "adeResources": 39568,
+                    "label": "2123"
+                },
+                {
+                    "adeResources": 38756,
+                    "label": "2124"
+                },
+                {
+                    "adeResources": 39646,
+                    "label": "2125"
+                },
+                {
+                    "adeResources": 39140,
+                    "label": "2126"
+                },
+                {
+                    "adeResources": 39491,
+                    "label": "2127"
+                },
+                {
+                    "adeResources": 38113,
+                    "label": "2129"
+                },
+                {
+                    "adeResources": 39052,
+                    "label": "2234"
+                },
+                {
+                    "adeResources": 37590,
+                    "label": "2235"
+                },
+                {
+                    "adeResources": 38484,
+                    "label": "2236"
+                },
+                {
+                    "adeResources": 39005,
+                    "label": "2237"
+                },
+                {
+                    "adeResources": 39337,
+                    "label": "3140"
+                },
+                {
+                    "adeResources": 37113,
+                    "label": "3141"
+                },
+                {
+                    "adeResources": 39736,
+                    "label": "3142"
+                },
+                {
+                    "adeResources": 38256,
+                    "label": "3143"
+                },
+                {
+                    "adeResources": 39112,
+                    "label": "3144"
+                },
+                {
+                    "adeResources": 39246,
+                    "label": "3145"
+                },
+                {
+                    "adeResources": 39569,
+                    "label": "3146"
+                },
+                {
+                    "adeResources": 39609,
+                    "label": "3147"
+                },
+                {
+                    "adeResources": 38923,
+                    "label": "3250"
+                },
+                {
+                    "adeResources": 39434,
+                    "label": "3251"
+                },
+                {
+                    "adeResources": 38996,
+                    "label": "3252"
+                },
+                {
+                    "adeResources": 39595,
+                    "label": "3254"
+                },
+                {
+                    "adeResources": 39141,
+                    "label": "3255"
+                },
+                {
+                    "adeResources": 37212,
+                    "label": "3258"
+                },
+                {
+                    "adeResources": 1136,
+                    "label": "3259"
+                },
+                {
+                    "adeResources": 38713,
+                    "label": "Labo de langues"
+                },
+                {
+                    "adeResources": 24132,
+                    "label": "Laboratoire multimédia"
+                },
+                {
+                    "adeResources": 39294,
+                    "label": "Amphithéâtre"
+                },
+                {
+                    "adeResources": 140414,
+                    "label": "2240"
+                },
+                {
+                    "adeResources": 10506,
+                    "label": "UT 0286"
+                },
+                {
+                    "adeResources": 99293,
+                    "label": "ARKEA"
+                },
+                {
+                    "adeResources": 91408,
+                    "label": "ASFO"
+                },
+                {
+                    "adeResources": 35015,
+                    "label": "Arkéa Saint-Brieuc"
+                },
+                {
+                    "adeResources": 99307,
+                    "label": "BP RP - IVRY-SUR-SEINE"
+                },
+                {
+                    "adeResources": 33551,
+                    "label": "BP RP - OPTIMA rue V.Hugo IVRY SUR SEINE"
+                },
+                {
+                    "adeResources": 99302,
+                    "label": "BP RP - PARIS XIII"
+                },
+                {
+                    "adeResources": 99292,
+                    "label": "BRED - JOINVILLE-LE-PONT"
+                },
+                {
+                    "adeResources": 28557,
+                    "label": "CA AMIENS"
+                },
+                {
+                    "adeResources": 106116,
+                    "label": "CA CHESSY"
+                },
+                {
+                    "adeResources": 96470,
+                    "label": "CA LE MANS"
+                },
+                {
+                    "adeResources": 28558,
+                    "label": "CA MEAUX"
+                },
+                {
+                    "adeResources": 123721,
+                    "label": "CA NANTES"
+                },
+                {
+                    "adeResources": 45025,
+                    "label": "CCI Evreux"
+                },
+                {
+                    "adeResources": 49251,
+                    "label": "CHATEAUFORM"
+                },
+                {
+                    "adeResources": 49252,
+                    "label": "CID Deauville"
+                },
+                {
+                    "adeResources": 99297,
+                    "label": "CM Maine Anjou Basse-Normandie - LAVAL"
+                },
+                {
+                    "adeResources": 99296,
+                    "label": "CM Maine Anjou Basse-Normandie - SAINT-LO"
+                },
+                {
+                    "adeResources": 97595,
+                    "label": "Caisse d'épargne de Rouen"
+                },
+                {
+                    "adeResources": 45098,
+                    "label": "EMN Amphi 3"
+                },
+                {
+                    "adeResources": 45099,
+                    "label": "EMN Amphi 4"
+                },
+                {
+                    "adeResources": 51181,
+                    "label": "EMN B1"
+                },
+                {
+                    "adeResources": 25541,
+                    "label": "EMN B206"
+                },
+                {
+                    "adeResources": 146694,
+                    "label": "ESB Rouen"
+                },
+                {
+                    "adeResources": 49243,
+                    "label": "Elegia"
+                },
+                {
+                    "adeResources": 1373,
+                    "label": "Eurosites République"
+                },
+                {
+                    "adeResources": 35787,
+                    "label": "FIM Cherbourg"
+                },
+                {
+                    "adeResources": 11584,
+                    "label": "FIM St Lô"
+                },
+                {
+                    "adeResources": 199073,
+                    "label": "Fondation Bon Sauveur"
+                },
+                {
+                    "adeResources": 13650,
+                    "label": "ICEP"
+                },
+                {
+                    "adeResources": 197928,
+                    "label": "IFCS"
+                },
+                {
+                    "adeResources": 169542,
+                    "label": "IRTS"
+                },
+                {
+                    "adeResources": 69278,
+                    "label": "Lycée Jean ROSTAND"
+                },
+                {
+                    "adeResources": 100080,
+                    "label": "PREVOIR Paris"
+                },
+                {
+                    "adeResources": 129971,
+                    "label": "SOTTEVILLE LES ROUEN"
+                },
+                {
+                    "adeResources": 35797,
+                    "label": "Université de Rouen"
+                },
+                {
+                    "adeResources": 37706,
+                    "label": "EG 019"
+                },
+                {
+                    "adeResources": 38309,
+                    "label": "EG 034"
+                },
+                {
+                    "adeResources": 37784,
+                    "label": "EG 035"
+                },
+                {
+                    "adeResources": 38680,
+                    "label": "EG 036"
+                },
+                {
+                    "adeResources": 38473,
+                    "label": "EG 057"
+                },
+                {
+                    "adeResources": 38620,
+                    "label": "EG 059"
+                },
+                {
+                    "adeResources": 141389,
+                    "label": "EG 060c"
+                },
+                {
+                    "adeResources": 39680,
+                    "label": "EG 103"
+                },
+                {
+                    "adeResources": 38862,
+                    "label": "EG 104"
+                },
+                {
+                    "adeResources": 39583,
+                    "label": "EG 107"
+                },
+                {
+                    "adeResources": 38612,
+                    "label": "EG 108"
+                },
+                {
+                    "adeResources": 38969,
+                    "label": "EG 109"
+                },
+                {
+                    "adeResources": 38979,
+                    "label": "EG 114"
+                },
+                {
+                    "adeResources": 13449,
+                    "label": "Salle des Marchés"
+                },
+                {
+                    "adeResources": 39216,
+                    "label": "EG 042"
+                },
+                {
+                    "adeResources": 26675,
+                    "label": "EG 060"
+                },
+                {
+                    "adeResources": 141607,
+                    "label": "EG 060a"
+                },
+                {
+                    "adeResources": 141608,
+                    "label": "EG 060b"
+                },
+                {
+                    "adeResources": 69318,
+                    "label": "EG 211"
+                },
+                {
+                    "adeResources": 37634,
+                    "label": "EG 032"
+                },
+                {
+                    "adeResources": 37912,
+                    "label": "IA 130"
+                },
+                {
+                    "adeResources": 37065,
+                    "label": "IA 122"
+                },
+                {
+                    "adeResources": 37207,
+                    "label": "IA 124"
+                },
+                {
+                    "adeResources": 38134,
+                    "label": "IA 201"
+                },
+                {
+                    "adeResources": 39411,
+                    "label": "IA 202"
+                },
+                {
+                    "adeResources": 39457,
+                    "label": "IA 206"
+                },
+                {
+                    "adeResources": 37691,
+                    "label": "IA 207"
+                },
+                {
+                    "adeResources": 38896,
+                    "label": "IA 208"
+                },
+                {
+                    "adeResources": 39358,
+                    "label": "IA 209"
+                },
+                {
+                    "adeResources": 37195,
+                    "label": "IA 215"
+                },
+                {
+                    "adeResources": 39182,
+                    "label": "IA 216"
+                },
+                {
+                    "adeResources": 39814,
+                    "label": "IA 217"
+                },
+                {
+                    "adeResources": 38795,
+                    "label": "IA 218"
+                },
+                {
+                    "adeResources": 38360,
+                    "label": "Amphi 1"
+                },
+                {
+                    "adeResources": 38560,
+                    "label": "Amphi 2"
+                },
+                {
+                    "adeResources": 38589,
+                    "label": "Amphi Léon Walras"
+                },
+                {
+                    "adeResources": 246,
+                    "label": "IA 102"
+                },
+                {
+                    "adeResources": 39387,
+                    "label": "IA 118"
+                },
+                {
+                    "adeResources": 247,
+                    "label": "Salle Jean René PUTS"
+                },
+                {
+                    "adeResources": 39763,
+                    "label": "IA 125"
+                },
+                {
+                    "adeResources": 38529,
+                    "label": "IA 214"
+                },
+                {
+                    "adeResources": 137838,
+                    "label": "PS 0-003"
+                },
+                {
+                    "adeResources": 114772,
+                    "label": "PS 0-154"
+                },
+                {
+                    "adeResources": 22310,
+                    "label": "PS0-076"
+                },
+                {
+                    "adeResources": 22329,
+                    "label": "PS0-077"
+                },
+                {
+                    "adeResources": 22283,
+                    "label": "PS0-079"
+                },
+                {
+                    "adeResources": 22307,
+                    "label": "PS0-081"
+                },
+                {
+                    "adeResources": 22335,
+                    "label": "PS0-083"
+                },
+                {
+                    "adeResources": 22317,
+                    "label": "PS0-094"
+                },
+                {
+                    "adeResources": 22366,
+                    "label": "PS1-061"
+                },
+                {
+                    "adeResources": 22362,
+                    "label": "PS1-062"
+                },
+                {
+                    "adeResources": 22391,
+                    "label": "PS1-064"
+                },
+                {
+                    "adeResources": 2345,
+                    "label": "PS1-065"
+                },
+                {
+                    "adeResources": 22385,
+                    "label": "PS1-072"
+                },
+                {
+                    "adeResources": 22381,
+                    "label": "PS1-073"
+                },
+                {
+                    "adeResources": 22356,
+                    "label": "PS1-074"
+                },
+                {
+                    "adeResources": 22347,
+                    "label": "PS1-080"
+                },
+                {
+                    "adeResources": 22359,
+                    "label": "PS1-081"
+                },
+                {
+                    "adeResources": 22376,
+                    "label": "PS1-083"
+                },
+                {
+                    "adeResources": 22393,
+                    "label": "PS1-084"
                 }
-			]
-		}
-	]
+            ],
+            "groups": [
+                {
+                    "id": 1,
+                    "name": "BUT Informatique",
+                    "timetables": [
+                        {
+                            "adeResources": 1177,
+                            "year": 1,
+                            "label": "TP 1.1"
+                        },
+                        {
+                            "adeResources": 95403,
+                            "year": 1,
+                            "label": "TP 1.2"
+                        },
+                        {
+                            "adeResources": 1185,
+                            "year": 1,
+                            "label": "TP 2.1"
+                        },
+                        {
+                            "adeResources": 1186,
+                            "year": 1,
+                            "label": "TP 2.2"
+                        },
+                        {
+                            "adeResources": 1189,
+                            "year": 1,
+                            "label": "TP 3.1"
+                        },
+                        {
+                            "adeResources": 1191,
+                            "year": 1,
+                            "label": "TP 3.2"
+                        },
+                        {
+                            "adeResources": 1200,
+                            "year": 2,
+                            "label": "TP 1.1"
+                        },
+                        {
+                            "adeResources": 6923,
+                            "year": 2,
+                            "label": "TP 1.2"
+                        },
+                        {
+                            "adeResources": 1204,
+                            "year": 2,
+                            "label": "TP 2.1"
+                        },
+                        {
+                            "adeResources": 1205,
+                            "year": 2,
+                            "label": "TP 2.2"
+                        },
+                        {
+                            "adeResources": 1208,
+                            "year": 2,
+                            "label": "TP 3.1"
+                        },
+                        {
+                            "adeResources": 1209,
+                            "year": 2,
+                            "label": "TP 3.2"
+                        },
+                        {
+                            "adeResources": 36647,
+                            "year": 3,
+                            "label": "TP 1.1"
+                        },
+                        {
+                            "adeResources": 36648,
+                            "year": 3,
+                            "label": "TP 1.2"
+                        },
+                        {
+                            "adeResources": 36649,
+                            "year": 3,
+                            "label": "TP 2.1"
+                        },
+                        {
+                            "adeResources": 36650,
+                            "year": 3,
+                            "label": "TP 2.2"
+                        },
+                        {
+                            "adeResources": 34263,
+                            "year": 3,
+                            "label": "TP 3.1"
+                        },
+                        {
+                            "adeResources": 34262,
+                            "year": 3,
+                            "label": "TP 3.2"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }

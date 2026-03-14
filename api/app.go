@@ -1,6 +1,10 @@
 package api
 
 import (
+	"EtuEDT-Go/domain"
+	"errors"
+	"log"
+
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/compress"
@@ -8,12 +12,18 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"log"
 )
 
 func StartWebApp() {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			var e *fiber.Error
+			if errors.As(err, &e) {
+				return c.Status(e.Code).JSON(domain.ErrorResponse{Error: e.Message})
+			}
+			return c.Status(fiber.StatusInternalServerError).JSON(domain.ErrorResponse{Error: "internal server error"})
+		},
 	})
 	app.Use(compress.New())
 	app.Use(cors.New())
@@ -30,13 +40,13 @@ func StartWebApp() {
 	})
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
-			"path": "v2",
+			"path": "v3",
 		})
 	})
 	v2Router(app.Group("/v2"))
+	v3Router(app.Group("/v3"))
 
-	err := app.Listen(":3000")
-	if err != nil {
+	if err := app.Listen(":3000"); err != nil {
 		log.Fatal(err)
 	}
 }
