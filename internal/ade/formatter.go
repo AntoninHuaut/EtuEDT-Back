@@ -4,10 +4,19 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"time"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/internal/api"
 	ics "github.com/arran4/golang-ical"
 )
+
+type Event struct {
+	Title       string    `json:"title"`
+	Teacher     string    `json:"teacher"`
+	Description string    `json:"description"`
+	Start       time.Time `json:"start"`
+	End         time.Time `json:"end"`
+	Location    string    `json:"location"`
+}
 
 var (
 	reSuffix      = regexp.MustCompile(`(_s\d+)$`)
@@ -15,13 +24,13 @@ var (
 	reExportedMsg = regexp.MustCompile(`\n\(Export(é|ed).*\n?`)
 )
 
-func mergeSimilarEvents(events []api.Event) []api.Event {
+func mergeSimilarEvents(events []Event) []Event {
 	type mergeEvent struct {
-		event       api.Event
+		event       Event
 		outputIndex int
 	}
 
-	outputs := make([]api.Event, 0)
+	outputs := make([]Event, 0)
 	for _, event := range events {
 		var existingEvents []mergeEvent
 		for index, output := range outputs {
@@ -53,8 +62,8 @@ func mergeSimilarEvents(events []api.Event) []api.Event {
 	return outputs
 }
 
-func CalendarToEvents(calendar *ics.Calendar) []api.Event {
-	var events []api.Event
+func CalendarToEvents(calendar *ics.Calendar) []Event {
+	var events []Event
 
 	formatTitle := func(title string) string {
 		title = reSuffix.ReplaceAllString(title, "")
@@ -119,7 +128,7 @@ func CalendarToEvents(calendar *ics.Calendar) []api.Event {
 		}
 
 		formattedDescription := formatDescription(descriptionValue)
-		events = append(events, api.Event{
+		events = append(events, Event{
 			Title:       formatTitle(summary.Value),
 			Teacher:     getTeacher(formattedDescription),
 			Description: formattedDescription,
