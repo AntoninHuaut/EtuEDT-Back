@@ -1,16 +1,18 @@
 package main
 
 import (
-	"log"
+	"log/slog"
+	"os"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/api"
 	"github.com/AntoninHuaut/EtuEDT-Back/domain"
+	"github.com/AntoninHuaut/EtuEDT-Back/server"
 )
 
 func main() {
 	if err := domain.LoadConfig(); err != nil {
-		log.Fatal(err)
+		slog.Error("failed to load config", "err", err)
+		os.Exit(1)
 	}
 
-	api.StartWebApp()
+	server.StartWebApp()
 }
