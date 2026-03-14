@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -16,8 +17,12 @@ const (
 )
 
 var httpClient = &http.Client{Timeout: httpTimeout}
+var sem = make(chan struct{}, 5)
 
 func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
+	sem <- struct{}{}
+	defer func() { <-sem }()
+
 	attempts := 0
 	body, err := retry.DoWithData(func() ([]byte, error) {
 		attempts++
@@ -27,11 +32,16 @@ func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
 			log.Printf("[Error] (%s) Requesting: %v\n", logPrefix, rqErr)
 			return nil, rqErr
 		}
-
-		var deferErr error
 		defer func(Body io.ReadCloser) {
-			deferErr = Body.Close()
+			if closeErr := Body.Close(); closeErr != nil {
+				log.Printf("[Warn] (%s) Closing response body: %v\n", logPrefix, closeErr)
+			}
 		}(response.Body)
+
+		if response.StatusCode < http.StatusOK || response.StatusCode >= http.StatusMultipleChoices {
+			rqBody, _ := io.ReadAll(response.Body)
+			return nil, fmt.Errorf("unexpected status code %d: %s", response.StatusCode, string(rqBody))
+		}
 
 		rqBody, rqErr := io.ReadAll(response.Body)
 		if rqErr != nil {
@@ -39,7 +49,7 @@ func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
 			return nil, rqErr
 		}
 
-		return rqBody, deferErr
+		return rqBody, nil
 	}, retry.Attempts(maxAttempts), retry.Delay(initialBackoff), retry.DelayType(retry.BackOffDelay))
 
 	if err != nil {

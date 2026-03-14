@@ -46,7 +46,7 @@ func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {
 	return outputs
 }
 
-func calendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
+func CalendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 	var jsonEvents []domain.JsonEvent
 
 	formatTitle := func(title string) string {
