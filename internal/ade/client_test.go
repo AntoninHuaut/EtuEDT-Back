@@ -46,9 +46,8 @@ func zeroBackoff(t *testing.T) {
 // resetSfGroup replaces the singleflight group so each test starts clean.
 func resetSfGroup(t *testing.T) {
 	t.Helper()
-	original := sfGroup
 	sfGroup = singleflight.Group{}
-	t.Cleanup(func() { sfGroup = original })
+	t.Cleanup(func() { sfGroup = singleflight.Group{} })
 }
 
 // TestFetchTimetable_SuccessOnValidResponse checks that FetchTimetable

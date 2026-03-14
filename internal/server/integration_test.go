@@ -65,6 +65,11 @@ func get(t *testing.T, server *httptest.Server, path string) *http.Response {
 	if err != nil {
 		t.Fatalf("GET %s failed: %v", path, err)
 	}
+	t.Cleanup(func() {
+		if err := resp.Body.Close(); err != nil {
+			t.Errorf("GET %s: failed to close body: %v", path, err)
+		}
+	})
 	return resp
 }
 
@@ -77,8 +82,6 @@ func TestV2_AnyPath_ReturnsCalendarWithDeprecationNotice(t *testing.T) {
 	paths := []string{"/v2/", "/v2/anything", "/v2/some/nested/path"}
 	for _, path := range paths {
 		resp := get(t, srv, path)
-		resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf("GET %s: status %d, want 200", path, resp.StatusCode)
 		}
@@ -96,7 +99,6 @@ func TestV3_ListUniversities_ReturnsAll(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -120,7 +122,6 @@ func TestV3_GetUniversity_KnownID_Returns200(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -144,7 +145,6 @@ func TestV3_GetUniversity_UnknownID_Returns404(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/999")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", resp.StatusCode)
@@ -158,7 +158,6 @@ func TestV3_ListGroups_KnownUniv_Returns200(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/groups")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -178,7 +177,6 @@ func TestV3_ListGroups_UnknownUniv_Returns404(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/999/groups")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", resp.StatusCode)
@@ -192,7 +190,6 @@ func TestV3_ListTimetables_KnownUnivAndGroup_Returns200(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/groups/1")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -212,7 +209,6 @@ func TestV3_ListTimetables_UnknownGroup_Returns404(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/groups/999")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", resp.StatusCode)
@@ -224,7 +220,6 @@ func TestV3_GetTimetableMetadata_KnownResources_Returns200(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/groups/1/20")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -247,7 +242,6 @@ func TestV3_GetTimetableMetadata_UnknownResources_Returns404(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/groups/1/999")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", resp.StatusCode)
@@ -267,7 +261,6 @@ func TestV3_GetTimetableEvents_ServesCachedEvents(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/groups/1/20/events")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -289,7 +282,6 @@ func TestV3_ListRooms_KnownUniv_Returns200(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/rooms")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -309,7 +301,6 @@ func TestV3_GetRoomMetadata_KnownResources_Returns200(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/rooms/10")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
@@ -329,7 +320,6 @@ func TestV3_GetRoomMetadata_UnknownResources_Returns404(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/rooms/999")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", resp.StatusCode)
@@ -348,7 +338,6 @@ func TestV3_GetRoomEvents_ServesCachedEvents(t *testing.T) {
 	defer srv.Close()
 
 	resp := get(t, srv, "/v3/univs/1/rooms/10/events")
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		t.Fatalf("status: got %d, want 200", resp.StatusCode)
