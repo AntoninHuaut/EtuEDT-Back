@@ -10,8 +10,6 @@ import (
 	"github.com/avast/retry-go/v4"
 )
 
-const ()
-
 var (
 	InitialBackoff      = 2 * time.Second
 	HttpTimeout         = 30 * time.Second
@@ -41,7 +39,10 @@ func makeRequest(req *http.Request) ([]byte, error) {
 		}(response.Body)
 
 		if response.StatusCode < http.StatusOK || response.StatusCode >= http.StatusMultipleChoices {
-			rqBody, _ := io.ReadAll(response.Body)
+			rqBody, readErr := io.ReadAll(response.Body)
+			if readErr != nil {
+				slog.Warn("reading error response body failed", "url", req.URL, "err", readErr)
+			}
 			return nil, fmt.Errorf("unexpected status code %d: %s", response.StatusCode, string(rqBody))
 		}
 
