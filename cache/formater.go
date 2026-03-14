@@ -1,11 +1,12 @@
 package cache
 
 import (
-	"EtuEDT-Go/domain"
-	ics "github.com/arran4/golang-ical"
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/AntoninHuaut/EtuEDT-Back/domain"
+	ics "github.com/arran4/golang-ical"
 )
 
 func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {

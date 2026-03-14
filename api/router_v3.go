@@ -1,11 +1,12 @@
 package api
 
 import (
-	"EtuEDT-Go/cache"
-	"EtuEDT-Go/domain"
 	"slices"
 	"strconv"
 	"time"
+
+	"github.com/AntoninHuaut/EtuEDT-Back/cache"
+	"github.com/AntoninHuaut/EtuEDT-Back/domain"
 
 	"github.com/gofiber/fiber/v2"
 )

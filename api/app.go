@@ -1,9 +1,10 @@
 package api
 
 import (
-	"EtuEDT-Go/domain"
 	"errors"
 	"log"
+
+	"github.com/AntoninHuaut/EtuEDT-Back/domain"
 
 	"github.com/ansrivas/fiberprometheus/v2"
 	"github.com/gofiber/fiber/v2"
@@ -18,8 +19,7 @@ func StartWebApp() {
 	app := fiber.New(fiber.Config{
 		DisableStartupMessage: true,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
-			var e *fiber.Error
-			if errors.As(err, &e) {
+			if e, ok := errors.AsType[*fiber.Error](err); ok {
 				return c.Status(e.Code).JSON(domain.ErrorResponse{Error: e.Message})
 			}
 			return c.Status(fiber.StatusInternalServerError).JSON(domain.ErrorResponse{Error: "internal server error"})

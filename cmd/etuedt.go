@@ -1,9 +1,10 @@
 package main
 
 import (
-	"EtuEDT-Go/api"
-	"EtuEDT-Go/domain"
 	"log"
+
+	"github.com/AntoninHuaut/EtuEDT-Back/api"
+	"github.com/AntoninHuaut/EtuEDT-Back/domain"
 )
 
 func main() {
