@@ -42,6 +42,7 @@ func makeRequest(req *http.Request) ([]byte, error) {
 			rqBody, readErr := io.ReadAll(response.Body)
 			if readErr != nil {
 				slog.Warn("reading error response body failed", "url", req.URL, "err", readErr)
+				return nil, fmt.Errorf("unexpected status code %d: failed to read error response body: %w", response.StatusCode, readErr)
 			}
 			return nil, fmt.Errorf("unexpected status code %d: %s", response.StatusCode, string(rqBody))
 		}
