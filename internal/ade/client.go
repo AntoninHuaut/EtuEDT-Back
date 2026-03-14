@@ -10,13 +10,15 @@ import (
 	"github.com/avast/retry-go/v4"
 )
 
-const (
-	httpTimeout    = 30 * time.Second
-	maxAttempts    = 3
-	initialBackoff = 2 * time.Second
+const ()
+
+var (
+	InitialBackoff      = 2 * time.Second
+	HttpTimeout         = 30 * time.Second
+	MaxAttempts    uint = 3
+	HTTPClient          = &http.Client{Timeout: HttpTimeout}
 )
 
-var httpClient = &http.Client{Timeout: httpTimeout}
 var sem = make(chan struct{}, 5)
 
 func makeRequest(req *http.Request) ([]byte, error) {
@@ -26,8 +28,8 @@ func makeRequest(req *http.Request) ([]byte, error) {
 		sem <- struct{}{}
 		defer func() { <-sem }()
 
-		slog.Info("requesting", "url", req.URL, "attempt", attempts, "maxAttempts", maxAttempts)
-		response, rqErr := httpClient.Do(req)
+		slog.Info("requesting", "url", req.URL, "attempt", attempts, "maxAttempts", MaxAttempts)
+		response, rqErr := HTTPClient.Do(req)
 		if rqErr != nil {
 			slog.Error("request failed", "url", req.URL, "err", rqErr)
 			return nil, rqErr
@@ -50,7 +52,7 @@ func makeRequest(req *http.Request) ([]byte, error) {
 		}
 
 		return rqBody, nil
-	}, retry.Attempts(maxAttempts), retry.Delay(initialBackoff), retry.DelayType(retry.BackOffDelay))
+	}, retry.Attempts(MaxAttempts), retry.Delay(InitialBackoff), retry.DelayType(retry.BackOffDelay))
 
 	if err != nil {
 		slog.Error("all retry attempts exhausted", "url", req.URL, "err", err)
