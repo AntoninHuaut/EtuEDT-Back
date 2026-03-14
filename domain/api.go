@@ -14,20 +14,20 @@ type GroupResponse struct {
 }
 
 type TimetableResponse struct {
-	AdeResources int       `json:"adeResources"`
-	AdeProjectId int       `json:"adeProjectId"`
-	Year         int       `json:"year"`
-	Label        string    `json:"label"`
-	AdeUrl       string    `json:"adeUrl"`
-	LastUpdate   time.Time `json:"lastUpdate"`
+	AdeResources int        `json:"adeResources"`
+	AdeProjectId int        `json:"adeProjectId"`
+	Year         int        `json:"year"`
+	Label        string     `json:"label"`
+	AdeUrl       string     `json:"adeUrl"`
+	LastUpdate   *time.Time `json:"lastUpdate"`
 }
 
 type RoomResponse struct {
-	AdeResources int       `json:"adeResources"`
-	AdeProjectId int       `json:"adeProjectId"`
-	Label        string    `json:"label"`
-	AdeUrl       string    `json:"adeUrl"`
-	LastUpdate   time.Time `json:"lastUpdate"`
+	AdeResources int        `json:"adeResources"`
+	AdeProjectId int        `json:"adeProjectId"`
+	Label        string     `json:"label"`
+	AdeUrl       string     `json:"adeUrl"`
+	LastUpdate   *time.Time `json:"lastUpdate"`
 }
 
 type ErrorResponse struct {
