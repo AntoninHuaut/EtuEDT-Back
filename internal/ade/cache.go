@@ -7,17 +7,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/internal/api"
-
 	ics "github.com/arran4/golang-ical"
 	"golang.org/x/sync/singleflight"
 )
 
 type TimetableCache struct {
-	AdeResources int         `json:"adeResources"`
-	LastUpdate   *time.Time  `json:"lastUpdate"`
-	Ical         string      `json:"calendar"`
-	Events       []api.Event `json:"events"`
+	AdeResources int        `json:"adeResources"`
+	LastUpdate   *time.Time `json:"lastUpdate"`
+	Ical         string     `json:"calendar"`
+	Events       []Event    `json:"events"`
 }
 
 var cacheMap = make(map[string]TimetableCache)
@@ -32,13 +30,12 @@ func GetTimetableByAdeResources(univID int, adeResources int) (TimetableCache, b
 	return timetable, ok
 }
 
-func SetTimetableByAdeResources(univID int, adeResources int, ical string, events []api.Event) TimetableCache {
+func SetTimetableByAdeResources(univID int, adeResources int, ical string, events []Event) TimetableCache {
 	key := cacheKey(univID, adeResources)
-	now := time.Now()
 	cacheMu.Lock()
 	timetable := TimetableCache{
 		AdeResources: adeResources,
-		LastUpdate:   &now,
+		LastUpdate:   new(time.Now()),
 		Ical:         ical,
 		Events:       events,
 	}

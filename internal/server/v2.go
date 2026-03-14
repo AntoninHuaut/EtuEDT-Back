@@ -22,8 +22,6 @@ func legacyV2ICSMigrationNotice(w http.ResponseWriter, r *http.Request) {
 
 	now := time.Now()
 	startTime, endTime := ade.GetAcademicYearDates(now)
-	// iCal all-day DTEND is exclusive, so add one day.
-	endTime = endTime.AddDate(0, 0, 1)
 
 	event := cal.AddEvent(fmt.Sprintf("migration-notice@etuedt-%d", now.Unix()))
 	event.SetSummary("⚠️ API v2 is deprecated — please migrate to v3")
