@@ -8,8 +8,9 @@ import (
 	"slices"
 	"time"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/cache"
-	"github.com/AntoninHuaut/EtuEDT-Back/domain"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/api"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/config"
 	"github.com/danielgtaylor/huma/v2"
 )
 
@@ -35,18 +36,18 @@ func humaError(err error) error {
 	}
 }
 
-func findUniversity(univID int) (*domain.UniversityConfig, error) {
-	idx := slices.IndexFunc(domain.AppConfig.Universities, func(u domain.UniversityConfig) bool {
+func findUniversity(univID int) (*config.UniversityConfig, error) {
+	idx := slices.IndexFunc(config.AppConfig.Universities, func(u config.UniversityConfig) bool {
 		return u.ID == univID
 	})
 	if idx < 0 {
 		return nil, errUniversityNotFound
 	}
-	return &domain.AppConfig.Universities[idx], nil
+	return &config.AppConfig.Universities[idx], nil
 }
 
-func findGroup(univ *domain.UniversityConfig, groupID int) (*domain.GroupConfig, error) {
-	idx := slices.IndexFunc(univ.Groups, func(g domain.GroupConfig) bool {
+func findGroup(univ *config.UniversityConfig, groupID int) (*config.GroupConfig, error) {
+	idx := slices.IndexFunc(univ.Groups, func(g config.GroupConfig) bool {
 		return g.ID == groupID
 	})
 	if idx < 0 {
@@ -55,8 +56,8 @@ func findGroup(univ *domain.UniversityConfig, groupID int) (*domain.GroupConfig,
 	return &univ.Groups[idx], nil
 }
 
-func findTimetable(group *domain.GroupConfig, adeResources int) (*domain.TimetableConfig, error) {
-	idx := slices.IndexFunc(group.Timetables, func(tt domain.TimetableConfig) bool {
+func findTimetable(group *config.GroupConfig, adeResources int) (*config.TimetableConfig, error) {
+	idx := slices.IndexFunc(group.Timetables, func(tt config.TimetableConfig) bool {
 		return tt.AdeResources == adeResources
 	})
 	if idx < 0 {
@@ -65,8 +66,8 @@ func findTimetable(group *domain.GroupConfig, adeResources int) (*domain.Timetab
 	return &group.Timetables[idx], nil
 }
 
-func findRoom(univ *domain.UniversityConfig, adeResources int) (*domain.RoomConfig, error) {
-	idx := slices.IndexFunc(univ.Rooms, func(r domain.RoomConfig) bool {
+func findRoom(univ *config.UniversityConfig, adeResources int) (*config.RoomConfig, error) {
+	idx := slices.IndexFunc(univ.Rooms, func(r config.RoomConfig) bool {
 		return r.AdeResources == adeResources
 	})
 	if idx < 0 {
@@ -75,10 +76,10 @@ func findRoom(univ *domain.UniversityConfig, adeResources int) (*domain.RoomConf
 	return &univ.Rooms[idx], nil
 }
 
-func buildTimetableResponse(univ *domain.UniversityConfig, tt *domain.TimetableConfig, firstDate time.Time, lastDate time.Time) domain.TimetableResponse {
-	cached, _ := cache.GetTimetableByAdeResources(univ.ID, tt.AdeResources)
-	adeUrl, _ := domain.BuildAdeUrl(univ.AdeUrl, tt.AdeResources, univ.AdeProjectId, firstDate, lastDate)
-	return domain.TimetableResponse{
+func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableConfig, firstDate time.Time, lastDate time.Time) api.TimetableResponse {
+	cached, _ := ade.GetTimetableByAdeResources(univ.ID, tt.AdeResources)
+	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, univ.AdeProjectId, firstDate, lastDate)
+	return api.TimetableResponse{
 		AdeResources: tt.AdeResources,
 		AdeProjectId: univ.AdeProjectId,
 		Year:         tt.Year,
@@ -88,10 +89,10 @@ func buildTimetableResponse(univ *domain.UniversityConfig, tt *domain.TimetableC
 	}
 }
 
-func buildRoomResponse(univ *domain.UniversityConfig, room *domain.RoomConfig, firstDate time.Time, lastDate time.Time) domain.RoomResponse {
-	cached, _ := cache.GetTimetableByAdeResources(univ.ID, room.AdeResources)
-	adeUrl, _ := domain.BuildAdeUrl(univ.AdeUrl, room.AdeResources, univ.AdeProjectId, firstDate, lastDate)
-	return domain.RoomResponse{
+func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, firstDate time.Time, lastDate time.Time) api.RoomResponse {
+	cached, _ := ade.GetTimetableByAdeResources(univ.ID, room.AdeResources)
+	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, univ.AdeProjectId, firstDate, lastDate)
+	return api.RoomResponse{
 		AdeResources: room.AdeResources,
 		AdeProjectId: univ.AdeProjectId,
 		Label:        room.Label,
@@ -100,20 +101,20 @@ func buildRoomResponse(univ *domain.UniversityConfig, room *domain.RoomConfig, f
 	}
 }
 
-func fetchEvents(univ *domain.UniversityConfig, adeResources int) ([]domain.JsonEvent, error) {
-	calendar, err := cache.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, univ.AdeProjectId)
+func fetchEvents(univ *config.UniversityConfig, adeResources int) ([]api.Event, error) {
+	calendar, err := ade.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, univ.AdeProjectId)
 	if err == nil {
-		fresh := cache.SetTimetableByAdeResources(univ.ID, adeResources, calendar.Serialize(), cache.CalendarToJson(calendar))
-		return fresh.Json, nil
+		fresh := ade.SetTimetableByAdeResources(univ.ID, adeResources, calendar.Serialize(), ade.CalendarToEvents(calendar))
+		return fresh.Events, nil
 	}
 
-	stale, ok := cache.GetTimetableByAdeResources(univ.ID, adeResources)
+	stale, ok := ade.GetTimetableByAdeResources(univ.ID, adeResources)
 	if !ok {
 		return nil, errTimetableUnavailable
 	}
 
 	slog.Warn("upstream fetch failed, serving stale cache", "univId", univ.ID, "adeResources", adeResources, "err", err)
-	return stale.Json, nil
+	return stale.Events, nil
 }
 
 type univInput struct {
@@ -137,53 +138,53 @@ type univAdeInput struct {
 }
 
 type universityListOutput struct {
-	Body []domain.UniversityResponse
+	Body []api.UniversityResponse
 }
 
 type universityOutput struct {
-	Body domain.UniversityResponse
+	Body api.UniversityResponse
 }
 
 type groupListOutput struct {
-	Body []domain.GroupResponse
+	Body []api.GroupResponse
 }
 
 type timetableListOutput struct {
-	Body []domain.TimetableResponse
+	Body []api.TimetableResponse
 }
 
 type timetableOutput struct {
-	Body domain.TimetableResponse
+	Body api.TimetableResponse
 }
 
 type eventListOutput struct {
-	Body []domain.JsonEvent
+	Body []api.Event
 }
 
 type roomListOutput struct {
-	Body []domain.RoomResponse
+	Body []api.RoomResponse
 }
 
 type roomOutput struct {
-	Body domain.RoomResponse
+	Body api.RoomResponse
 }
 
-func registerV3Handlers(api huma.API) {
-	huma.Register(api, huma.Operation{
+func registerV3Handlers(humaAPI huma.API) {
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "list-universities",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs",
 		Summary:     "List all universities",
 		Tags:        []string{"Universities"},
 	}, func(ctx context.Context, _ *struct{}) (*universityListOutput, error) {
-		resp := make([]domain.UniversityResponse, 0, len(domain.AppConfig.Universities))
-		for _, u := range domain.AppConfig.Universities {
-			resp = append(resp, domain.UniversityResponse{ID: u.ID, Name: u.Name, AdeUrl: u.AdeUrl})
+		resp := make([]api.UniversityResponse, 0, len(config.AppConfig.Universities))
+		for _, u := range config.AppConfig.Universities {
+			resp = append(resp, api.UniversityResponse{ID: u.ID, Name: u.Name, AdeUrl: u.AdeUrl})
 		}
 		return &universityListOutput{Body: resp}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-university",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}",
@@ -194,10 +195,10 @@ func registerV3Handlers(api huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		return &universityOutput{Body: domain.UniversityResponse{ID: univ.ID, Name: univ.Name, AdeUrl: univ.AdeUrl}}, nil
+		return &universityOutput{Body: api.UniversityResponse{ID: univ.ID, Name: univ.Name, AdeUrl: univ.AdeUrl}}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "list-groups",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/groups",
@@ -208,14 +209,14 @@ func registerV3Handlers(api huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		resp := make([]domain.GroupResponse, 0, len(univ.Groups))
+		resp := make([]api.GroupResponse, 0, len(univ.Groups))
 		for _, g := range univ.Groups {
-			resp = append(resp, domain.GroupResponse{ID: g.ID, Name: g.Name})
+			resp = append(resp, api.GroupResponse{ID: g.ID, Name: g.Name})
 		}
 		return &groupListOutput{Body: resp}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "list-timetables",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/groups/{groupId}",
@@ -230,15 +231,15 @@ func registerV3Handlers(api huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
-		resp := make([]domain.TimetableResponse, 0, len(group.Timetables))
+		firstDate, lastDate := ade.GetAcademicYearDates(time.Now())
+		resp := make([]api.TimetableResponse, 0, len(group.Timetables))
 		for i := range group.Timetables {
 			resp = append(resp, buildTimetableResponse(univ, &group.Timetables[i], firstDate, lastDate))
 		}
 		return &timetableListOutput{Body: resp}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-timetable-metadata",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/groups/{groupId}/{adeResources}",
@@ -257,11 +258,11 @@ func registerV3Handlers(api huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
+		firstDate, lastDate := ade.GetAcademicYearDates(time.Now())
 		return &timetableOutput{Body: buildTimetableResponse(univ, tt, firstDate, lastDate)}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-timetable-events",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/groups/{groupId}/{adeResources}/events",
@@ -286,7 +287,7 @@ func registerV3Handlers(api huma.API) {
 		return &eventListOutput{Body: events}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "list-rooms",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/rooms",
@@ -297,15 +298,15 @@ func registerV3Handlers(api huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
-		resp := make([]domain.RoomResponse, 0, len(univ.Rooms))
+		firstDate, lastDate := ade.GetAcademicYearDates(time.Now())
+		resp := make([]api.RoomResponse, 0, len(univ.Rooms))
 		for i := range univ.Rooms {
 			resp = append(resp, buildRoomResponse(univ, &univ.Rooms[i], firstDate, lastDate))
 		}
 		return &roomListOutput{Body: resp}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-room-metadata",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/rooms/{adeResources}",
@@ -320,11 +321,11 @@ func registerV3Handlers(api huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
+		firstDate, lastDate := ade.GetAcademicYearDates(time.Now())
 		return &roomOutput{Body: buildRoomResponse(univ, room, firstDate, lastDate)}, nil
 	})
 
-	huma.Register(api, huma.Operation{
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-room-events",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/rooms/{adeResources}/events",

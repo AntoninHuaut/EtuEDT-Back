@@ -1,4 +1,4 @@
-package domain
+package api
 
 import "time"
 
@@ -30,7 +30,7 @@ type RoomResponse struct {
 	LastUpdate   *time.Time `json:"lastUpdate"`
 }
 
-type JsonEvent struct {
+type Event struct {
 	Title       string    `json:"title"`
 	Teacher     string    `json:"teacher"`
 	Description string    `json:"description"`
