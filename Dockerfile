@@ -9,6 +9,6 @@ RUN go mod download
 
 ADD . .
 
-RUN go build -o /etuedt ./cmd
+RUN go build -o /etuedt ./cmd/etuedt.go
 
 CMD [ "/etuedt" ]
