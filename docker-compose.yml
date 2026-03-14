@@ -1,6 +1,6 @@
 services:
   etuedt:
-    build: .
+    image: ghcr.io/antoninhuaut/etuedt-back:master
     container_name: etuedt_back
     restart: unless-stopped
     ports:

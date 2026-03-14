@@ -12,20 +12,20 @@ import (
 
 const (
 	httpTimeout    = 30 * time.Second
-	maxAttempts    = 5
-	initialBackoff = 5 * time.Second
+	maxAttempts    = 3
+	initialBackoff = 2 * time.Second
 )
 
 var httpClient = &http.Client{Timeout: httpTimeout}
 var sem = make(chan struct{}, 5)
 
 func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
-	sem <- struct{}{}
-	defer func() { <-sem }()
-
 	attempts := 0
 	body, err := retry.DoWithData(func() ([]byte, error) {
 		attempts++
+		sem <- struct{}{}
+		defer func() { <-sem }()
+
 		log.Printf("[Info] (%s) Requesting (attempt %d/%d)\n", logPrefix, attempts, maxAttempts)
 		response, rqErr := httpClient.Do(req)
 		if rqErr != nil {
