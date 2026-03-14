@@ -1,14 +1,24 @@
-FROM golang:1.26-alpine
-
-EXPOSE 3000
+FROM golang:1.26-alpine AS builder
 
 WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
 
-ADD . .
+COPY . .
 
 RUN go build -o /etuedt ./cmd/etuedt.go
+
+FROM alpine:3.21
+
+RUN addgroup -S etuedt && adduser -S etuedt -G etuedt
+
+EXPOSE 3000
+
+WORKDIR /app
+
+COPY --from=builder /etuedt /etuedt
+
+USER etuedt
 
 CMD [ "/etuedt" ]
