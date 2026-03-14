@@ -192,11 +192,11 @@ func serveEvents(c *fiber.Ctx, univ *domain.UniversityConfig, adeResources int) 
 
 	accept := c.Accepts("application/json", "text/calendar")
 	switch accept {
-	case "text/calendar":
+	case "application/json":
+		return c.JSON(timetableCache.Json)
+	default:
 		c.Set("Content-Type", "text/calendar")
 		return c.SendString(timetableCache.Ical)
-	default:
-		return c.JSON(timetableCache.Json)
 	}
 }
 
