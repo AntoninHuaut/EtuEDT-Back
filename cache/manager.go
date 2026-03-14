@@ -1,13 +1,14 @@
 package cache
 
 import (
-	"EtuEDT-Go/domain"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/AntoninHuaut/EtuEDT-Back/domain"
 
 	ics "github.com/arran4/golang-ical"
 )

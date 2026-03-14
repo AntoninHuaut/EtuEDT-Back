@@ -1,10 +1,11 @@
 package api
 
 import (
-	"EtuEDT-Go/domain"
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/AntoninHuaut/EtuEDT-Back/domain"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,4 +1,4 @@
-FROM golang:1.24-alpine
+FROM golang:1.26-alpine
 
 EXPOSE 3000
 
@@ -9,6 +9,6 @@ RUN go mod download
 
 ADD . .
 
-RUN go build -o /etuedt-go
+RUN go build -o /etuedt cmd/etuedt.go
 
-CMD [ "/etuedt-go" ]
+CMD [ "/etuedt" ]
