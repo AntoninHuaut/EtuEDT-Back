@@ -12,33 +12,33 @@ import (
 )
 
 func v3Router(router fiber.Router) {
-	univ := router.Group("/univ")
+	univ := router.Group("/univs")
 
-	// GET /v3/univ — list universities
+	// GET /v3/univs — list universities
 	univ.Get("/", listUniversities)
 
-	// GET /v3/univ/:univId — university detail
+	// GET /v3/univs/:univId — university detail
 	univ.Get("/:univId", getUniversity)
 
-	// GET /v3/univ/:univId/groups — list groups
+	// GET /v3/univs/:univId/groups — list groups
 	univ.Get("/:univId/groups", listGroups)
 
-	// GET /v3/univ/:univId/groups/:groupId — list timetables in group
+	// GET /v3/univs/:univId/groups/:groupId — list timetables in group
 	univ.Get("/:univId/groups/:groupId", listTimetables)
 
-	// GET /v3/univ/:univId/groups/:groupId/:adeResources — timetable metadata
+	// GET /v3/univs/:univId/groups/:groupId/:adeResources — timetable metadata
 	univ.Get("/:univId/groups/:groupId/:adeResources", getTimetableMetadata)
 
-	// GET /v3/univ/:univId/groups/:groupId/:adeResources/events — timetable events
+	// GET /v3/univs/:univId/groups/:groupId/:adeResources/events — timetable events
 	univ.Get("/:univId/groups/:groupId/:adeResources/events", getTimetableEvents)
 
-	// GET /v3/univ/:univId/rooms — list rooms
+	// GET /v3/univs/:univId/rooms — list rooms
 	univ.Get("/:univId/rooms", listRooms)
 
-	// GET /v3/univ/:univId/rooms/:adeResources — room metadata
+	// GET /v3/univs/:univId/rooms/:adeResources — room metadata
 	univ.Get("/:univId/rooms/:adeResources", getRoomMetadata)
 
-	// GET /v3/univ/:univId/rooms/:adeResources/events — room events
+	// GET /v3/univs/:univId/rooms/:adeResources/events — room events
 	univ.Get("/:univId/rooms/:adeResources/events", getRoomEvents)
 }
 

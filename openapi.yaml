@@ -22,7 +22,7 @@ paths:
                   path:
                     type: string
                     example: v3
-  /univ:
+  /univs:
     get:
       tags:
         - university
@@ -36,7 +36,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/University'
-  /univ/{univId}:
+  /univs/{univId}:
     get:
       tags:
         - university
@@ -61,7 +61,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /univ/{univId}/groups:
+  /univs/{univId}/groups:
     get:
       tags:
         - group
@@ -84,7 +84,7 @@ paths:
                   $ref: '#/components/schemas/Group'
         '404':
           description: University not found
-  /univ/{univId}/groups/{groupId}:
+  /univs/{univId}/groups/{groupId}:
     get:
       tags:
         - group
@@ -113,7 +113,7 @@ paths:
                   $ref: '#/components/schemas/Timetable'
         '404':
           description: University or group not found
-  /univ/{univId}/groups/{groupId}/{adeResources}:
+  /univs/{univId}/groups/{groupId}/{adeResources}:
     get:
       tags:
         - timetable
@@ -146,7 +146,7 @@ paths:
                 $ref: '#/components/schemas/Timetable'
         '404':
           description: Timetable not found
-  /univ/{univId}/groups/{groupId}/{adeResources}/events:
+  /univs/{univId}/groups/{groupId}/{adeResources}/events:
     get:
       tags:
         - timetable
@@ -188,7 +188,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /univ/{univId}/rooms:
+  /univs/{univId}/rooms:
     get:
       tags:
         - room
@@ -211,7 +211,7 @@ paths:
                   $ref: '#/components/schemas/Room'
         '404':
           description: University not found
-  /univ/{univId}/rooms/{adeResources}:
+  /univs/{univId}/rooms/{adeResources}:
     get:
       tags:
         - room
@@ -238,7 +238,7 @@ paths:
                 $ref: '#/components/schemas/Room'
         '404':
           description: Room not found
-  /univ/{univId}/rooms/{adeResources}/events:
+  /univs/{univId}/rooms/{adeResources}/events:
     get:
       tags:
         - room
@@ -318,6 +318,7 @@ components:
         lastUpdate:
           type: string
           example: '2020-06-16T07:14:34.017Z'
+          nullable: true
     Room:
       type: object
       properties:
