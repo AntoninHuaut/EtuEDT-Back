@@ -30,10 +30,6 @@ type RoomResponse struct {
 	LastUpdate   *time.Time `json:"lastUpdate"`
 }
 
-type ErrorResponse struct {
-	Error string `json:"error"`
-}
-
 type JsonEvent struct {
 	Title       string    `json:"title"`
 	Teacher     string    `json:"teacher"`

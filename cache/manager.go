@@ -1,10 +1,9 @@
 package cache
 
 import (
-	"fmt"
+	"bytes"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -35,10 +34,11 @@ func GetTimetableByAdeResources(univID int, adeResources int) (TimetableCache, b
 
 func SetTimetableByAdeResources(univID int, adeResources int, ical string, json []domain.JsonEvent) TimetableCache {
 	key := getKey(univID, adeResources)
+	now := time.Now()
 	cacheMu.Lock()
 	timetable := TimetableCache{
 		AdeResources: adeResources,
-		LastUpdate:   new(time.Now()),
+		LastUpdate:   &now,
 		Ical:         ical,
 		Json:         json,
 	}
@@ -55,19 +55,22 @@ func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectI
 	key := getKey(univID, adeResources)
 	result, err, _ := sfGroup.Do(key, func() (interface{}, error) {
 		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
-		fullUrl := domain.BuildAdeUrl(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
+		fullUrl, err := domain.BuildAdeUrl(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
+		if err != nil {
+			return nil, err
+		}
 
 		req, err := http.NewRequest(http.MethodGet, fullUrl, nil)
 		if err != nil {
 			return nil, err
 		}
 
-		body, err := MakeRequest(fmt.Sprintf("%d", adeResources), req)
+		body, err := MakeRequest(req)
 		if err != nil {
 			return nil, err
 		}
 
-		ical, err := ics.ParseCalendar(strings.NewReader(string(body)))
+		ical, err := ics.ParseCalendar(bytes.NewReader(body))
 		if err != nil {
 			return nil, err
 		}

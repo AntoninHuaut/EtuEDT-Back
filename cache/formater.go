@@ -9,6 +9,12 @@ import (
 	ics "github.com/arran4/golang-ical"
 )
 
+var (
+	reSuffix      = regexp.MustCompile(`(_s\d+)$`)
+	rePrefix      = regexp.MustCompile(`(?m)^\w+.\d+ (:\s?)?`)
+	reExportedMsg = regexp.MustCompile(`\n\(Export(é|ed).*\n?`)
+)
+
 func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {
 	type MergeJsonEvent struct {
 		Event       domain.JsonEvent
@@ -51,12 +57,12 @@ func CalendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 	var jsonEvents []domain.JsonEvent
 
 	formatTitle := func(title string) string {
-		title = regexp.MustCompile(`(_s\d+)$`).ReplaceAllString(title, "")
-		return regexp.MustCompile(`(?m)^\w+.\d+ (:\s?)?`).ReplaceAllString(title, "")
+		title = reSuffix.ReplaceAllString(title, "")
+		return rePrefix.ReplaceAllString(title, "")
 	}
 
 	removeExportedDescription := func(description string) string {
-		return regexp.MustCompile(`\n\(Export(é|ed).*\n?`).ReplaceAllString(description, "")
+		return reExportedMsg.ReplaceAllString(description, "")
 	}
 
 	formatDescription := func(description string) string {
@@ -94,25 +100,33 @@ func CalendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 
 	for _, event := range calendar.Events() {
 		summary := event.GetProperty("SUMMARY")
-		description := event.GetProperty("DESCRIPTION")
-		location := event.GetProperty("LOCATION")
-		if summary != nil && description != nil && location != nil {
-			startAt, errStartAt := event.GetStartAt()
-			endAt, errEndAt := event.GetEndAt()
-			if errStartAt == nil && errEndAt == nil {
-				formattedDescription := formatDescription(description.Value)
-				teacher := getTeacher(formattedDescription)
-
-				jsonEvents = append(jsonEvents, domain.JsonEvent{
-					Title:       formatTitle(summary.Value),
-					Teacher:     teacher,
-					Description: formattedDescription,
-					Start:       startAt,
-					End:         endAt,
-					Location:    getLocation(location.Value),
-				})
-			}
+		if summary == nil {
+			continue
 		}
+		startAt, errStartAt := event.GetStartAt()
+		endAt, errEndAt := event.GetEndAt()
+		if errStartAt != nil || errEndAt != nil {
+			continue
+		}
+
+		descriptionValue := ""
+		if d := event.GetProperty("DESCRIPTION"); d != nil {
+			descriptionValue = d.Value
+		}
+		locationValue := ""
+		if l := event.GetProperty("LOCATION"); l != nil {
+			locationValue = l.Value
+		}
+
+		formattedDescription := formatDescription(descriptionValue)
+		jsonEvents = append(jsonEvents, domain.JsonEvent{
+			Title:       formatTitle(summary.Value),
+			Teacher:     getTeacher(formattedDescription),
+			Description: formattedDescription,
+			Start:       startAt,
+			End:         endAt,
+			Location:    getLocation(locationValue),
+		})
 	}
 
 	sort.Slice(jsonEvents, func(i, j int) bool {

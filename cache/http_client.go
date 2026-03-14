@@ -3,7 +3,7 @@ package cache
 import (
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -19,22 +19,22 @@ const (
 var httpClient = &http.Client{Timeout: httpTimeout}
 var sem = make(chan struct{}, 5)
 
-func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
+func MakeRequest(req *http.Request) ([]byte, error) {
 	attempts := 0
 	body, err := retry.DoWithData(func() ([]byte, error) {
 		attempts++
 		sem <- struct{}{}
 		defer func() { <-sem }()
 
-		log.Printf("[Info] (%s) Requesting (attempt %d/%d)\n", logPrefix, attempts, maxAttempts)
+		slog.Info("requesting", "url", req.URL, "attempt", attempts, "maxAttempts", maxAttempts)
 		response, rqErr := httpClient.Do(req)
 		if rqErr != nil {
-			log.Printf("[Error] (%s) Requesting: %v\n", logPrefix, rqErr)
+			slog.Error("request failed", "url", req.URL, "err", rqErr)
 			return nil, rqErr
 		}
 		defer func(Body io.ReadCloser) {
 			if closeErr := Body.Close(); closeErr != nil {
-				log.Printf("[Warn] (%s) Closing response body: %v\n", logPrefix, closeErr)
+				slog.Warn("closing response body failed", "url", req.URL, "err", closeErr)
 			}
 		}(response.Body)
 
@@ -45,7 +45,7 @@ func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
 
 		rqBody, rqErr := io.ReadAll(response.Body)
 		if rqErr != nil {
-			log.Printf("[Error] (%s) Reading body: %v\n", logPrefix, rqErr)
+			slog.Error("reading response body failed", "url", req.URL, "err", rqErr)
 			return nil, rqErr
 		}
 
@@ -53,10 +53,10 @@ func MakeRequest(logPrefix string, req *http.Request) ([]byte, error) {
 	}, retry.Attempts(maxAttempts), retry.Delay(initialBackoff), retry.DelayType(retry.BackOffDelay))
 
 	if err != nil {
-		log.Printf("[Error] (%s) Request failed: %v\n", logPrefix, err)
+		slog.Error("all retry attempts exhausted", "url", req.URL, "err", err)
 		return nil, err
 	}
 
-	log.Printf("[Info] (%s) Request successful\n", logPrefix)
+	slog.Info("request successful", "url", req.URL)
 	return body, nil
 }
