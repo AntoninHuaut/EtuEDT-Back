@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/domain"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
 	ics "github.com/arran4/golang-ical"
 	"github.com/go-chi/chi/v5"
 )
@@ -21,7 +21,7 @@ func legacyV2ICSMigrationNotice(w http.ResponseWriter, r *http.Request) {
 	cal.SetMethod(ics.MethodPublish)
 
 	now := time.Now()
-	startTime, endTime := domain.GetAcademicYearDates(now)
+	startTime, endTime := ade.GetAcademicYearDates(now)
 	// iCal all-day DTEND is exclusive, so add one day.
 	endTime = endTime.AddDate(0, 0, 1)
 

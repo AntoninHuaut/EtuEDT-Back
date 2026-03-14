@@ -1,4 +1,4 @@
-package domain
+package ade
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func GetAcademicYearDates(now time.Time) (time.Time, time.Time) {
 	return first, last
 }
 
-func BuildAdeUrl(baseUrl string, adeResources int, adeProjectId int, firstDate time.Time, lastDate time.Time) (string, error) {
+func BuildURL(baseUrl string, adeResources int, adeProjectId int, firstDate time.Time, lastDate time.Time) (string, error) {
 	u, err := url.Parse(baseUrl)
 	if err != nil {
 		return "", fmt.Errorf("failed to parse ADE base URL %q: %w", baseUrl, err)

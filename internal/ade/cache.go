@@ -1,4 +1,4 @@
-package cache
+package ade
 
 import (
 	"bytes"
@@ -7,17 +7,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/domain"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/api"
 
 	ics "github.com/arran4/golang-ical"
 	"golang.org/x/sync/singleflight"
 )
 
 type TimetableCache struct {
-	AdeResources int                `json:"adeResources"`
-	LastUpdate   *time.Time         `json:"lastUpdate"`
-	Ical         string             `json:"calendar"`
-	Json         []domain.JsonEvent `json:"json"`
+	AdeResources int         `json:"adeResources"`
+	LastUpdate   *time.Time  `json:"lastUpdate"`
+	Ical         string      `json:"calendar"`
+	Events       []api.Event `json:"events"`
 }
 
 var cacheMap = make(map[string]TimetableCache)
@@ -25,37 +25,37 @@ var cacheMu sync.RWMutex
 var sfGroup singleflight.Group
 
 func GetTimetableByAdeResources(univID int, adeResources int) (TimetableCache, bool) {
-	key := getKey(univID, adeResources)
+	key := cacheKey(univID, adeResources)
 	cacheMu.RLock()
 	timetable, ok := cacheMap[key]
 	cacheMu.RUnlock()
 	return timetable, ok
 }
 
-func SetTimetableByAdeResources(univID int, adeResources int, ical string, json []domain.JsonEvent) TimetableCache {
-	key := getKey(univID, adeResources)
+func SetTimetableByAdeResources(univID int, adeResources int, ical string, events []api.Event) TimetableCache {
+	key := cacheKey(univID, adeResources)
 	now := time.Now()
 	cacheMu.Lock()
 	timetable := TimetableCache{
 		AdeResources: adeResources,
 		LastUpdate:   &now,
 		Ical:         ical,
-		Json:         json,
+		Events:       events,
 	}
 	cacheMap[key] = timetable
 	cacheMu.Unlock()
 	return timetable
 }
 
-func getKey(univID int, adeResources int) string {
+func cacheKey(univID int, adeResources int) string {
 	return strconv.Itoa(univID) + "-" + strconv.Itoa(adeResources)
 }
 
 func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectId int) (*ics.Calendar, error) {
-	key := getKey(univID, adeResources)
+	key := cacheKey(univID, adeResources)
 	result, err, _ := sfGroup.Do(key, func() (interface{}, error) {
-		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
-		fullUrl, err := domain.BuildAdeUrl(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
+		firstDate, lastDate := GetAcademicYearDates(time.Now())
+		fullUrl, err := BuildURL(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +65,7 @@ func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectI
 			return nil, err
 		}
 
-		body, err := MakeRequest(req)
+		body, err := makeRequest(req)
 		if err != nil {
 			return nil, err
 		}

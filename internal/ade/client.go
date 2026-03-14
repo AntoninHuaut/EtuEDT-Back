@@ -1,4 +1,4 @@
-package cache
+package ade
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ const (
 var httpClient = &http.Client{Timeout: httpTimeout}
 var sem = make(chan struct{}, 5)
 
-func MakeRequest(req *http.Request) ([]byte, error) {
+func makeRequest(req *http.Request) ([]byte, error) {
 	attempts := 0
 	body, err := retry.DoWithData(func() ([]byte, error) {
 		attempts++

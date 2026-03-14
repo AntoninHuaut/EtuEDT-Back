@@ -4,12 +4,12 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/domain"
-	"github.com/AntoninHuaut/EtuEDT-Back/server"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/config"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/server"
 )
 
 func main() {
-	if err := domain.LoadConfig(); err != nil {
+	if err := config.LoadConfig(); err != nil {
 		slog.Error("failed to load config", "err", err)
 		os.Exit(1)
 	}

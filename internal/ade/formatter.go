@@ -1,11 +1,11 @@
-package cache
+package ade
 
 import (
 	"regexp"
 	"sort"
 	"strings"
 
-	"github.com/AntoninHuaut/EtuEDT-Back/domain"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/api"
 	ics "github.com/arran4/golang-ical"
 )
 
@@ -15,23 +15,23 @@ var (
 	reExportedMsg = regexp.MustCompile(`\n\(Export(é|ed).*\n?`)
 )
 
-func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {
-	type MergeJsonEvent struct {
-		Event       domain.JsonEvent
-		OutputIndex int
+func mergeSimilarEvents(events []api.Event) []api.Event {
+	type mergeEvent struct {
+		event       api.Event
+		outputIndex int
 	}
 
-	outputs := make([]domain.JsonEvent, 0)
+	outputs := make([]api.Event, 0)
 	for _, event := range events {
-		var existingEvents []MergeJsonEvent
+		var existingEvents []mergeEvent
 		for index, output := range outputs {
 			if output.Title == event.Title &&
 				output.Location == event.Location &&
 				output.Teacher == event.Teacher &&
 				(event.Start.Equal(output.End) || event.End.Equal(output.Start)) {
-				existingEvents = append(existingEvents, MergeJsonEvent{
-					Event:       output,
-					OutputIndex: index,
+				existingEvents = append(existingEvents, mergeEvent{
+					event:       output,
+					outputIndex: index,
 				})
 			}
 		}
@@ -40,12 +40,12 @@ func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {
 			outputs = append(outputs, event)
 		} else {
 			for _, existing := range existingEvents {
-				if event.Start.Before(existing.Event.End) {
-					event.End = existing.Event.End
+				if event.Start.Before(existing.event.End) {
+					event.End = existing.event.End
 				} else {
-					event.Start = existing.Event.Start
+					event.Start = existing.event.Start
 				}
-				outputs[existing.OutputIndex] = event
+				outputs[existing.outputIndex] = event
 			}
 		}
 	}
@@ -53,8 +53,8 @@ func jsonMergeSimilarEvents(events []domain.JsonEvent) []domain.JsonEvent {
 	return outputs
 }
 
-func CalendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
-	var jsonEvents []domain.JsonEvent
+func CalendarToEvents(calendar *ics.Calendar) []api.Event {
+	var events []api.Event
 
 	formatTitle := func(title string) string {
 		title = reSuffix.ReplaceAllString(title, "")
@@ -119,7 +119,7 @@ func CalendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 		}
 
 		formattedDescription := formatDescription(descriptionValue)
-		jsonEvents = append(jsonEvents, domain.JsonEvent{
+		events = append(events, api.Event{
 			Title:       formatTitle(summary.Value),
 			Teacher:     getTeacher(formattedDescription),
 			Description: formattedDescription,
@@ -129,15 +129,15 @@ func CalendarToJson(calendar *ics.Calendar) []domain.JsonEvent {
 		})
 	}
 
-	sort.Slice(jsonEvents, func(i, j int) bool {
-		if jsonEvents[i].Start.Before(jsonEvents[j].Start) {
+	sort.Slice(events, func(i, j int) bool {
+		if events[i].Start.Before(events[j].Start) {
 			return true
 		}
-		if jsonEvents[i].Start.After(jsonEvents[j].Start) {
+		if events[i].Start.After(events[j].Start) {
 			return false
 		}
-		return jsonEvents[i].Title < jsonEvents[j].Title
+		return events[i].Title < events[j].Title
 	})
 
-	return jsonMergeSimilarEvents(jsonEvents)
+	return mergeSimilarEvents(events)
 }
