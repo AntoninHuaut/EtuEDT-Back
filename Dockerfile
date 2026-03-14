@@ -11,13 +11,15 @@ RUN go build -o /etuedt ./cmd/etuedt.go
 
 FROM alpine:3.21
 
-RUN addgroup -S etuedt && adduser -S etuedt -G etuedt
+RUN apk add --no-cache ca-certificates && \
+    addgroup -S etuedt && adduser -S etuedt -G etuedt
 
 EXPOSE 3000
 
 WORKDIR /app
 
 COPY --from=builder /etuedt /etuedt
+COPY --from=builder /app/config.json /app/config.json
 
 USER etuedt
 
