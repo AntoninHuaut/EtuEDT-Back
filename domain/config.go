@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/url"
 	"os"
 )
 
@@ -64,7 +65,6 @@ func validateConfig(config *Config) error {
 	}
 
 	univIDs := make(map[int]bool)
-	adeResourcesSet := make(map[int]bool)
 
 	for _, univ := range config.Universities {
 		if univ.ID <= 0 {
@@ -76,6 +76,9 @@ func validateConfig(config *Config) error {
 		if univ.AdeUrl == "" {
 			return fmt.Errorf("university %d adeUrl cannot be empty", univ.ID)
 		}
+		if _, err := url.Parse(univ.AdeUrl); err != nil {
+			return fmt.Errorf("university %d adeUrl is not a valid URL: %w", univ.ID, err)
+		}
 		if univ.AdeProjectId <= 0 {
 			return fmt.Errorf("university %d adeProjectId must be greater than 0", univ.ID)
 		}
@@ -85,6 +88,7 @@ func validateConfig(config *Config) error {
 		}
 		univIDs[univ.ID] = true
 
+		adeResourcesSet := make(map[int]bool)
 		groupIDs := make(map[int]bool)
 
 		for _, room := range univ.Rooms {

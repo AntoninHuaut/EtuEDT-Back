@@ -98,13 +98,13 @@ func buildRoomResponse(univ *domain.UniversityConfig, room *domain.RoomConfig, f
 }
 
 // serveEvents returns cached events in the format requested by the Accept header.
-// Defaults to JSON. Use Accept: text/calendar for iCal format.
+// Defaults to text/calendar (ICS). Use Accept: application/json for JSON format.
 // Always tries to refresh from ADE on each request.
 // If refresh fails, returns cached data when available.
 func serveEvents(c *fiber.Ctx, univ *domain.UniversityConfig, adeResources int) error {
 	timetableCache, ok := cache.GetTimetableByAdeResources(univ.ID, adeResources)
 
-	calendar, err := cache.FetchTimetable(univ.AdeUrl, adeResources, univ.AdeProjectId)
+	calendar, err := cache.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, univ.AdeProjectId)
 	if err == nil {
 		timetableCache = cache.SetTimetableByAdeResources(univ.ID, adeResources, calendar.Serialize(), cache.CalendarToJson(calendar))
 		ok = true
@@ -119,7 +119,7 @@ func serveEvents(c *fiber.Ctx, univ *domain.UniversityConfig, adeResources int) 
 	case "application/json":
 		return c.JSON(timetableCache.Json)
 	default:
-		c.Set("Content-Type", "text/calendar")
+		c.Set("Content-Type", "text/calendar; charset=utf-8")
 		return c.SendString(timetableCache.Ical)
 	}
 }

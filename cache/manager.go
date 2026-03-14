@@ -11,6 +11,7 @@ import (
 	"github.com/AntoninHuaut/EtuEDT-Back/domain"
 
 	ics "github.com/arran4/golang-ical"
+	"golang.org/x/sync/singleflight"
 )
 
 type TimetableCache struct {
@@ -22,6 +23,7 @@ type TimetableCache struct {
 
 var cacheMap = make(map[string]TimetableCache)
 var cacheMu sync.RWMutex
+var sfGroup singleflight.Group
 
 func GetTimetableByAdeResources(univID int, adeResources int) (TimetableCache, bool) {
 	key := getKey(univID, adeResources)
@@ -49,24 +51,31 @@ func getKey(univID int, adeResources int) string {
 	return strconv.Itoa(univID) + "-" + strconv.Itoa(adeResources)
 }
 
-func FetchTimetable(adeBaseUrl string, adeResources int, adeProjectId int) (*ics.Calendar, error) {
-	firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
-	fullUrl := domain.BuildAdeUrl(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
+func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectId int) (*ics.Calendar, error) {
+	key := getKey(univID, adeResources)
+	result, err, _ := sfGroup.Do(key, func() (interface{}, error) {
+		firstDate, lastDate := domain.GetAcademicYearDates(time.Now())
+		fullUrl := domain.BuildAdeUrl(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
 
-	req, err := http.NewRequest(http.MethodGet, fullUrl, nil)
+		req, err := http.NewRequest(http.MethodGet, fullUrl, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		body, err := MakeRequest(fmt.Sprintf("%d", adeResources), req)
+		if err != nil {
+			return nil, err
+		}
+
+		ical, err := ics.ParseCalendar(strings.NewReader(string(body)))
+		if err != nil {
+			return nil, err
+		}
+
+		return ical, nil
+	})
 	if err != nil {
 		return nil, err
 	}
-
-	body, err := MakeRequest(fmt.Sprintf("%d", adeResources), req)
-	if err != nil {
-		return nil, err
-	}
-
-	ical, err := ics.ParseCalendar(strings.NewReader(string(body)))
-	if err != nil {
-		return nil, err
-	}
-
-	return ical, nil
+	return result.(*ics.Calendar), nil
 }
