@@ -48,7 +48,6 @@ func StartWebApp() {
 	r.Use(middleware.Recoverer)
 
 	r.Get("/metrics", promhttp.Handler().ServeHTTP)
-	r.Route("/v2", v2Router)
 
 	config := huma.DefaultConfig("EtuEDT API", "3.0.0")
 	config.Info.Description = "API for university timetables and room schedules"
