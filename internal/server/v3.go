@@ -72,10 +72,11 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := ade.GetAcademicYearDates(time.Now(), univ.GetSplitMonth())
+		now := time.Now()
+		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
 		resp := make([]timetableResponse, 0, len(group.Timetables))
 		for i := range group.Timetables {
-			resp = append(resp, buildTimetableResponse(univ, &group.Timetables[i], firstDate, lastDate))
+			resp = append(resp, buildTimetableResponse(univ, &group.Timetables[i], now, firstDate, lastDate))
 		}
 		return &timetableListOutput{Body: resp}, nil
 	})
@@ -99,8 +100,9 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := ade.GetAcademicYearDates(time.Now(), univ.GetSplitMonth())
-		return &timetableOutput{Body: buildTimetableResponse(univ, tt, firstDate, lastDate)}, nil
+		now := time.Now()
+		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
+		return &timetableOutput{Body: buildTimetableResponse(univ, tt, now, firstDate, lastDate)}, nil
 	})
 
 	huma.Register(humaAPI, huma.Operation{
@@ -139,10 +141,11 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := ade.GetAcademicYearDates(time.Now(), univ.GetSplitMonth())
+		now := time.Now()
+		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
 		resp := make([]roomResponse, 0, len(univ.Rooms))
 		for i := range univ.Rooms {
-			resp = append(resp, buildRoomResponse(univ, &univ.Rooms[i], firstDate, lastDate))
+			resp = append(resp, buildRoomResponse(univ, &univ.Rooms[i], now, firstDate, lastDate))
 		}
 		return &roomListOutput{Body: resp}, nil
 	})
@@ -162,8 +165,9 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		firstDate, lastDate := ade.GetAcademicYearDates(time.Now(), univ.GetSplitMonth())
-		return &roomOutput{Body: buildRoomResponse(univ, room, firstDate, lastDate)}, nil
+		now := time.Now()
+		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
+		return &roomOutput{Body: buildRoomResponse(univ, room, now, firstDate, lastDate)}, nil
 	})
 
 	huma.Register(humaAPI, huma.Operation{

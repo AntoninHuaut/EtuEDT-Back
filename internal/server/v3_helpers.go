@@ -77,12 +77,13 @@ func findRoom(univ *config.UniversityConfig, adeResources int) (*config.RoomConf
 	return &univ.Rooms[idx], nil
 }
 
-func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableConfig, firstDate time.Time, lastDate time.Time) timetableResponse {
+func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableConfig, now time.Time, firstDate time.Time, lastDate time.Time) timetableResponse {
 	cached, _ := ade.GetTimetableByAdeResources(univ.ID, tt.AdeResources)
-	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, univ.GetEffectiveProjectId(time.Now()), firstDate, lastDate)
+	projectId := univ.GetEffectiveProjectId(now)
+	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, projectId, firstDate, lastDate)
 	return timetableResponse{
 		AdeResources: tt.AdeResources,
-		AdeProjectId: univ.GetEffectiveProjectId(time.Now()),
+		AdeProjectId: projectId,
 		Year:         tt.Year,
 		Label:        tt.Label,
 		AdeUrl:       adeUrl,
@@ -90,12 +91,13 @@ func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableC
 	}
 }
 
-func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, firstDate time.Time, lastDate time.Time) roomResponse {
+func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, now time.Time, firstDate time.Time, lastDate time.Time) roomResponse {
 	cached, _ := ade.GetTimetableByAdeResources(univ.ID, room.AdeResources)
-	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, univ.GetEffectiveProjectId(time.Now()), firstDate, lastDate)
+	projectId := univ.GetEffectiveProjectId(now)
+	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, projectId, firstDate, lastDate)
 	return roomResponse{
 		AdeResources: room.AdeResources,
-		AdeProjectId: univ.GetEffectiveProjectId(time.Now()),
+		AdeProjectId: projectId,
 		Label:        room.Label,
 		AdeUrl:       adeUrl,
 		LastUpdate:   cached.LastUpdate,

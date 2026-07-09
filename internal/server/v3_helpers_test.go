@@ -291,10 +291,11 @@ func TestBuildTimetableResponse_FieldsSet(t *testing.T) {
 
 	univ := &config.AppConfig.Universities[0]
 	tt := &univ.Groups[0].Timetables[0]
+	now := time.Date(2025, 10, 1, 0, 0, 0, 0, time.UTC)
 	firstDate := time.Date(2025, 8, 1, 0, 0, 0, 0, time.UTC)
 	lastDate := time.Date(2026, 7, 31, 0, 0, 0, 0, time.UTC)
 
-	resp := buildTimetableResponse(univ, tt, firstDate, lastDate)
+	resp := buildTimetableResponse(univ, tt, now, firstDate, lastDate)
 
 	if resp.AdeResources != tt.AdeResources {
 		t.Errorf("AdeResources: got %d, want %d", resp.AdeResources, tt.AdeResources)
@@ -320,10 +321,11 @@ func TestBuildRoomResponse_FieldsSet(t *testing.T) {
 
 	univ := &config.AppConfig.Universities[0]
 	room := &univ.Rooms[0]
+	now := time.Date(2025, 10, 1, 0, 0, 0, 0, time.UTC)
 	firstDate := time.Date(2025, 8, 1, 0, 0, 0, 0, time.UTC)
 	lastDate := time.Date(2026, 7, 31, 0, 0, 0, 0, time.UTC)
 
-	resp := buildRoomResponse(univ, room, firstDate, lastDate)
+	resp := buildRoomResponse(univ, room, now, firstDate, lastDate)
 
 	if resp.AdeResources != room.AdeResources {
 		t.Errorf("AdeResources: got %d, want %d", resp.AdeResources, room.AdeResources)
