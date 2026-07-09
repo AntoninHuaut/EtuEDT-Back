@@ -46,10 +46,10 @@ func cacheKey(univID int, adeResources int) string {
 	return strconv.Itoa(univID) + "-" + strconv.Itoa(adeResources)
 }
 
-func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectId int) (*ics.Calendar, error) {
+func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectId int, splitMonth int) (*ics.Calendar, error) {
 	key := cacheKey(univID, adeResources)
 	result, err, _ := sfGroup.Do(key, func() (interface{}, error) {
-		firstDate, lastDate := GetAcademicYearDates(time.Now())
+		firstDate, lastDate := GetAcademicYearDates(time.Now(), splitMonth)
 		fullUrl, err := BuildURL(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
 		if err != nil {
 			return nil, err

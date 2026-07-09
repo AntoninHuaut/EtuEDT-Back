@@ -3,6 +3,7 @@ package config
 import (
 	"strings"
 	"testing"
+	"time"
 )
 
 func validConfig() Config {
@@ -215,4 +216,86 @@ func TestValidateConfig_EmptyGroupsAllowed(t *testing.T) {
 	if err := validateConfig(&cfg); err != nil {
 		t.Fatalf("expected no error for nil groups, got: %v", err)
 	}
+}
+
+func TestValidateConfig_CycleValid(t *testing.T) {
+	cfg := validConfig()
+	cfg.Universities[0].AdeProjectId = 0
+	cfg.Universities[0].AdeProjectIdCycle = &AdeProjectIdCycleConfig{
+		StartYear:  2025,
+		SplitMonth: 7,
+		Cycle:      []int{2, 1},
+	}
+	if err := validateConfig(&cfg); err != nil {
+		t.Fatalf("expected no error for valid cycle, got: %v", err)
+	}
+}
+
+func TestValidateConfig_CycleInvalid(t *testing.T) {
+	tests := []struct {
+		name  string
+		cycle *AdeProjectIdCycleConfig
+	}{
+		{"empty cycle", &AdeProjectIdCycleConfig{StartYear: 2025, SplitMonth: 7, Cycle: []int{}}},
+		{"startYear=0", &AdeProjectIdCycleConfig{StartYear: 0, SplitMonth: 7, Cycle: []int{2, 1}}},
+		{"cycle value=0", &AdeProjectIdCycleConfig{StartYear: 2025, SplitMonth: 7, Cycle: []int{2, 0}}},
+		{"splitMonth=0", &AdeProjectIdCycleConfig{StartYear: 2025, SplitMonth: 0, Cycle: []int{2, 1}}},
+		{"splitMonth=13", &AdeProjectIdCycleConfig{StartYear: 2025, SplitMonth: 13, Cycle: []int{2, 1}}},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := validConfig()
+			cfg.Universities[0].AdeProjectId = 0
+			cfg.Universities[0].AdeProjectIdCycle = tc.cycle
+			if err := validateConfig(&cfg); err == nil {
+				t.Fatal("expected error, got nil")
+			}
+		})
+	}
+}
+
+func TestGetProjectId_Alternating(t *testing.T) {
+	cfg := &AdeProjectIdCycleConfig{StartYear: 2025, SplitMonth: 7, Cycle: []int{2, 1}}
+
+	tests := []struct {
+		date string
+		want int
+	}{
+		{"2025-07-01", 2},
+		{"2026-06-30", 2},
+		{"2026-07-01", 1},
+		{"2027-06-30", 1},
+		{"2027-07-01", 2},
+	}
+
+	for _, tc := range tests {
+		now, _ := time.Parse("2006-01-02", tc.date)
+		got := cfg.GetProjectId(now)
+		if got != tc.want {
+			t.Errorf("%s: got %d, want %d", tc.date, got, tc.want)
+		}
+	}
+}
+
+func TestGetEffectiveProjectId(t *testing.T) {
+	now, _ := time.Parse("2006-01-02", "2025-07-01")
+
+	t.Run("cycle", func(t *testing.T) {
+		univ := &UniversityConfig{
+			AdeProjectId: 99,
+			AdeProjectIdCycle: &AdeProjectIdCycleConfig{
+				StartYear: 2025, SplitMonth: 7, Cycle: []int{2, 1},
+			},
+		}
+		if got := univ.GetEffectiveProjectId(now); got != 2 {
+			t.Errorf("got %d, want 2", got)
+		}
+	})
+
+	t.Run("fallback", func(t *testing.T) {
+		univ := &UniversityConfig{AdeProjectId: 42}
+		if got := univ.GetEffectiveProjectId(now); got != 42 {
+			t.Errorf("got %d, want 42", got)
+		}
+	})
 }

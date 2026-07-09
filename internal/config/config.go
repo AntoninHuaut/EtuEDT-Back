@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -26,13 +27,46 @@ type GroupConfig struct {
 	Timetables []TimetableConfig `json:"timetables" validate:"required,min=1,dive"`
 }
 
+type AdeProjectIdCycleConfig struct {
+	StartYear  int   `json:"startYear"  validate:"gt=0"`
+	SplitMonth int   `json:"splitMonth" validate:"min=1,max=12"`
+	Cycle      []int `json:"cycle"      validate:"required,min=1,dive,gt=0"`
+}
+
+func (c *AdeProjectIdCycleConfig) GetProjectId(now time.Time) int {
+	year := now.Year()
+	if now.Month() < time.Month(c.SplitMonth) {
+		year--
+	}
+	offset := (year - c.StartYear) % len(c.Cycle)
+	if offset < 0 {
+		offset += len(c.Cycle)
+	}
+	return c.Cycle[offset]
+}
+
 type UniversityConfig struct {
-	ID           int           `json:"id"           validate:"gt=0"`
-	Name         string        `json:"name"         validate:"required"`
-	AdeUrl       string        `json:"adeUrl"       validate:"required,http_url"`
-	AdeProjectId int           `json:"adeProjectId" validate:"gt=0"`
-	Rooms        []RoomConfig  `json:"rooms"        validate:"dive"`
-	Groups       []GroupConfig `json:"groups"       validate:"dive"`
+	ID                int                       `json:"id"                validate:"gt=0"`
+	Name              string                    `json:"name"              validate:"required"`
+	AdeUrl            string                    `json:"adeUrl"            validate:"required,http_url"`
+	AdeProjectId      int                       `json:"adeProjectId"`
+	AdeProjectIdCycle *AdeProjectIdCycleConfig  `json:"adeProjectIdCycle,omitempty"`
+	Rooms             []RoomConfig              `json:"rooms"             validate:"dive"`
+	Groups            []GroupConfig             `json:"groups"            validate:"dive"`
+}
+
+func (u *UniversityConfig) GetEffectiveProjectId(now time.Time) int {
+	if u.AdeProjectIdCycle != nil {
+		return u.AdeProjectIdCycle.GetProjectId(now)
+	}
+	return u.AdeProjectId
+}
+
+func (u *UniversityConfig) GetSplitMonth() int {
+	if u.AdeProjectIdCycle != nil {
+		return u.AdeProjectIdCycle.SplitMonth
+	}
+	return 7
 }
 
 type Config struct {
@@ -72,6 +106,10 @@ func validateConfig(config *Config) error {
 
 	univIDs := make(map[int]bool)
 	for _, univ := range config.Universities {
+		if univ.AdeProjectIdCycle == nil && univ.AdeProjectId <= 0 {
+			return fmt.Errorf("adeProjectId must be > 0 when adeProjectIdCycle is not set")
+		}
+
 		if univIDs[univ.ID] {
 			return fmt.Errorf("duplicate university id: %d", univ.ID)
 		}
