@@ -46,13 +46,13 @@ func (c *AdeProjectIdCycleConfig) GetProjectId(now time.Time) int {
 }
 
 type UniversityConfig struct {
-	ID                int                       `json:"id"                validate:"gt=0"`
-	Name              string                    `json:"name"              validate:"required"`
-	AdeUrl            string                    `json:"adeUrl"            validate:"required,http_url"`
-	AdeProjectId      int                       `json:"adeProjectId"`
-	AdeProjectIdCycle *AdeProjectIdCycleConfig  `json:"adeProjectIdCycle,omitempty"`
-	Rooms             []RoomConfig              `json:"rooms"             validate:"dive"`
-	Groups            []GroupConfig             `json:"groups"            validate:"dive"`
+	ID                int                      `json:"id"                validate:"gt=0"`
+	Name              string                   `json:"name"              validate:"required"`
+	AdeUrl            string                   `json:"adeUrl"            validate:"required,http_url"`
+	AdeProjectId      int                      `json:"adeProjectId"`
+	AdeProjectIdCycle *AdeProjectIdCycleConfig `json:"adeProjectIdCycle,omitempty"`
+	Rooms             []RoomConfig             `json:"rooms"             validate:"dive"`
+	Groups            []GroupConfig            `json:"groups"            validate:"dive"`
 }
 
 func (u *UniversityConfig) GetEffectiveProjectId(now time.Time) int {
