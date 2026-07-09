@@ -107,7 +107,7 @@ func validateConfig(config *Config) error {
 	univIDs := make(map[int]bool)
 	for _, univ := range config.Universities {
 		if univ.AdeProjectIdCycle == nil && univ.AdeProjectId <= 0 {
-			return fmt.Errorf("adeProjectId must be > 0 when adeProjectIdCycle is not set")
+			return fmt.Errorf("university %d (%s): adeProjectId must be > 0 when adeProjectIdCycle is not set", univ.ID, univ.Name)
 		}
 
 		if univIDs[univ.ID] {
