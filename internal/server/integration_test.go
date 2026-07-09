@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
@@ -15,7 +14,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 )
 
-// newTestServer creates an httptest.Server with the full v2 + v3 routing,
+// newTestServer creates an httptest.Server with the full v3 routing,
 // seeded with the given config.
 func newTestServer(t *testing.T, cfg config.Config) *httptest.Server {
 	t.Helper()
@@ -23,7 +22,6 @@ func newTestServer(t *testing.T, cfg config.Config) *httptest.Server {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
-	r.Route("/v2", v2Router)
 
 	humaConfig := huma.DefaultConfig("EtuEDT API", "3.0.0")
 	humaAPI := humachi.New(r, humaConfig)
@@ -71,25 +69,6 @@ func get(t *testing.T, server *httptest.Server, path string) *http.Response {
 		}
 	})
 	return resp
-}
-
-// --- v2 integration tests ---
-
-func TestV2_AnyPath_ReturnsCalendarWithDeprecationNotice(t *testing.T) {
-	srv := newTestServer(t, testConfig())
-	defer srv.Close()
-
-	paths := []string{"/v2/", "/v2/anything", "/v2/some/nested/path"}
-	for _, path := range paths {
-		resp := get(t, srv, path)
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf("GET %s: status %d, want 200", path, resp.StatusCode)
-		}
-		ct := resp.Header.Get("Content-Type")
-		if !strings.Contains(ct, "text/calendar") {
-			t.Errorf("GET %s: Content-Type %q, want text/calendar", path, ct)
-		}
-	}
 }
 
 // --- v3 university endpoints ---
