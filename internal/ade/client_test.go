@@ -63,7 +63,7 @@ func TestFetchTimetable_SuccessOnValidResponse(t *testing.T) {
 	zeroBackoff(t)
 	resetSfGroup(t)
 
-	cal, err := FetchTimetable(1, srv.URL, 100, 42)
+	cal, err := FetchTimetable(1, srv.URL, 100, 42, 7)
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
 	}
@@ -88,7 +88,7 @@ func TestFetchTimetable_ReturnsErrorOnNon2xxStatus(t *testing.T) {
 	zeroBackoff(t)
 	resetSfGroup(t)
 
-	_, err := FetchTimetable(2, srv.URL, 100, 42)
+	_, err := FetchTimetable(2, srv.URL, 100, 42, 7)
 	if err == nil {
 		t.Fatal("expected error for 500 response, got nil")
 	}
@@ -111,7 +111,7 @@ func TestFetchTimetable_RetriesBeforeFailing(t *testing.T) {
 	zeroBackoff(t)
 	resetSfGroup(t)
 
-	_, err := FetchTimetable(3, srv.URL, 200, 42)
+	_, err := FetchTimetable(3, srv.URL, 200, 42, 7)
 	if err == nil {
 		t.Fatal("expected error after exhausting retries")
 	}
@@ -139,7 +139,7 @@ func TestFetchTimetable_SucceedsAfterTransientFailure(t *testing.T) {
 	zeroBackoff(t)
 	resetSfGroup(t)
 
-	cal, err := FetchTimetable(4, srv.URL, 300, 42)
+	cal, err := FetchTimetable(4, srv.URL, 300, 42, 7)
 	if err != nil {
 		t.Fatalf("expected success after retry, got: %v", err)
 	}
@@ -165,7 +165,7 @@ func TestFetchTimetable_ReturnsErrorOnInvalidIcal(t *testing.T) {
 	zeroBackoff(t)
 	resetSfGroup(t)
 
-	_, err := FetchTimetable(5, srv.URL, 400, 42)
+	_, err := FetchTimetable(5, srv.URL, 400, 42, 7)
 	if err == nil {
 		t.Fatal("expected error for invalid iCal body, got nil")
 	}
@@ -182,7 +182,7 @@ func TestFetchTimetable_ReturnsErrorOnInvalidIcal(t *testing.T) {
 func TestFetchTimetable_ReturnsErrorOnBadBaseURL(t *testing.T) {
 	resetSfGroup(t)
 
-	_, err := FetchTimetable(6, "://bad url", 500, 42)
+	_, err := FetchTimetable(6, "://bad url", 500, 42, 7)
 	if err == nil {
 		t.Fatal("expected error for invalid base URL, got nil")
 	}
@@ -226,7 +226,7 @@ func TestFetchTimetable_SingleflightDedup(t *testing.T) {
 		go func(idx int) {
 			defer wg.Done()
 			arrived.Add(1)
-			_, errs[idx] = FetchTimetable(7, srv.URL, 600, 42)
+			_, errs[idx] = FetchTimetable(7, srv.URL, 600, 42, 7)
 		}(i)
 	}
 

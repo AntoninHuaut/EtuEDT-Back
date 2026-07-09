@@ -79,10 +79,10 @@ func findRoom(univ *config.UniversityConfig, adeResources int) (*config.RoomConf
 
 func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableConfig, firstDate time.Time, lastDate time.Time) timetableResponse {
 	cached, _ := ade.GetTimetableByAdeResources(univ.ID, tt.AdeResources)
-	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, univ.AdeProjectId, firstDate, lastDate)
+	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, univ.GetEffectiveProjectId(time.Now()), firstDate, lastDate)
 	return timetableResponse{
 		AdeResources: tt.AdeResources,
-		AdeProjectId: univ.AdeProjectId,
+		AdeProjectId: univ.GetEffectiveProjectId(time.Now()),
 		Year:         tt.Year,
 		Label:        tt.Label,
 		AdeUrl:       adeUrl,
@@ -92,10 +92,10 @@ func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableC
 
 func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, firstDate time.Time, lastDate time.Time) roomResponse {
 	cached, _ := ade.GetTimetableByAdeResources(univ.ID, room.AdeResources)
-	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, univ.AdeProjectId, firstDate, lastDate)
+	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, univ.GetEffectiveProjectId(time.Now()), firstDate, lastDate)
 	return roomResponse{
 		AdeResources: room.AdeResources,
-		AdeProjectId: univ.AdeProjectId,
+		AdeProjectId: univ.GetEffectiveProjectId(time.Now()),
 		Label:        room.Label,
 		AdeUrl:       adeUrl,
 		LastUpdate:   cached.LastUpdate,
@@ -108,7 +108,7 @@ func fetchEvents(univ *config.UniversityConfig, adeResources int) ([]ade.Event, 
 		return cached.Events, nil
 	}
 
-	calendar, err := ade.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, univ.AdeProjectId)
+	calendar, err := ade.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, univ.GetEffectiveProjectId(time.Now()), univ.GetSplitMonth())
 	if err == nil {
 		fresh := ade.SetTimetableByAdeResources(univ.ID, adeResources, ade.CalendarToEvents(calendar))
 		return fresh.Events, nil

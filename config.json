@@ -4,7 +4,11 @@
       "id": 1,
       "name": "Université de Caen",
       "adeUrl": "https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp",
-      "adeProjectId": 2,
+      "adeProjectIdCycle": {
+        "startYear": 2025,
+        "splitMonth": 7,
+        "cycle": [2, 1]
+      },
       "groups": [
         {
           "id": 1,

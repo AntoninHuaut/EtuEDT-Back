@@ -7,13 +7,13 @@ import (
 	"time"
 )
 
-func GetAcademicYearDates(now time.Time) (time.Time, time.Time) {
+func GetAcademicYearDates(now time.Time, splitMonth int) (time.Time, time.Time) {
 	year := now.Year()
-	if now.Month() < time.August {
+	if now.Month() < time.Month(splitMonth) {
 		year--
 	}
-	first := time.Date(year, time.August, 1, 0, 0, 0, 0, time.UTC)
-	last := time.Date(year+1, time.July, 31, 0, 0, 0, 0, time.UTC)
+	first := time.Date(year, time.Month(splitMonth), 1, 0, 0, 0, 0, time.UTC)
+	last := first.AddDate(1, 0, -1)
 	return first, last
 }
 
