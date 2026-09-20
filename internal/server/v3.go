@@ -263,46 +263,6 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-
-		now := time.Now()
-		start := now
-		if !input.Start.IsZero() {
-			start = input.Start
-		}
-
-		end := start.Add(1 * time.Hour)
-		if !input.End.IsZero() {
-			end = input.End
-		}
-
-		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
-		var freeRooms []roomResponse
-
-		for _, r := range univ.Rooms {
-			if input.CampusID != 0 {
-				if r.CampusID == nil || *r.CampusID != input.CampusID {
-					continue
-				}
-			}
-
-			events, err := fetchEvents(univ, r.AdeResources)
-			if err != nil {
-				continue
-			}
-
-			isFree := true
-			for _, event := range events {
-				if event.Start.Before(end) && event.End.After(start) {
-					isFree = false
-					break
-				}
-			}
-
-			if isFree {
-				freeRooms = append(freeRooms, buildRoomResponse(univ, &r, now, firstDate, lastDate))
-			}
-		}
-
-		return &roomListOutput{Body: freeRooms}, nil
+		return findFreeRoom(univ, input), nil
 	})
 }

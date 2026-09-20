@@ -68,7 +68,7 @@ func StartWebApp() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		slog.Info("starting server", "addr", ":3000")
+		slog.Info("starting server", "addr", ":"+port)
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			slog.Error("server error", "err", err)
 			os.Exit(1)
