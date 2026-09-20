@@ -54,8 +54,13 @@ func StartWebApp() {
 	humaAPI := humachi.New(router, config)
 	registerV3Handlers(humaAPI)
 
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "3000"
+	}
+
 	srv := &http.Server{
-		Addr:    ":3000",
+		Addr:    ":" + port,
 		Handler: otelhttp.NewHandler(router, "EtuEDT-Back"),
 	}
 
