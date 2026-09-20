@@ -4,11 +4,13 @@ import (
 	"errors"
 	"log/slog"
 	"slices"
+	"sync"
 	"time"
 
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/config"
 	"github.com/danielgtaylor/huma/v2"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -23,6 +25,7 @@ var (
 	errRoomNotFound         = errors.New("room not found")
 	errTimetableUnavailable = errors.New("could not fetch timetable and no cache available, try again later")
 	errCampusEmpty          = errors.New("campus is empty")
+	errEndBeforeStart       = errors.New("end before start")
 )
 
 func humaError(err error) error {
@@ -156,7 +159,7 @@ func fetchEvents(univ *config.UniversityConfig, adeResources int) ([]ade.Event, 
 	return nil, errTimetableUnavailable
 }
 
-func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) *roomListOutput {
+func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomListOutput, error) {
 	now := time.Now()
 	start := now
 	if !input.Start.IsZero() {
@@ -168,33 +171,53 @@ func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) *roomLis
 		end = input.End
 	}
 
+	if !start.Before(end) {
+		return nil, errors.New("start time must be strictly before end time")
+	}
+
 	firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
-	var freeRooms []roomResponse
+
+	freeRooms := make([]roomResponse, 0)
+	var mu sync.Mutex
+
+	var eg errgroup.Group
 
 	for _, r := range univ.Rooms {
+		room := r
+
 		if input.CampusID != 0 {
-			if r.CampusID == nil || *r.CampusID != input.CampusID {
+			if room.CampusID == nil || *room.CampusID != input.CampusID {
 				continue
 			}
 		}
 
-		events, err := fetchEvents(univ, r.AdeResources)
-		if err != nil {
-			continue
-		}
-
-		isFree := true
-		for _, event := range events {
-			if event.Start.Before(end) && event.End.After(start) {
-				isFree = false
-				break
+		eg.Go(func() error {
+			events, err := fetchEvents(univ, room.AdeResources)
+			if err != nil {
+				return nil
 			}
-		}
 
-		if isFree {
-			freeRooms = append(freeRooms, buildRoomResponse(univ, &r, now, firstDate, lastDate))
-		}
+			isFree := true
+			for _, event := range events {
+				if event.Start.Before(end) && event.End.After(start) {
+					isFree = false
+					break
+				}
+			}
+
+			if isFree {
+				resp := buildRoomResponse(univ, &room, now, firstDate, lastDate)
+
+				mu.Lock()
+				freeRooms = append(freeRooms, resp)
+				mu.Unlock()
+			}
+
+			return nil
+		})
 	}
 
-	return &roomListOutput{Body: freeRooms}
+	_ = eg.Wait()
+
+	return &roomListOutput{Body: freeRooms}, nil
 }
