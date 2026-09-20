@@ -186,9 +186,7 @@ func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomLi
 
 	var eg errgroup.Group
 
-	for _, r := range univ.Rooms {
-		room := r
-
+	for _, room := range univ.Rooms {
 		if input.CampusID != 0 {
 			if room.CampusID == nil || *room.CampusID != input.CampusID {
 				continue
