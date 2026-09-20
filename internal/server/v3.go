@@ -207,7 +207,7 @@ func registerV3Handlers(humaAPI huma.API) {
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
 		resp := make([]roomResponse, 0, len(univ.Rooms))
 		for i := range rooms {
-			resp = append(resp, buildRoomResponse(univ, &univ.Rooms[i], now, firstDate, lastDate))
+			resp = append(resp, buildRoomResponse(univ, &rooms[i], now, firstDate, lastDate))
 		}
 		return &roomListOutput{Body: resp}, nil
 	})
