@@ -14,6 +14,7 @@ import (
 
 // setupAppConfig sets config.AppConfig to a known test fixture.
 func setupAppConfig() {
+	campusID := 1
 	config.AppConfig = config.Config{
 		Universities: []config.UniversityConfig{
 			{
@@ -21,8 +22,12 @@ func setupAppConfig() {
 				Name:         "Test University",
 				AdeUrl:       "https://ade.example.com",
 				AdeProjectId: 42,
+				Campuses: []config.CampusConfig{
+					{ID: 1, Name: "Campus 1"},
+					{ID: 2, Name: "Empty Campus"},
+				},
 				Rooms: []config.RoomConfig{
-					{AdeResources: 10, Label: "Room A"},
+					{AdeResources: 10, Label: "Room A", CampusID: &campusID},
 				},
 				Groups: []config.GroupConfig{
 					{
@@ -84,6 +89,39 @@ func TestHumaError_RoomNotFound_Returns404(t *testing.T) {
 	}
 }
 
+func TestHumaError_CampusNotFound_Returns404(t *testing.T) {
+	he := humaError(errCampusNotFound)
+	var se huma.StatusError
+	if !errors.As(he, &se) {
+		t.Fatalf("expected huma.StatusError, got %T", he)
+	}
+	if se.GetStatus() != http.StatusNotFound {
+		t.Errorf("status: got %d, want %d", se.GetStatus(), http.StatusNotFound)
+	}
+}
+
+func TestHumaError_CampusEmpty_Returns404(t *testing.T) {
+	he := humaError(errCampusEmpty)
+	var se huma.StatusError
+	if !errors.As(he, &se) {
+		t.Fatalf("expected huma.StatusError, got %T", he)
+	}
+	if se.GetStatus() != http.StatusNotFound {
+		t.Errorf("status: got %d, want %d", se.GetStatus(), http.StatusNotFound)
+	}
+}
+
+func TestHumaError_EndBeforeStart_Returns400(t *testing.T) {
+	he := humaError(errEndBeforeStart)
+	var se huma.StatusError
+	if !errors.As(he, &se) {
+		t.Fatalf("expected huma.StatusError, got %T", he)
+	}
+	if se.GetStatus() != http.StatusBadRequest {
+		t.Errorf("status: got %d, want %d", se.GetStatus(), http.StatusBadRequest)
+	}
+}
+
 func TestHumaError_TimetableUnavailable_Returns503(t *testing.T) {
 	he := humaError(errTimetableUnavailable)
 	var se huma.StatusError
@@ -126,6 +164,31 @@ func TestFindUniversity_NotFound(t *testing.T) {
 	_, err := findUniversity(999)
 	if !errors.Is(err, errUniversityNotFound) {
 		t.Errorf("expected errUniversityNotFound, got %v", err)
+	}
+}
+
+// --- findCampus tests ---
+
+func TestFindCampus_Found(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	c, err := findCampus(univ, 1)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if c.ID != 1 || c.Name != "Campus 1" {
+		t.Errorf("unexpected campus: %+v", c)
+	}
+}
+
+func TestFindCampus_NotFound(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	_, err := findCampus(univ, 999)
+	if !errors.Is(err, errCampusNotFound) {
+		t.Errorf("expected errCampusNotFound, got %v", err)
 	}
 }
 
@@ -201,6 +264,41 @@ func TestFindRoom_NotFound(t *testing.T) {
 	_, err := findRoom(univ, 999)
 	if !errors.Is(err, errRoomNotFound) {
 		t.Errorf("expected errRoomNotFound, got %v", err)
+	}
+}
+
+// --- findCampusRooms tests ---
+
+func TestFindCampusRooms_Found(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	rooms, err := findCampusRooms(univ, 1)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(rooms) != 1 || rooms[0].AdeResources != 10 {
+		t.Errorf("expected 1 room with AdeResources=10, got %+v", rooms)
+	}
+}
+
+func TestFindCampusRooms_EmptyCampus(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	_, err := findCampusRooms(univ, 2)
+	if !errors.Is(err, errCampusEmpty) {
+		t.Errorf("expected errCampusEmpty, got %v", err)
+	}
+}
+
+func TestFindCampusRooms_UnknownCampus(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	_, err := findCampusRooms(univ, 999)
+	if !errors.Is(err, errCampusEmpty) {
+		t.Errorf("expected errCampusEmpty, got %v", err)
 	}
 }
 
@@ -338,5 +436,218 @@ func TestBuildRoomResponse_FieldsSet(t *testing.T) {
 	}
 	if resp.AdeUrl == "" {
 		t.Errorf("AdeUrl should not be empty")
+	}
+	if resp.CampusID != 1 {
+		t.Errorf("CampusID: got %d, want 1", resp.CampusID)
+	}
+}
+
+func TestBuildRoomResponse_WithoutCampusID(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	room := &config.RoomConfig{AdeResources: 11, Label: "Room Without Campus", CampusID: nil}
+	now := time.Date(2025, 10, 1, 0, 0, 0, 0, time.UTC)
+	firstDate := time.Date(2025, 8, 1, 0, 0, 0, 0, time.UTC)
+	lastDate := time.Date(2026, 7, 31, 0, 0, 0, 0, time.UTC)
+
+	resp := buildRoomResponse(univ, room, now, firstDate, lastDate)
+
+	if resp.CampusID != -1 {
+		t.Errorf("CampusID: got %d, want -1", resp.CampusID)
+	}
+}
+
+// --- findFreeRoom tests ---
+
+func TestFindFreeRoom_AllFreeWhenNoEvents(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	ade.SetTimetableByAdeResources(univ.ID, 10, []ade.Event{})
+
+	now := time.Now()
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+		Start:  now,
+		End:    now.Add(2 * time.Hour),
+	}
+
+	out, err := findFreeRoom(univ, input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(out.Body) != 1 || out.Body[0].AdeResources != 10 {
+		t.Errorf("expected 1 free room (AdeResources=10), got %v", out.Body)
+	}
+}
+
+func TestFindFreeRoom_OccupiedRoomExcluded(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	now := time.Now()
+	events := []ade.Event{
+		{
+			Title: "Maths Class",
+			Start: now.Add(30 * time.Minute),
+			End:   now.Add(90 * time.Minute),
+		},
+	}
+	ade.SetTimetableByAdeResources(univ.ID, 10, events)
+
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+		Start:  now,
+		End:    now.Add(2 * time.Hour),
+	}
+
+	out, err := findFreeRoom(univ, input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(out.Body) != 0 {
+		t.Errorf("expected 0 free rooms because room is occupied, got %d", len(out.Body))
+	}
+}
+
+func TestFindFreeRoom_EventOutsideRange_RoomIsFree(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	now := time.Now()
+	events := []ade.Event{
+		{
+			Title: "Later Class",
+			Start: now.Add(3 * time.Hour),
+			End:   now.Add(4 * time.Hour),
+		},
+	}
+	ade.SetTimetableByAdeResources(univ.ID, 10, events)
+
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+		Start:  now,
+		End:    now.Add(2 * time.Hour),
+	}
+
+	out, err := findFreeRoom(univ, input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(out.Body) != 1 || out.Body[0].AdeResources != 10 {
+		t.Errorf("expected room to be free, got %v", out.Body)
+	}
+}
+
+func TestFindFreeRoom_DefaultTimesApplied(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	ade.SetTimetableByAdeResources(univ.ID, 10, []ade.Event{})
+
+	// Zero Start and End => defaults to now and now + 1h
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+	}
+
+	out, err := findFreeRoom(univ, input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(out.Body) != 1 {
+		t.Errorf("expected 1 free room with default times, got %d", len(out.Body))
+	}
+}
+
+func TestFindFreeRoom_CampusFilter(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	campus2ID := 2
+	univ.Rooms = append(univ.Rooms, config.RoomConfig{
+		AdeResources: 11,
+		Label:        "Room B",
+		CampusID:     &campus2ID,
+	})
+	ade.SetTimetableByAdeResources(univ.ID, 10, []ade.Event{})
+	ade.SetTimetableByAdeResources(univ.ID, 11, []ade.Event{})
+
+	now := time.Now()
+	input := &freeRoomsInput{
+		UnivID:   univ.ID,
+		Start:    now,
+		End:      now.Add(1 * time.Hour),
+		CampusID: 2,
+	}
+
+	out, err := findFreeRoom(univ, input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(out.Body) != 1 || out.Body[0].AdeResources != 11 {
+		t.Errorf("expected only room 11 from campus 2, got %v", out.Body)
+	}
+}
+
+func TestFindFreeRoom_EndBeforeStart_ReturnsError(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	now := time.Now()
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+		Start:  now.Add(2 * time.Hour),
+		End:    now.Add(1 * time.Hour),
+	}
+
+	_, err := findFreeRoom(univ, input)
+	if !errors.Is(err, errEndBeforeStart) {
+		t.Errorf("expected errEndBeforeStart, got %v", err)
+	}
+}
+
+func TestFindFreeRoom_StartEqualsEnd_ReturnsError(t *testing.T) {
+	setupAppConfig()
+
+	univ := &config.AppConfig.Universities[0]
+	now := time.Now()
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+		Start:  now,
+		End:    now,
+	}
+
+	_, err := findFreeRoom(univ, input)
+	if !errors.Is(err, errEndBeforeStart) {
+		t.Errorf("expected errEndBeforeStart, got %v", err)
+	}
+}
+
+func TestFindFreeRoom_FetchErrorSkippedGracefully(t *testing.T) {
+	srv := stubUpstreamServer(t, http.StatusInternalServerError)
+
+	setupAppConfig()
+	univ := &config.AppConfig.Universities[0]
+	univ.AdeUrl = srv.URL
+	// Room 10 has no cache, upstream 500 => fetchEvents fails
+	const nonCached = 88888
+	univ.Rooms = []config.RoomConfig{
+		{AdeResources: nonCached, Label: "Unreachable Room"},
+	}
+
+	now := time.Now()
+	input := &freeRoomsInput{
+		UnivID: univ.ID,
+		Start:  now,
+		End:    now.Add(1 * time.Hour),
+	}
+
+	out, err := findFreeRoom(univ, input)
+	if err != nil {
+		t.Fatalf("findFreeRoom should not fail when upstream errors, got %v", err)
+	}
+	if len(out.Body) != 0 {
+		t.Errorf("expected 0 rooms, got %d", len(out.Body))
 	}
 }
