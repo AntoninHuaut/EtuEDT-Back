@@ -59,7 +59,7 @@ type UniversityConfig struct {
 	AdeProjectIdCycle *AdeProjectIdCycleConfig `json:"adeProjectIdCycle,omitempty"`
 	Rooms             []RoomConfig             `json:"rooms"             validate:"dive"`
 	Groups            []GroupConfig            `json:"groups"            validate:"dive"`
-	Campuses          []CampusConfig           `json:"campuses"`
+	Campuses          []CampusConfig           `json:"campuses" validate:"dive"`
 }
 
 func (u *UniversityConfig) GetEffectiveProjectId(now time.Time) int {
