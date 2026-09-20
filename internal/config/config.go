@@ -16,9 +16,15 @@ type TimetableConfig struct {
 	Label        string `json:"label"        validate:"required"`
 }
 
+type CampusConfig struct {
+	ID   int    `json:"id"   validate:"gt=0"`
+	Name string `json:"name" validate:"required"`
+}
+
 type RoomConfig struct {
 	AdeResources int    `json:"adeResources" validate:"gt=0"`
 	Label        string `json:"label"        validate:"required"`
+	CampusID     *int   `json:"campusId,omitempty"`
 }
 
 type GroupConfig struct {
@@ -53,6 +59,7 @@ type UniversityConfig struct {
 	AdeProjectIdCycle *AdeProjectIdCycleConfig `json:"adeProjectIdCycle,omitempty"`
 	Rooms             []RoomConfig             `json:"rooms"             validate:"dive"`
 	Groups            []GroupConfig            `json:"groups"            validate:"dive"`
+	Campuses          []CampusConfig           `json:"campuses"`
 }
 
 func (u *UniversityConfig) GetEffectiveProjectId(now time.Time) int {

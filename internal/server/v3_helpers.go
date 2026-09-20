@@ -18,9 +18,11 @@ const (
 var (
 	errUniversityNotFound   = errors.New("university not found")
 	errGroupNotFound        = errors.New("group not found")
+	errCampusNotFound       = errors.New("campus not found")
 	errTimetableNotFound    = errors.New("timetable not found")
 	errRoomNotFound         = errors.New("room not found")
 	errTimetableUnavailable = errors.New("could not fetch timetable and no cache available, try again later")
+	errCampusEmpty          = errors.New("campus is empty")
 )
 
 func humaError(err error) error {
@@ -47,6 +49,16 @@ func findUniversity(univID int) (*config.UniversityConfig, error) {
 	return &config.AppConfig.Universities[idx], nil
 }
 
+func findCampus(univ *config.UniversityConfig, campusID int) (*config.CampusConfig, error) {
+	idx := slices.IndexFunc(univ.Campuses, func(g config.CampusConfig) bool {
+		return g.ID == campusID
+	})
+	if idx < 0 {
+		return nil, errCampusNotFound
+	}
+	return &univ.Campuses[idx], nil
+}
+
 func findGroup(univ *config.UniversityConfig, groupID int) (*config.GroupConfig, error) {
 	idx := slices.IndexFunc(univ.Groups, func(g config.GroupConfig) bool {
 		return g.ID == groupID
@@ -65,6 +77,19 @@ func findTimetable(group *config.GroupConfig, adeResources int) (*config.Timetab
 		return nil, errTimetableNotFound
 	}
 	return &group.Timetables[idx], nil
+}
+
+func findCampusRooms(univ *config.UniversityConfig, campusID int) ([]config.RoomConfig, error) {
+	var campusRooms []config.RoomConfig
+	for _, r := range univ.Rooms {
+		if r.CampusID != nil && *r.CampusID == campusID {
+			campusRooms = append(campusRooms, r)
+		}
+	}
+	if len(campusRooms) == 0 {
+		return nil, errCampusEmpty
+	}
+	return campusRooms, nil
 }
 
 func findRoom(univ *config.UniversityConfig, adeResources int) (*config.RoomConfig, error) {
@@ -95,12 +120,17 @@ func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, n
 	cached, _ := ade.GetTimetableByAdeResources(univ.ID, room.AdeResources)
 	projectId := univ.GetEffectiveProjectId(now)
 	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, projectId, firstDate, lastDate)
+	campusID := -1
+	if room.CampusID != nil {
+		campusID = *room.CampusID
+	}
 	return roomResponse{
 		AdeResources: room.AdeResources,
 		AdeProjectId: projectId,
 		Label:        room.Label,
 		AdeUrl:       adeUrl,
 		LastUpdate:   cached.LastUpdate,
+		CampusID:     campusID,
 	}
 }
 

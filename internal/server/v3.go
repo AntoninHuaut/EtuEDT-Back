@@ -24,6 +24,23 @@ func registerV3Handlers(humaAPI huma.API) {
 		}
 		return &universityListOutput{Body: resp}, nil
 	})
+	huma.Register(humaAPI, huma.Operation{
+		OperationID: "list-campuses",
+		Method:      http.MethodGet,
+		Path:        "/v3/univs/{univId}/campuses",
+		Summary:     "List all campuses",
+		Tags:        []string{"Campuses"},
+	}, func(ctx context.Context, input *campusesInput) (*campusListOutput, error) {
+		univ, err := findUniversity(input.UnivID)
+		if err != nil {
+			return nil, humaError(err)
+		}
+		resp := make([]campusResponse, 0, len(univ.Campuses))
+		for _, campus := range univ.Campuses {
+			resp = append(resp, campusResponse{ID: campus.ID, Name: campus.Name})
+		}
+		return &campusListOutput{Body: resp}, nil
+	})
 
 	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-university",
@@ -37,6 +54,27 @@ func registerV3Handlers(humaAPI huma.API) {
 			return nil, humaError(err)
 		}
 		return &universityOutput{Body: universityResponse{ID: univ.ID, Name: univ.Name, AdeUrl: univ.AdeUrl}}, nil
+	})
+
+	huma.Register(humaAPI, huma.Operation{
+		OperationID: "get-campus",
+		Method:      http.MethodGet,
+		Path:        "/v3/univs/{univId}/campuses/{campusId}",
+		Summary:     "List all campuses",
+		Tags:        []string{"Campuses"},
+	}, func(ctx context.Context, input *campusInput) (*campusOutput, error) {
+		univ, err := findUniversity(input.UnivID)
+		if err != nil {
+			return nil, humaError(err)
+		}
+		campus, err := findCampus(univ, input.CampusID)
+		if err != nil {
+			return nil, humaError(err)
+		}
+		return &campusOutput{Body: campusResponse{
+			ID:   campus.ID,
+			Name: campus.Name,
+		}}, nil
 	})
 
 	huma.Register(humaAPI, huma.Operation{
@@ -151,6 +189,30 @@ func registerV3Handlers(humaAPI huma.API) {
 	})
 
 	huma.Register(humaAPI, huma.Operation{
+		OperationID: "list-campus-rooms",
+		Method:      http.MethodGet,
+		Path:        "/v3/univs/{univId}/campuses/{campusId}/rooms",
+		Summary:     "List rooms for a campus of a university",
+		Tags:        []string{"Rooms", "Campus"},
+	}, func(ctx context.Context, input *campusInput) (*roomListOutput, error) {
+		univ, err := findUniversity(input.UnivID)
+		if err != nil {
+			return nil, humaError(err)
+		}
+		rooms, err := findCampusRooms(univ, input.CampusID)
+		if err != nil {
+			return nil, humaError(err)
+		}
+		now := time.Now()
+		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
+		resp := make([]roomResponse, 0, len(univ.Rooms))
+		for i := range rooms {
+			resp = append(resp, buildRoomResponse(univ, &univ.Rooms[i], now, firstDate, lastDate))
+		}
+		return &roomListOutput{Body: resp}, nil
+	})
+
+	huma.Register(humaAPI, huma.Operation{
 		OperationID: "get-room-metadata",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/rooms/{adeResources}",
@@ -189,5 +251,58 @@ func registerV3Handlers(humaAPI huma.API) {
 			return nil, humaError(err)
 		}
 		return &eventListOutput{Body: events}, nil
+	})
+	huma.Register(humaAPI, huma.Operation{
+		OperationID: "list-free-rooms",
+		Method:      http.MethodGet,
+		Path:        "/v3/univs/{univId}/free-rooms",
+		Summary:     "Find free rooms at a specific time",
+		Tags:        []string{"Rooms"},
+	}, func(ctx context.Context, input *freeRoomsInput) (*roomListOutput, error) {
+		univ, err := findUniversity(input.UnivID)
+		if err != nil {
+			return nil, humaError(err)
+		}
+
+		now := time.Now()
+		start := now
+		if !input.Start.IsZero() {
+			start = input.Start
+		}
+
+		end := start.Add(1 * time.Hour)
+		if !input.End.IsZero() {
+			end = input.End
+		}
+
+		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
+		var freeRooms []roomResponse
+
+		for _, r := range univ.Rooms {
+			if input.CampusID != 0 {
+				if r.CampusID == nil || *r.CampusID != input.CampusID {
+					continue
+				}
+			}
+
+			events, err := fetchEvents(univ, r.AdeResources)
+			if err != nil {
+				continue
+			}
+
+			isFree := true
+			for _, event := range events {
+				if event.Start.Before(end) && event.End.After(start) {
+					isFree = false
+					break
+				}
+			}
+
+			if isFree {
+				freeRooms = append(freeRooms, buildRoomResponse(univ, &r, now, firstDate, lastDate))
+			}
+		}
+
+		return &roomListOutput{Body: freeRooms}, nil
 	})
 }

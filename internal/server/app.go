@@ -36,27 +36,27 @@ func StartWebApp() {
 	}()
 	otel.SetMeterProvider(mp)
 
-	r := chi.NewRouter()
-	r.Use(middleware.Compress(5))
-	r.Use(cors.Handler(cors.Options{
+	router := chi.NewRouter()
+	router.Use(middleware.Compress(5))
+	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Content-Type"},
 		AllowCredentials: false,
 		MaxAge:           300,
 	}))
-	r.Use(middleware.Recoverer)
+	router.Use(middleware.Recoverer)
 
-	r.Get("/metrics", promhttp.Handler().ServeHTTP)
+	router.Get("/metrics", promhttp.Handler().ServeHTTP)
 
 	config := huma.DefaultConfig("EtuEDT API", "3.0.0")
 	config.Info.Description = "API for university timetables and room schedules"
-	humaAPI := humachi.New(r, config)
+	humaAPI := humachi.New(router, config)
 	registerV3Handlers(humaAPI)
 
 	srv := &http.Server{
 		Addr:    ":3000",
-		Handler: otelhttp.NewHandler(r, "EtuEDT-Back"),
+		Handler: otelhttp.NewHandler(router, "EtuEDT-Back"),
 	}
 
 	quit := make(chan os.Signal, 1)

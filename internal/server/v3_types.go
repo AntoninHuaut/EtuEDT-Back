@@ -28,6 +28,20 @@ type univAdeInput struct {
 	AdeResources int `path:"adeResources" doc:"ADE resources identifier"`
 }
 
+type freeRoomsInput struct {
+	UnivID   int       `path:"univId" doc:"University ID"`
+	Start    time.Time `query:"start" required:"false" doc:"Search start hour (default: now)"`
+	End      time.Time `query:"end" required:"false" doc:"Search end hour (default: start + 1h)"`
+	CampusID int       `query:"campusId" required:"false" default:"0" doc:"Campus ID (optional)"`
+}
+type campusInput struct {
+	UnivID   int `path:"univId" doc:"University ID"`
+	CampusID int `path:"campusId" doc:"Campus ID"`
+}
+type campusesInput struct {
+	UnivID int `path:"univId" doc:"University ID"`
+}
+
 // JSON body response shapes
 
 type universityResponse struct {
@@ -56,6 +70,12 @@ type roomResponse struct {
 	Label        string     `json:"label"`
 	AdeUrl       string     `json:"adeUrl"`
 	LastUpdate   *time.Time `json:"lastUpdate"`
+	CampusID     int        `json:"campusId"`
+}
+
+type campusResponse struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 // Huma response envelope types — each wraps a Body field for the JSON response.
@@ -90,4 +110,10 @@ type roomListOutput struct {
 
 type roomOutput struct {
 	Body roomResponse
+}
+type campusListOutput struct {
+	Body []campusResponse
+}
+type campusOutput struct {
+	Body campusResponse
 }
