@@ -32,6 +32,7 @@ func newTestServer(t *testing.T, cfg config.Config) *httptest.Server {
 
 // testConfig returns a minimal valid AppConfig for integration tests.
 func testConfig() config.Config {
+	campusID := 1
 	return config.Config{
 		Universities: []config.UniversityConfig{
 			{
@@ -39,8 +40,11 @@ func testConfig() config.Config {
 				Name:         "Test University",
 				AdeUrl:       "https://ade.example.com",
 				AdeProjectId: 42,
+				Campuses: []config.CampusConfig{
+					{ID: 1, Name: "Campus 1"},
+				},
 				Rooms: []config.RoomConfig{
-					{AdeResources: 10, Label: "Room A"},
+					{AdeResources: 10, Label: "Room A", CampusID: &campusID},
 				},
 				Groups: []config.GroupConfig{
 					{
@@ -328,5 +332,163 @@ func TestV3_GetRoomEvents_ServesCachedEvents(t *testing.T) {
 	}
 	if len(body) < 1 || body[0].Title != "Room Integration Test" {
 		t.Errorf("expected cached room event, got %v", body)
+	}
+}
+
+// --- v3 campus endpoints ---
+
+func TestV3_ListCampuses_KnownUniv_Returns200(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/campuses")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status: got %d, want 200", resp.StatusCode)
+	}
+
+	var body []campusResponse
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body) != 1 || body[0].ID != 1 || body[0].Name != "Campus 1" {
+		t.Errorf("expected 1 campus with ID=1, got %v", body)
+	}
+}
+
+func TestV3_ListCampuses_UnknownUniv_Returns404(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/999/campuses")
+
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("status: got %d, want 404", resp.StatusCode)
+	}
+}
+
+func TestV3_GetCampus_KnownID_Returns200(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/campuses/1")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status: got %d, want 200", resp.StatusCode)
+	}
+
+	var body campusResponse
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if body.ID != 1 || body.Name != "Campus 1" {
+		t.Errorf("unexpected campus: %+v", body)
+	}
+}
+
+func TestV3_GetCampus_UnknownID_Returns404(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/campuses/999")
+
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("status: got %d, want 404", resp.StatusCode)
+	}
+}
+
+func TestV3_ListCampusRooms_KnownCampus_Returns200(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/campuses/1/rooms")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status: got %d, want 200", resp.StatusCode)
+	}
+
+	var body []roomResponse
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body) != 1 || body[0].AdeResources != 10 {
+		t.Errorf("expected 1 room with AdeResources=10, got %v", body)
+	}
+}
+
+func TestV3_ListCampusRooms_UnknownCampus_Returns404(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/campuses/999/rooms")
+
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("status: got %d, want 404", resp.StatusCode)
+	}
+}
+
+// --- v3 free-rooms endpoints ---
+
+func TestV3_ListFreeRooms_ReturnsFreeRooms_Returns200(t *testing.T) {
+	ade.SetTimetableByAdeResources(1, 10, []ade.Event{})
+
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/free-rooms")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status: got %d, want 200", resp.StatusCode)
+	}
+
+	var body []roomResponse
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body) != 1 || body[0].AdeResources != 10 {
+		t.Errorf("expected 1 free room with AdeResources=10, got %v", body)
+	}
+}
+
+func TestV3_ListFreeRooms_WithCampusFilter_Returns200(t *testing.T) {
+	ade.SetTimetableByAdeResources(1, 10, []ade.Event{})
+
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/free-rooms?campusId=1")
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status: got %d, want 200", resp.StatusCode)
+	}
+
+	var body []roomResponse
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if len(body) != 1 || body[0].AdeResources != 10 {
+		t.Errorf("expected 1 free room for campus 1, got %v", body)
+	}
+}
+
+func TestV3_ListFreeRooms_EndBeforeStart_Returns400(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/1/free-rooms?start=2026-09-20T21:00:00Z&end=2026-09-20T20:00:00Z")
+
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Errorf("status: got %d, want 400", resp.StatusCode)
+	}
+}
+
+func TestV3_ListFreeRooms_UnknownUniv_Returns404(t *testing.T) {
+	srv := newTestServer(t, testConfig())
+	defer srv.Close()
+
+	resp := get(t, srv, "/v3/univs/999/free-rooms")
+
+	if resp.StatusCode != http.StatusNotFound {
+		t.Errorf("status: got %d, want 404", resp.StatusCode)
 	}
 }

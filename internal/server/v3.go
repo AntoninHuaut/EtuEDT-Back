@@ -263,9 +263,10 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, humaError(err)
 		}
-		if !input.Start.Before(input.End) {
-			return nil, errEndBeforeStart
+		rooms, err := findFreeRoom(univ, input)
+		if err != nil {
+			return nil, humaError(err)
 		}
-		return findFreeRoom(univ, input)
+		return rooms, nil
 	})
 }

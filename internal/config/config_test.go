@@ -299,3 +299,35 @@ func TestGetEffectiveProjectId(t *testing.T) {
 		}
 	})
 }
+
+func TestValidateConfig_ValidCampuses(t *testing.T) {
+	cfg := validConfig()
+	cfg.Universities[0].Campuses = []CampusConfig{
+		{ID: 1, Name: "Campus 1"},
+	}
+	campusID := 1
+	cfg.Universities[0].Rooms[0].CampusID = &campusID
+	if err := validateConfig(&cfg); err != nil {
+		t.Fatalf("expected no error, got: %v", err)
+	}
+}
+
+func TestValidateConfig_CampusIDZero(t *testing.T) {
+	cfg := validConfig()
+	cfg.Universities[0].Campuses = []CampusConfig{
+		{ID: 0, Name: "Campus 1"},
+	}
+	if err := validateConfig(&cfg); err == nil {
+		t.Fatal("expected error for campus ID=0, got nil")
+	}
+}
+
+func TestValidateConfig_CampusNameEmpty(t *testing.T) {
+	cfg := validConfig()
+	cfg.Universities[0].Campuses = []CampusConfig{
+		{ID: 1, Name: ""},
+	}
+	if err := validateConfig(&cfg); err == nil {
+		t.Fatal("expected error for empty campus name, got nil")
+	}
+}

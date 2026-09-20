@@ -33,10 +33,14 @@ func humaError(err error) error {
 	case errors.Is(err, errUniversityNotFound),
 		errors.Is(err, errGroupNotFound),
 		errors.Is(err, errTimetableNotFound),
+		errors.Is(err, errCampusNotFound),
+		errors.Is(err, errCampusEmpty),
 		errors.Is(err, errRoomNotFound):
 		return huma.Error404NotFound(err.Error())
 	case errors.Is(err, errTimetableUnavailable):
 		return huma.Error503ServiceUnavailable(err.Error())
+	case errors.Is(err, errEndBeforeStart):
+		return huma.Error400BadRequest(err.Error())
 	default:
 		return huma.Error500InternalServerError(err.Error())
 	}
@@ -172,7 +176,7 @@ func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomLi
 	}
 
 	if !start.Before(end) {
-		return nil, errors.New("start time must be strictly before end time")
+		return nil, errEndBeforeStart
 	}
 
 	firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
