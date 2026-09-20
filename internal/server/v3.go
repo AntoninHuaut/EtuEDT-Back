@@ -193,7 +193,7 @@ func registerV3Handlers(humaAPI huma.API) {
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/campuses/{campusId}/rooms",
 		Summary:     "List rooms for a campus of a university",
-		Tags:        []string{"Rooms", "Campus"},
+		Tags:        []string{"Rooms"},
 	}, func(ctx context.Context, input *campusInput) (*roomListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
