@@ -60,7 +60,7 @@ func registerV3Handlers(humaAPI huma.API) {
 		OperationID: "get-campus",
 		Method:      http.MethodGet,
 		Path:        "/v3/univs/{univId}/campuses/{campusId}",
-		Summary:     "List all campuses",
+		Summary:     "Get a campus by ID",
 		Tags:        []string{"Campuses"},
 	}, func(ctx context.Context, input *campusInput) (*campusOutput, error) {
 		univ, err := findUniversity(input.UnivID)
