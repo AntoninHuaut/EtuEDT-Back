@@ -1,8 +1,8 @@
 package server
 
 import (
-	"errors"
 	"log/slog"
+	"net/http"
 	"slices"
 	"sync"
 	"time"
@@ -18,33 +18,15 @@ const (
 )
 
 var (
-	errUniversityNotFound   = errors.New("university not found")
-	errGroupNotFound        = errors.New("group not found")
-	errCampusNotFound       = errors.New("campus not found")
-	errTimetableNotFound    = errors.New("timetable not found")
-	errRoomNotFound         = errors.New("room not found")
-	errTimetableUnavailable = errors.New("could not fetch timetable and no cache available, try again later")
-	errCampusEmpty          = errors.New("campus is empty")
-	errEndBeforeStart       = errors.New("end before start")
+	errUniversityNotFound   = huma.NewError(http.StatusNotFound, "university not found")
+	errGroupNotFound        = huma.NewError(http.StatusNotFound, "group not found")
+	errCampusNotFound       = huma.NewError(http.StatusNotFound, "campus not found")
+	errTimetableNotFound    = huma.NewError(http.StatusNotFound, "timetable not found")
+	errRoomNotFound         = huma.NewError(http.StatusNotFound, "room not found")
+	errTimetableUnavailable = huma.NewError(http.StatusServiceUnavailable, "could not fetch timetable and no cache available, try again later")
+	errCampusEmpty          = huma.NewError(http.StatusNotFound, "campus is empty")
+	errEndBeforeStart       = huma.NewError(http.StatusBadRequest, "end before start")
 )
-
-func humaError(err error) error {
-	switch {
-	case errors.Is(err, errUniversityNotFound),
-		errors.Is(err, errGroupNotFound),
-		errors.Is(err, errTimetableNotFound),
-		errors.Is(err, errCampusNotFound),
-		errors.Is(err, errCampusEmpty),
-		errors.Is(err, errRoomNotFound):
-		return huma.Error404NotFound(err.Error())
-	case errors.Is(err, errTimetableUnavailable):
-		return huma.Error503ServiceUnavailable(err.Error())
-	case errors.Is(err, errEndBeforeStart):
-		return huma.Error400BadRequest(err.Error())
-	default:
-		return huma.Error500InternalServerError(err.Error())
-	}
-}
 
 func findUniversity(univID int) (*config.UniversityConfig, error) {
 	idx := slices.IndexFunc(config.AppConfig.Universities, func(u config.UniversityConfig) bool {
@@ -219,6 +201,6 @@ func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomLi
 		})
 	}
 
-        grpErr := eg.Wait()
+	grpErr := eg.Wait()
 	return &roomListOutput{Body: freeRooms}, grpErr
 }

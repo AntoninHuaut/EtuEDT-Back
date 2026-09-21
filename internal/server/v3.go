@@ -33,7 +33,7 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *campusesInput) (*campusListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		resp := make([]campusResponse, 0, len(univ.Campuses))
 		for _, campus := range univ.Campuses {
@@ -51,7 +51,7 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univInput) (*universityOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		return &universityOutput{Body: universityResponse{ID: univ.ID, Name: univ.Name, AdeUrl: univ.AdeUrl}}, nil
 	})
@@ -65,11 +65,11 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *campusInput) (*campusOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		campus, err := findCampus(univ, input.CampusID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		return &campusOutput{Body: campusResponse{
 			ID:   campus.ID,
@@ -86,7 +86,7 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univInput) (*groupListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		resp := make([]groupResponse, 0, len(univ.Groups))
 		for _, g := range univ.Groups {
@@ -104,11 +104,11 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univGroupInput) (*timetableListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		group, err := findGroup(univ, input.GroupID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		now := time.Now()
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
@@ -128,15 +128,15 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univGroupAdeInput) (*timetableOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		group, err := findGroup(univ, input.GroupID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		tt, err := findTimetable(group, input.AdeResources)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		now := time.Now()
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
@@ -152,18 +152,18 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univGroupAdeInput) (*eventListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		group, err := findGroup(univ, input.GroupID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		if _, err := findTimetable(group, input.AdeResources); err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		events, err := fetchEvents(univ, input.AdeResources)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		return &eventListOutput{Body: events}, nil
 	})
@@ -177,7 +177,7 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univInput) (*roomListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		now := time.Now()
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
@@ -197,11 +197,11 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *campusInput) (*roomListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		rooms, err := findCampusRooms(univ, input.CampusID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		now := time.Now()
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
@@ -221,11 +221,11 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univAdeInput) (*roomOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		room, err := findRoom(univ, input.AdeResources)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		now := time.Now()
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
@@ -241,14 +241,14 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *univAdeInput) (*eventListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		if _, err := findRoom(univ, input.AdeResources); err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		events, err := fetchEvents(univ, input.AdeResources)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		return &eventListOutput{Body: events}, nil
 	})
@@ -261,11 +261,11 @@ func registerV3Handlers(humaAPI huma.API) {
 	}, func(ctx context.Context, input *freeRoomsInput) (*roomListOutput, error) {
 		univ, err := findUniversity(input.UnivID)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		rooms, err := findFreeRoom(univ, input)
 		if err != nil {
-			return nil, humaError(err)
+			return nil, err
 		}
 		return rooms, nil
 	})

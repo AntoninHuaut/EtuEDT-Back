@@ -43,10 +43,8 @@ func setupAppConfig() {
 	}
 }
 
-// --- humaError tests ---
-
 func TestHumaError_UniversityNotFound_Returns404(t *testing.T) {
-	he := humaError(errUniversityNotFound)
+	he := errUniversityNotFound
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -57,7 +55,7 @@ func TestHumaError_UniversityNotFound_Returns404(t *testing.T) {
 }
 
 func TestHumaError_GroupNotFound_Returns404(t *testing.T) {
-	he := humaError(errGroupNotFound)
+	he := errGroupNotFound
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -68,7 +66,7 @@ func TestHumaError_GroupNotFound_Returns404(t *testing.T) {
 }
 
 func TestHumaError_TimetableNotFound_Returns404(t *testing.T) {
-	he := humaError(errTimetableNotFound)
+	he := errTimetableNotFound
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -79,7 +77,7 @@ func TestHumaError_TimetableNotFound_Returns404(t *testing.T) {
 }
 
 func TestHumaError_RoomNotFound_Returns404(t *testing.T) {
-	he := humaError(errRoomNotFound)
+	he := errRoomNotFound
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -90,7 +88,7 @@ func TestHumaError_RoomNotFound_Returns404(t *testing.T) {
 }
 
 func TestHumaError_CampusNotFound_Returns404(t *testing.T) {
-	he := humaError(errCampusNotFound)
+	he := errCampusNotFound
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -101,7 +99,7 @@ func TestHumaError_CampusNotFound_Returns404(t *testing.T) {
 }
 
 func TestHumaError_CampusEmpty_Returns404(t *testing.T) {
-	he := humaError(errCampusEmpty)
+	he := errCampusEmpty
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -112,7 +110,7 @@ func TestHumaError_CampusEmpty_Returns404(t *testing.T) {
 }
 
 func TestHumaError_EndBeforeStart_Returns400(t *testing.T) {
-	he := humaError(errEndBeforeStart)
+	he := errEndBeforeStart
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
@@ -123,24 +121,13 @@ func TestHumaError_EndBeforeStart_Returns400(t *testing.T) {
 }
 
 func TestHumaError_TimetableUnavailable_Returns503(t *testing.T) {
-	he := humaError(errTimetableUnavailable)
+	he := errTimetableUnavailable
 	var se huma.StatusError
 	if !errors.As(he, &se) {
 		t.Fatalf("expected huma.StatusError, got %T", he)
 	}
 	if se.GetStatus() != http.StatusServiceUnavailable {
 		t.Errorf("status: got %d, want %d", se.GetStatus(), http.StatusServiceUnavailable)
-	}
-}
-
-func TestHumaError_GenericError_Returns500(t *testing.T) {
-	he := humaError(errors.New("something unexpected"))
-	var se huma.StatusError
-	if !errors.As(he, &se) {
-		t.Fatalf("expected huma.StatusError, got %T", he)
-	}
-	if se.GetStatus() != http.StatusInternalServerError {
-		t.Errorf("status: got %d, want %d", se.GetStatus(), http.StatusInternalServerError)
 	}
 }
 
