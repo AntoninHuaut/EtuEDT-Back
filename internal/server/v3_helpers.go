@@ -219,7 +219,6 @@ func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomLi
 		})
 	}
 
-	_ = eg.Wait()
-
-	return &roomListOutput{Body: freeRooms}, nil
+        grpErr := eg.Wait()
+	return &roomListOutput{Body: freeRooms}, grpErr
 }
