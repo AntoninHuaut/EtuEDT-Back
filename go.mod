@@ -1,6 +1,6 @@
 module github.com/AntoninHuaut/EtuEDT-Back
 
-go 1.26
+go 1.26.0
 
 require (
 	github.com/arran4/golang-ical v0.3.5
@@ -14,7 +14,7 @@ require (
 	go.opentelemetry.io/otel v1.45.0
 	go.opentelemetry.io/otel/exporters/prometheus v0.66.0
 	go.opentelemetry.io/otel/sdk/metric v1.45.0
-	golang.org/x/sync v0.22.0
+	golang.org/x/sync v0.24.0
 )
 
 require (
