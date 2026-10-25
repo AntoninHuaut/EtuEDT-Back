@@ -1,0 +1,42 @@
+# .github/dependabot.yml
+# No secrets here — Dependabot uses the built-in GITHUB_TOKEN.
+# Docs: https://docs.github.com/en/code-security/dependabot
+
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      time: '09:00'
+      timezone: Europe/Paris
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    reviewers:
+      - AntoninHuaut
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      time: '09:00'
+      timezone: Europe/Paris
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    reviewers:
+      - AntoninHuaut
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+      time: '09:00'
+      timezone: Europe/Paris
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+    reviewers:
+      - AntoninHuaut
