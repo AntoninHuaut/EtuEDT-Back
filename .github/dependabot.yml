@@ -14,8 +14,6 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
-    reviewers:
-      - AntoninHuaut
   - package-ecosystem: docker
     directory: /
     schedule:
@@ -26,8 +24,6 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
-    reviewers:
-      - AntoninHuaut
   - package-ecosystem: gomod
     directory: /
     schedule:
@@ -38,5 +34,10 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
-    reviewers:
-      - AntoninHuaut
+    groups:
+      minor-and-patch:
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
