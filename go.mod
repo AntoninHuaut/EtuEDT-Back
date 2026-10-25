@@ -3,7 +3,7 @@ module github.com/AntoninHuaut/EtuEDT-Back
 go 1.26
 
 require (
-	github.com/arran4/golang-ical v0.3.5
+	github.com/arran4/golang-ical v0.3.8
 	github.com/avast/retry-go/v4 v4.7.0
 	github.com/danielgtaylor/huma/v2 v2.38.0
 	github.com/go-chi/chi/v5 v5.3.1
