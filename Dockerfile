@@ -9,7 +9,7 @@ COPY . .
 
 RUN go build -o /etuedt ./cmd/etuedt.go
 
-FROM alpine:3.21
+FROM alpine:3.24
 
 RUN apk add --no-cache ca-certificates && \
     addgroup -S etuedt && adduser -S etuedt -G etuedt
