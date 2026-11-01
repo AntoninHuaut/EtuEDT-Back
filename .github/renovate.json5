@@ -1,0 +1,51 @@
+// Renovate keeps Go modules, the Dockerfile base images and the workflows'
+// actions current. It replaces Dependabot, which opened one PR per Docker
+// image and per action on top of its gomod group.
+//
+// Every merge to master publishes the :master image that the homelab pins by
+// digest, so routine bumps (minor, patch, digest) arrive together in one PR a
+// week: one merge, one image. Majors stay one PR each so they can be tested
+// and reverted on their own.
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  timezone: "Europe/Paris",
+  schedule: ["* 7-12 * * 6"],
+  labels: ["dependencies"],
+  semanticCommits: "enabled",
+  semanticCommitType: "chore",
+  semanticCommitScope: "deps",
+  // A go.mod bump that leaves go.sum or the require blocks untidy fails the
+  // build in the Dockerfile's `go mod download`.
+  postUpdateOptions: ["gomodTidy"],
+  packageRules: [
+    {
+      groupName: "routine updates",
+      groupSlug: "routine",
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      // A Go minor is a new compiler for the published binary, not a
+      // routine bump: it gets its own PR, below.
+      matchPackageNames: ["!golang"],
+    },
+    {
+      // The builder image decides which Go compiles production. CI tests
+      // with the go.mod directive, so a toolchain bump is reviewed alone.
+      matchDatasources: ["docker"],
+      matchPackageNames: ["golang"],
+      matchUpdateTypes: ["minor"],
+      groupName: "Go toolchain",
+      groupSlug: "go-toolchain",
+    },
+  ],
+  customManagers: [
+    {
+      // The cosign binary the publish workflow signs with is an input of
+      // cosign-installer, which no built-in manager reads.
+      customType: "regex",
+      managerFilePatterns: ["/^\\.github/workflows/publish\\.ya?ml$/"],
+      matchStrings: ["cosign-release:\\s*['\"]?(?<currentValue>v[^'\"\\s]+)['\"]?"],
+      depNameTemplate: "sigstore/cosign",
+      datasourceTemplate: "github-releases",
+    },
+  ],
+}
