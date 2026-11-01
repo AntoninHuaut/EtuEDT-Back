@@ -1,6 +1,6 @@
 services:
   etuedt:
-    image: ghcr.io/antoninhuaut/etuedt-back:master@sha256:26ea4f45c41251be9ad2e3d2e3384eec5dc341475c2765483d04007ba51f1b8c
+    image: ghcr.io/antoninhuaut/etuedt-back:master
     container_name: etuedt_back
     restart: unless-stopped
     ports:

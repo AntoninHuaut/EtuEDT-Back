@@ -32,5 +32,13 @@
       groupSlug: "routine",
       matchUpdateTypes: ["minor", "patch", "digest"],
     },
+    {
+      // docker-compose.yml runs this repo's own image. Every merge publishes
+      // a new :master digest, so tracking it here would open a PR whose merge
+      // publishes the next digest, forever. The homelab pins it instead.
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/antoninhuaut/etuedt-back"],
+      enabled: false,
+    },
   ],
 }
