@@ -17,7 +17,10 @@
   semanticCommitScope: "deps",
   // Renovate updates go.sum but leaves stale entries and indirect requires
   // behind; tidy leaves the files as a local `go mod tidy` would.
-  postUpdateOptions: ["gomodTidy"],
+  // A module major (retry-go/v4 -> /v5) is a new import path: without the
+  // rewrite, Renovate only adds the /v5 require next to /v4, the code still
+  // imports /v4, and it skips tidy for majors, so the PR changes nothing.
+  postUpdateOptions: ["gomodTidy", "gomodUpdateImportPaths"],
   packageRules: [
     {
       groupName: "routine updates",
