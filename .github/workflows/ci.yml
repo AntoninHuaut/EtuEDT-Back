@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       # Test with the Go that builds the production image, not the go.mod
       # minimum: the Dockerfile's builder tag is what ships.
@@ -22,7 +22,7 @@ jobs:
         run: echo "version=$(sed -n 's/^FROM golang:\([0-9.]*\).*/\1/p' Dockerfile)" >> "$GITHUB_OUTPUT"
 
       - name: Set up Go
-        uses: actions/setup-go@v7
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7
         with:
           go-version: ${{ steps.go-version.outputs.version }}
           cache: true
@@ -37,7 +37,7 @@ jobs:
         run: test -z "$(gofmt -l .)"
 
       - name: Run Go lint
-        uses: golangci/golangci-lint-action@v9
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9
         with:
           # Pinned so a new linter release cannot turn CI red without a PR;
           # Renovate bumps it.
