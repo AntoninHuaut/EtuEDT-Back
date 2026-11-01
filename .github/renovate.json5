@@ -20,6 +20,10 @@
   semanticCommits: "enabled",
   semanticCommitType: "chore",
   semanticCommitScope: "deps",
+  // Security PRs already skip the Saturday schedule and the release-age
+  // wait. OSV adds a second advisory source next to GitHub's, which often
+  // lists a fix first. Still flagged experimental upstream (#20542).
+  osvVulnerabilityAlerts: true,
   // Renovate updates go.sum but leaves stale entries and indirect requires
   // behind; tidy leaves the files as a local `go mod tidy` would.
   // A module major (retry-go/v4 -> /v5) is a new import path: without the
