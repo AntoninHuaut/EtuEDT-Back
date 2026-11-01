@@ -15,25 +15,14 @@
   semanticCommits: "enabled",
   semanticCommitType: "chore",
   semanticCommitScope: "deps",
-  // A go.mod bump that leaves go.sum or the require blocks untidy fails the
-  // build in the Dockerfile's `go mod download`.
+  // Renovate updates go.sum but leaves stale entries and indirect requires
+  // behind; tidy leaves the files as a local `go mod tidy` would.
   postUpdateOptions: ["gomodTidy"],
   packageRules: [
     {
       groupName: "routine updates",
       groupSlug: "routine",
       matchUpdateTypes: ["minor", "patch", "digest"],
-    },
-  ],
-  customManagers: [
-    {
-      // The cosign binary the publish workflow signs with is an input of
-      // cosign-installer, which no built-in manager reads.
-      customType: "regex",
-      managerFilePatterns: ["/^\\.github/workflows/publish\\.ya?ml$/"],
-      matchStrings: ["cosign-release:\\s*['\"]?(?<currentValue>v[^'\"\\s]+)['\"]?"],
-      depNameTemplate: "sigstore/cosign",
-      datasourceTemplate: "github-releases",
     },
   ],
 }
