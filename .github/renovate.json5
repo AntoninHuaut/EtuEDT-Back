@@ -8,7 +8,12 @@
 // and reverted on their own.
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:recommended"],
+  // best-practices adds, on top of config:recommended: actions and Docker
+  // base images pinned to digests, config migration PRs and abandoned-module
+  // warnings on the dashboard. Indirect modules are otherwise never looked
+  // up, so a CVE in golang.org/x/crypto (indirect here) would go unpatched:
+  // gomodIndirectSecurityUpdates opens PRs for those on vulnerability only.
+  extends: ["config:best-practices", "security:gomodIndirectSecurityUpdates"],
   timezone: "Europe/Paris",
   schedule: ["* 7-12 * * 6"],
   labels: ["dependencies"],
