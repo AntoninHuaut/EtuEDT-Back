@@ -21,7 +21,11 @@ var sem = make(chan struct{}, 5)
 
 func makeRequest(req *http.Request) ([]byte, error) {
 	attempts := 0
-	body, err := retry.DoWithData(func() ([]byte, error) {
+	body, err := retry.NewWithData[[]byte](
+		retry.Attempts(MaxAttempts),
+		retry.Delay(InitialBackoff),
+		retry.DelayType(retry.BackOffDelay),
+	).Do(func() ([]byte, error) {
 		attempts++
 		sem <- struct{}{}
 		defer func() { <-sem }()
@@ -54,7 +58,7 @@ func makeRequest(req *http.Request) ([]byte, error) {
 		}
 
 		return rqBody, nil
-	}, retry.Attempts(MaxAttempts), retry.Delay(InitialBackoff), retry.DelayType(retry.BackOffDelay))
+	})
 
 	if err != nil {
 		slog.Error("all retry attempts exhausted", "url", req.URL, "err", err)
