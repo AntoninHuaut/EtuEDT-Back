@@ -23,18 +23,6 @@
       groupName: "routine updates",
       groupSlug: "routine",
       matchUpdateTypes: ["minor", "patch", "digest"],
-      // A Go minor is a new compiler for the published binary, not a
-      // routine bump: it gets its own PR, below.
-      matchPackageNames: ["!golang"],
-    },
-    {
-      // The builder image decides which Go compiles production. CI tests
-      // with the go.mod directive, so a toolchain bump is reviewed alone.
-      matchDatasources: ["docker"],
-      matchPackageNames: ["golang"],
-      matchUpdateTypes: ["minor"],
-      groupName: "Go toolchain",
-      groupSlug: "go-toolchain",
     },
   ],
   customManagers: [
