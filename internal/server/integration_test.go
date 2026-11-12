@@ -8,6 +8,7 @@ import (
 
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/config"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/timetable"
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humachi"
 	"github.com/go-chi/chi/v5"
@@ -238,7 +239,7 @@ func TestV3_GetTimetableEvents_ServesCachedEvents(t *testing.T) {
 	events := []ade.Event{
 		{Title: "Integration Maths", Location: "Amphi B"},
 	}
-	ade.SetTimetableByAdeResources(1, 20, events)
+	seedEvents(1, 20, events)
 
 	srv := newTestServer(t, testConfig())
 	defer srv.Close()
@@ -315,7 +316,7 @@ func TestV3_GetRoomEvents_ServesCachedEvents(t *testing.T) {
 	events := []ade.Event{
 		{Title: "Room Integration Test", Location: "Room A"},
 	}
-	ade.SetTimetableByAdeResources(1, 10, events)
+	seedEvents(1, 10, events)
 
 	srv := newTestServer(t, testConfig())
 	defer srv.Close()
@@ -430,7 +431,7 @@ func TestV3_ListCampusRooms_UnknownCampus_Returns404(t *testing.T) {
 // --- v3 free-rooms endpoints ---
 
 func TestV3_ListFreeRooms_ReturnsFreeRooms_Returns200(t *testing.T) {
-	ade.SetTimetableByAdeResources(1, 10, []ade.Event{})
+	seedEvents(1, 10, []ade.Event{})
 
 	srv := newTestServer(t, testConfig())
 	defer srv.Close()
@@ -451,7 +452,7 @@ func TestV3_ListFreeRooms_ReturnsFreeRooms_Returns200(t *testing.T) {
 }
 
 func TestV3_ListFreeRooms_WithCampusFilter_Returns200(t *testing.T) {
-	ade.SetTimetableByAdeResources(1, 10, []ade.Event{})
+	seedEvents(1, 10, []ade.Event{})
 
 	srv := newTestServer(t, testConfig())
 	defer srv.Close()
@@ -491,4 +492,14 @@ func TestV3_ListFreeRooms_UnknownUniv_Returns404(t *testing.T) {
 	if resp.StatusCode != http.StatusNotFound {
 		t.Errorf("status: got %d, want 404", resp.StatusCode)
 	}
+}
+
+func seedEvents(univID, resource int, events []ade.Event) ade.TimetableCache {
+	for i := range config.AppConfig.Universities {
+		u := &config.AppConfig.Universities[i]
+		if u.ID == univID {
+			return timetable.Store(u, resource, events)
+		}
+	}
+	panic("test university missing")
 }

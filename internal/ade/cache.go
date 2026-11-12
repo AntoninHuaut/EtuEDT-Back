@@ -2,6 +2,7 @@ package ade
 
 import (
 	"bytes"
+	"context"
 	"net/http"
 	"strconv"
 	"sync"
@@ -21,16 +22,16 @@ var cacheMap = make(map[string]TimetableCache)
 var cacheMu sync.RWMutex
 var sfGroup singleflight.Group
 
-func GetTimetableByAdeResources(univID int, adeResources int) (TimetableCache, bool) {
-	key := cacheKey(univID, adeResources)
+func GetTimetableByAdeResources(univID int, adeResources int, scope ...string) (TimetableCache, bool) {
+	key := scopedCacheKey(univID, adeResources, scope)
 	cacheMu.RLock()
 	timetable, ok := cacheMap[key]
 	cacheMu.RUnlock()
 	return timetable, ok
 }
 
-func SetTimetableByAdeResources(univID int, adeResources int, events []Event) TimetableCache {
-	key := cacheKey(univID, adeResources)
+func SetTimetableByAdeResources(univID int, adeResources int, events []Event, scope ...string) TimetableCache {
+	key := scopedCacheKey(univID, adeResources, scope)
 	cacheMu.Lock()
 	timetable := TimetableCache{
 		AdeResources: adeResources,
@@ -46,16 +47,27 @@ func cacheKey(univID int, adeResources int) string {
 	return strconv.Itoa(univID) + "-" + strconv.Itoa(adeResources)
 }
 
-func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectId int, splitMonth int) (*ics.Calendar, error) {
-	key := cacheKey(univID, adeResources)
-	result, err, _ := sfGroup.Do(key, func() (interface{}, error) {
-		firstDate, lastDate := GetAcademicYearDates(time.Now(), splitMonth)
-		fullUrl, err := BuildURL(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
-		if err != nil {
-			return nil, err
-		}
+func scopedCacheKey(univID, resource int, scope []string) string {
+	key := cacheKey(univID, resource)
+	if len(scope) > 0 {
+		key += ":" + scope[0]
+	}
+	return key
+}
 
-		req, err := http.NewRequest(http.MethodGet, fullUrl, nil)
+func FetchTimetable(univID int, adeBaseUrl string, adeResources int, adeProjectId int, splitMonth int) (*ics.Calendar, error) {
+	return FetchTimetableContext(context.Background(), univID, adeBaseUrl, adeResources, adeProjectId, splitMonth)
+}
+
+func FetchTimetableContext(ctx context.Context, univID int, adeBaseUrl string, adeResources int, adeProjectId int, splitMonth int) (*ics.Calendar, error) {
+	firstDate, lastDate := GetAcademicYearDates(time.Now(), splitMonth)
+	fullUrl, err := BuildURL(adeBaseUrl, adeResources, adeProjectId, firstDate, lastDate)
+	if err != nil {
+		return nil, err
+	}
+	key := cacheKey(univID, adeResources) + ":" + fullUrl
+	result, err, _ := sfGroup.Do(key, func() (interface{}, error) {
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, fullUrl, nil)
 		if err != nil {
 			return nil, err
 		}

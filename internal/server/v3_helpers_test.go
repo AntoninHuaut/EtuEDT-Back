@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -318,9 +319,9 @@ func TestFetchEvents_ReturnsCachedEventsWhenFresh(t *testing.T) {
 	univ := &config.AppConfig.Universities[0]
 	const adeRes = 21 // unique key, isolated from other fetchEvents tests
 	events := []ade.Event{{Title: "Cached Maths"}}
-	ade.SetTimetableByAdeResources(univ.ID, adeRes, events)
+	seedEvents(univ.ID, adeRes, events)
 
-	result, err := fetchEvents(univ, adeRes)
+	result, err := fetchEvents(context.Background(), univ, adeRes)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -335,11 +336,11 @@ func TestFetchEvents_ReturnsCacheNotExpiredAfterJustSet(t *testing.T) {
 	univ := &config.AppConfig.Universities[0]
 	const adeRes = 22 // unique key, isolated from other fetchEvents tests
 	events := []ade.Event{{Title: "Fresh Event"}}
-	ade.SetTimetableByAdeResources(univ.ID, adeRes, events)
+	seedEvents(univ.ID, adeRes, events)
 
 	// Call twice; second call must also return from cache (no upstream hit)
-	result1, err1 := fetchEvents(univ, adeRes)
-	result2, err2 := fetchEvents(univ, adeRes)
+	result1, err1 := fetchEvents(context.Background(), univ, adeRes)
+	result2, err2 := fetchEvents(context.Background(), univ, adeRes)
 
 	if err1 != nil || err2 != nil {
 		t.Fatalf("unexpected errors: %v, %v", err1, err2)
@@ -363,7 +364,7 @@ func TestFetchEvents_ReturnsTimetableUnavailableWhenNoCache(t *testing.T) {
 	univ.AdeUrl = srv.URL
 	const nonCachedResource = 99999
 
-	_, err := fetchEvents(univ, nonCachedResource)
+	_, err := fetchEvents(context.Background(), univ, nonCachedResource)
 	if !errors.Is(err, errTimetableUnavailable) {
 		t.Errorf("expected errTimetableUnavailable when no cache and upstream fails, got %v", err)
 	}
@@ -451,7 +452,7 @@ func TestFindFreeRoom_AllFreeWhenNoEvents(t *testing.T) {
 	setupAppConfig()
 
 	univ := &config.AppConfig.Universities[0]
-	ade.SetTimetableByAdeResources(univ.ID, 10, []ade.Event{})
+	seedEvents(univ.ID, 10, []ade.Event{})
 
 	now := time.Now()
 	input := &freeRoomsInput{
@@ -460,7 +461,7 @@ func TestFindFreeRoom_AllFreeWhenNoEvents(t *testing.T) {
 		End:    now.Add(2 * time.Hour),
 	}
 
-	out, err := findFreeRoom(univ, input)
+	out, err := findFreeRoom(context.Background(), univ, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -481,7 +482,7 @@ func TestFindFreeRoom_OccupiedRoomExcluded(t *testing.T) {
 			End:   now.Add(90 * time.Minute),
 		},
 	}
-	ade.SetTimetableByAdeResources(univ.ID, 10, events)
+	seedEvents(univ.ID, 10, events)
 
 	input := &freeRoomsInput{
 		UnivID: univ.ID,
@@ -489,7 +490,7 @@ func TestFindFreeRoom_OccupiedRoomExcluded(t *testing.T) {
 		End:    now.Add(2 * time.Hour),
 	}
 
-	out, err := findFreeRoom(univ, input)
+	out, err := findFreeRoom(context.Background(), univ, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -510,7 +511,7 @@ func TestFindFreeRoom_EventOutsideRange_RoomIsFree(t *testing.T) {
 			End:   now.Add(4 * time.Hour),
 		},
 	}
-	ade.SetTimetableByAdeResources(univ.ID, 10, events)
+	seedEvents(univ.ID, 10, events)
 
 	input := &freeRoomsInput{
 		UnivID: univ.ID,
@@ -518,7 +519,7 @@ func TestFindFreeRoom_EventOutsideRange_RoomIsFree(t *testing.T) {
 		End:    now.Add(2 * time.Hour),
 	}
 
-	out, err := findFreeRoom(univ, input)
+	out, err := findFreeRoom(context.Background(), univ, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -531,14 +532,14 @@ func TestFindFreeRoom_DefaultTimesApplied(t *testing.T) {
 	setupAppConfig()
 
 	univ := &config.AppConfig.Universities[0]
-	ade.SetTimetableByAdeResources(univ.ID, 10, []ade.Event{})
+	seedEvents(univ.ID, 10, []ade.Event{})
 
 	// Zero Start and End => defaults to now and now + 1h
 	input := &freeRoomsInput{
 		UnivID: univ.ID,
 	}
 
-	out, err := findFreeRoom(univ, input)
+	out, err := findFreeRoom(context.Background(), univ, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -557,8 +558,8 @@ func TestFindFreeRoom_CampusFilter(t *testing.T) {
 		Label:        "Room B",
 		CampusID:     &campus2ID,
 	})
-	ade.SetTimetableByAdeResources(univ.ID, 10, []ade.Event{})
-	ade.SetTimetableByAdeResources(univ.ID, 11, []ade.Event{})
+	seedEvents(univ.ID, 10, []ade.Event{})
+	seedEvents(univ.ID, 11, []ade.Event{})
 
 	now := time.Now()
 	input := &freeRoomsInput{
@@ -568,7 +569,7 @@ func TestFindFreeRoom_CampusFilter(t *testing.T) {
 		CampusID: 2,
 	}
 
-	out, err := findFreeRoom(univ, input)
+	out, err := findFreeRoom(context.Background(), univ, input)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -588,7 +589,7 @@ func TestFindFreeRoom_EndBeforeStart_ReturnsError(t *testing.T) {
 		End:    now.Add(1 * time.Hour),
 	}
 
-	_, err := findFreeRoom(univ, input)
+	_, err := findFreeRoom(context.Background(), univ, input)
 	if !errors.Is(err, errEndBeforeStart) {
 		t.Errorf("expected errEndBeforeStart, got %v", err)
 	}
@@ -605,7 +606,7 @@ func TestFindFreeRoom_StartEqualsEnd_ReturnsError(t *testing.T) {
 		End:    now,
 	}
 
-	_, err := findFreeRoom(univ, input)
+	_, err := findFreeRoom(context.Background(), univ, input)
 	if !errors.Is(err, errEndBeforeStart) {
 		t.Errorf("expected errEndBeforeStart, got %v", err)
 	}
@@ -630,7 +631,7 @@ func TestFindFreeRoom_FetchErrorSkippedGracefully(t *testing.T) {
 		End:    now.Add(1 * time.Hour),
 	}
 
-	out, err := findFreeRoom(univ, input)
+	out, err := findFreeRoom(context.Background(), univ, input)
 	if err != nil {
 		t.Fatalf("findFreeRoom should not fail when upstream errors, got %v", err)
 	}
