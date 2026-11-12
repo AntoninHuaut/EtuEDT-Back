@@ -22,8 +22,10 @@ published image, mount your configuration at `/app/config.json` or rebuild the i
 The override fetches events for the existing local group and room catalogue from
 the provider's v3 endpoints. Public response schemas remain unchanged. Cache entries
 are isolated by source and academic year, with the last successful result retained
-if a refresh fails. Free-room search returns 503 while an override is active because
-calendar coverage cannot establish room availability. Calendar subscription/export
-continues to depend on ADE; no new ICS endpoint is provided.
+if a refresh fails. Free-room search uses the fetched room events and retains its
+existing campus and time filters. The public `adeUrl` field points to the provider's
+`/v3/ics/{universityId}/{resourceId}` subscription endpoint while the override is
+active, so link copying and calendar synchronization work with the existing frontend.
+The backend does not generate ICS or add an ICS endpoint.
 
 Run `go test ./...` and `go vet ./...` to validate changes.

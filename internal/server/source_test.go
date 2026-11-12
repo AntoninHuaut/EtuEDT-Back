@@ -1,11 +1,14 @@
 package server
 
 import (
+	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/config"
 )
 
@@ -23,7 +26,7 @@ func TestSourceOverridePublicContract(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		for _, hidden := range []string{"sourceOverride", "private-upstream", "reparser", "experimental"} {
+		for _, hidden := range []string{"sourceOverride", "reparser", "experimental"} {
 			if strings.Contains(strings.ToLower(string(body)), strings.ToLower(hidden)) {
 				t.Errorf("%s exposes %s", path, hidden)
 			}
@@ -33,8 +36,40 @@ func TestSourceOverridePublicContract(t *testing.T) {
 	if resp.StatusCode != http.StatusNotFound {
 		t.Fatalf("unknown room: %d", resp.StatusCode)
 	}
-	resp = get(t, srv, "/v3/univs/1/free-rooms")
-	if resp.StatusCode != http.StatusServiceUnavailable {
-		t.Fatalf("free rooms: %d", resp.StatusCode)
+	for path, want := range map[string]string{
+		"/v3/univs/1/rooms/10":    "https://private-upstream.example.test/v3/ics/1/10",
+		"/v3/univs/1/groups/1/20": "https://private-upstream.example.test/v3/ics/1/20",
+	} {
+		var metadata struct {
+			AdeURL string `json:"adeUrl"`
+		}
+		if err := json.NewDecoder(get(t, srv, path).Body).Decode(&metadata); err != nil {
+			t.Fatal(err)
+		}
+		if metadata.AdeURL != want {
+			t.Fatalf("%s: subscription URL %q, want %q", path, metadata.AdeURL, want)
+		}
+	}
+	for _, busy := range []bool{false, true} {
+		events := []ade.Event{}
+		if busy {
+			events = append(events, ade.Event{Title: "Occupied", Start: time.Now().Add(-time.Hour), End: time.Now().Add(time.Hour)})
+		}
+		seedEvents(1, 10, events)
+		resp = get(t, srv, "/v3/univs/1/free-rooms?campusId=1")
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("free rooms: %d", resp.StatusCode)
+		}
+		var rooms []roomResponse
+		if err := json.NewDecoder(resp.Body).Decode(&rooms); err != nil {
+			t.Fatal(err)
+		}
+		want := 1
+		if busy {
+			want = 0
+		}
+		if len(rooms) != want {
+			t.Fatalf("busy=%v: got %d free rooms, want %d", busy, len(rooms), want)
+		}
 	}
 }
