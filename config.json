@@ -3,6 +3,11 @@
     {
       "id": 1,
       "name": "Université de Caen",
+      "sourceOverride": {
+        "provider": "reparser",
+        "baseUrl": "https://eduedt-gabi.gabidut76.fr",
+        "cacheMinutes": 30
+      },
       "adeUrl": "https://ade.unicaen.fr/jsp/custom/modules/plannings/anonymous_cal.jsp",
       "adeProjectIdCycle": {
         "startYear": 2025,

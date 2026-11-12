@@ -60,6 +60,7 @@ type UniversityConfig struct {
 	Rooms             []RoomConfig             `json:"rooms"             validate:"dive"`
 	Groups            []GroupConfig            `json:"groups"            validate:"dive"`
 	Campuses          []CampusConfig           `json:"campuses" validate:"dive"`
+	SourceOverride    *SourceOverrideConfig    `json:"sourceOverride,omitempty"`
 }
 
 func (u *UniversityConfig) GetEffectiveProjectId(now time.Time) int {
@@ -100,7 +101,10 @@ func LoadConfig() error {
 		return err
 	}
 
-	return validateConfig(&AppConfig)
+	if err := validateConfig(&AppConfig); err != nil {
+		return err
+	}
+	return loadSourceSettings(&AppConfig)
 }
 
 func validateConfig(config *Config) error {

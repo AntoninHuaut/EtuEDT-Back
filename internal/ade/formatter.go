@@ -138,6 +138,15 @@ func CalendarToEvents(calendar *ics.Calendar) []Event {
 		})
 	}
 
+	return FormatEvents(events)
+}
+
+func FormatTitle(title string) string {
+	return rePrefix.ReplaceAllString(reSuffix.ReplaceAllString(title, ""), "")
+}
+
+// FormatEvents preserves the display ordering and merging used by the API.
+func FormatEvents(events []Event) []Event {
 	sort.Slice(events, func(i, j int) bool {
 		if events[i].Start.Before(events[j].Start) {
 			return true

@@ -161,7 +161,7 @@ func registerV3Handlers(humaAPI huma.API) {
 		if _, err := findTimetable(group, input.AdeResources); err != nil {
 			return nil, err
 		}
-		events, err := fetchEvents(univ, input.AdeResources)
+		events, err := fetchEvents(ctx, univ, input.AdeResources)
 		if err != nil {
 			return nil, err
 		}
@@ -181,9 +181,10 @@ func registerV3Handlers(humaAPI huma.API) {
 		}
 		now := time.Now()
 		firstDate, lastDate := ade.GetAcademicYearDates(now, univ.GetSplitMonth())
-		resp := make([]roomResponse, 0, len(univ.Rooms))
-		for i := range univ.Rooms {
-			resp = append(resp, buildRoomResponse(univ, &univ.Rooms[i], now, firstDate, lastDate))
+		rooms := univ.Rooms
+		resp := make([]roomResponse, 0, len(rooms))
+		for i := range rooms {
+			resp = append(resp, buildRoomResponse(univ, &rooms[i], now, firstDate, lastDate))
 		}
 		return &roomListOutput{Body: resp}, nil
 	})
@@ -246,7 +247,7 @@ func registerV3Handlers(humaAPI huma.API) {
 		if _, err := findRoom(univ, input.AdeResources); err != nil {
 			return nil, err
 		}
-		events, err := fetchEvents(univ, input.AdeResources)
+		events, err := fetchEvents(ctx, univ, input.AdeResources)
 		if err != nil {
 			return nil, err
 		}
@@ -263,7 +264,7 @@ func registerV3Handlers(humaAPI huma.API) {
 		if err != nil {
 			return nil, err
 		}
-		rooms, err := findFreeRoom(univ, input)
+		rooms, err := findFreeRoom(ctx, univ, input)
 		if err != nil {
 			return nil, err
 		}

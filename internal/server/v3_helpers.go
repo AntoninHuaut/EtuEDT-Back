@@ -1,7 +1,7 @@
 package server
 
 import (
-	"log/slog"
+	"context"
 	"net/http"
 	"slices"
 	"sync"
@@ -9,15 +9,13 @@ import (
 
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/ade"
 	"github.com/AntoninHuaut/EtuEDT-Back/internal/config"
+	"github.com/AntoninHuaut/EtuEDT-Back/internal/timetable"
 	"github.com/danielgtaylor/huma/v2"
 	"golang.org/x/sync/errgroup"
 )
 
-const (
-	cacheTTL = 12 * time.Hour
-)
-
 var (
+	timetableService        = timetable.New(timetable.NewReparser(nil))
 	errUniversityNotFound   = huma.NewError(http.StatusNotFound, "university not found")
 	errGroupNotFound        = huma.NewError(http.StatusNotFound, "group not found")
 	errCampusNotFound       = huma.NewError(http.StatusNotFound, "campus not found")
@@ -26,6 +24,7 @@ var (
 	errTimetableUnavailable = huma.NewError(http.StatusServiceUnavailable, "could not fetch timetable and no cache available, try again later")
 	errCampusEmpty          = huma.NewError(http.StatusNotFound, "campus is empty")
 	errEndBeforeStart       = huma.NewError(http.StatusBadRequest, "end before start")
+	errFeatureUnavailable   = huma.NewError(http.StatusServiceUnavailable, "feature temporarily unavailable")
 )
 
 func findUniversity(univID int) (*config.UniversityConfig, error) {
@@ -92,7 +91,7 @@ func findRoom(univ *config.UniversityConfig, adeResources int) (*config.RoomConf
 }
 
 func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableConfig, now time.Time, firstDate time.Time, lastDate time.Time) timetableResponse {
-	cached, _ := ade.GetTimetableByAdeResources(univ.ID, tt.AdeResources)
+	cached, _ := timetable.Cached(univ, tt.AdeResources)
 	projectId := univ.GetEffectiveProjectId(now)
 	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, projectId, firstDate, lastDate)
 	return timetableResponse{
@@ -106,7 +105,7 @@ func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableC
 }
 
 func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, now time.Time, firstDate time.Time, lastDate time.Time) roomResponse {
-	cached, _ := ade.GetTimetableByAdeResources(univ.ID, room.AdeResources)
+	cached, _ := timetable.Cached(univ, room.AdeResources)
 	projectId := univ.GetEffectiveProjectId(now)
 	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, projectId, firstDate, lastDate)
 	campusID := -1
@@ -123,29 +122,18 @@ func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, n
 	}
 }
 
-func fetchEvents(univ *config.UniversityConfig, adeResources int) ([]ade.Event, error) {
-	cached, ok := ade.GetTimetableByAdeResources(univ.ID, adeResources)
-	if ok && cached.LastUpdate != nil && time.Since(*cached.LastUpdate) < cacheTTL {
-		return cached.Events, nil
+func fetchEvents(ctx context.Context, univ *config.UniversityConfig, adeResources int) ([]ade.Event, error) {
+	events, err := timetableService.Fetch(ctx, univ, adeResources)
+	if err != nil {
+		return nil, errTimetableUnavailable
 	}
-
-	now := time.Now()
-	projectID := univ.GetEffectiveProjectId(now)
-	calendar, err := ade.FetchTimetable(univ.ID, univ.AdeUrl, adeResources, projectID, univ.GetSplitMonth())
-	if err == nil {
-		fresh := ade.SetTimetableByAdeResources(univ.ID, adeResources, ade.CalendarToEvents(calendar))
-		return fresh.Events, nil
-	}
-
-	if ok {
-		slog.Warn("upstream fetch failed, serving stale cache", "univId", univ.ID, "adeResources", adeResources, "err", err)
-		return cached.Events, nil
-	}
-
-	return nil, errTimetableUnavailable
+	return events, nil
 }
 
-func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomListOutput, error) {
+func findFreeRoom(ctx context.Context, univ *config.UniversityConfig, input *freeRoomsInput) (*roomListOutput, error) {
+	if univ.UsesReparser() {
+		return nil, errFeatureUnavailable
+	}
 	now := time.Now()
 	start := now
 	if !input.Start.IsZero() {
@@ -176,7 +164,7 @@ func findFreeRoom(univ *config.UniversityConfig, input *freeRoomsInput) (*roomLi
 		}
 
 		eg.Go(func() error {
-			events, err := fetchEvents(univ, room.AdeResources)
+			events, err := fetchEvents(ctx, univ, room.AdeResources)
 			if err != nil {
 				return nil
 			}
