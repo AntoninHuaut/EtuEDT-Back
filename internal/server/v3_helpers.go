@@ -24,7 +24,6 @@ var (
 	errTimetableUnavailable = huma.NewError(http.StatusServiceUnavailable, "could not fetch timetable and no cache available, try again later")
 	errCampusEmpty          = huma.NewError(http.StatusNotFound, "campus is empty")
 	errEndBeforeStart       = huma.NewError(http.StatusBadRequest, "end before start")
-	errFeatureUnavailable   = huma.NewError(http.StatusServiceUnavailable, "feature temporarily unavailable")
 )
 
 func findUniversity(univID int) (*config.UniversityConfig, error) {
@@ -93,7 +92,7 @@ func findRoom(univ *config.UniversityConfig, adeResources int) (*config.RoomConf
 func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableConfig, now time.Time, firstDate time.Time, lastDate time.Time) timetableResponse {
 	cached, _ := timetable.Cached(univ, tt.AdeResources)
 	projectId := univ.GetEffectiveProjectId(now)
-	adeUrl, _ := ade.BuildURL(univ.AdeUrl, tt.AdeResources, projectId, firstDate, lastDate)
+	adeUrl, _ := timetable.CalendarURL(univ, tt.AdeResources, now, firstDate, lastDate)
 	return timetableResponse{
 		AdeResources: tt.AdeResources,
 		AdeProjectId: projectId,
@@ -107,7 +106,7 @@ func buildTimetableResponse(univ *config.UniversityConfig, tt *config.TimetableC
 func buildRoomResponse(univ *config.UniversityConfig, room *config.RoomConfig, now time.Time, firstDate time.Time, lastDate time.Time) roomResponse {
 	cached, _ := timetable.Cached(univ, room.AdeResources)
 	projectId := univ.GetEffectiveProjectId(now)
-	adeUrl, _ := ade.BuildURL(univ.AdeUrl, room.AdeResources, projectId, firstDate, lastDate)
+	adeUrl, _ := timetable.CalendarURL(univ, room.AdeResources, now, firstDate, lastDate)
 	campusID := -1
 	if room.CampusID != nil {
 		campusID = *room.CampusID
@@ -131,9 +130,6 @@ func fetchEvents(ctx context.Context, univ *config.UniversityConfig, adeResource
 }
 
 func findFreeRoom(ctx context.Context, univ *config.UniversityConfig, input *freeRoomsInput) (*roomListOutput, error) {
-	if univ.UsesReparser() {
-		return nil, errFeatureUnavailable
-	}
 	now := time.Now()
 	start := now
 	if !input.Start.IsZero() {
