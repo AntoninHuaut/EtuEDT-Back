@@ -1,11 +1,11 @@
 module github.com/AntoninHuaut/EtuEDT-Back
 
-go 1.26.0
+go 1.26.10
 
 require (
 	github.com/arran4/golang-ical v0.3.8
 	github.com/avast/retry-go/v5 v5.1.1
-	github.com/danielgtaylor/huma/v2 v2.40.0
+	github.com/danielgtaylor/huma/v2 v2.41.0
 	github.com/go-chi/chi/v5 v5.5.0
 	github.com/go-chi/cors v1.2.2
 	github.com/go-playground/validator/v10 v10.30.6
